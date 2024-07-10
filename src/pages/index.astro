@@ -1,7 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import ThemedImage from '../components/ThemedImage.astro'
+import pageBlack from '../assets/page.black.png'
+import pageWhite from '../assets/page.white.png'
 ---
 
 <BaseLayout title="Ruins & Revolutions">
-	<p><em>Ruins &amp; Revolutions</em> is a blah blah blah.</p>
+	<p><em>Ruins &amp; Revolutions</em> is a is a tabletop fantasy roleplaying
+		game for 3-7 players.</p>
+	<a href="https://jefgodesky.itch.io/ruinsandrevolutions" id="page-hero">
+		<ThemedImage light={pageWhite} dark={pageBlack} alt="Buy Ruins & Revolutions on Itch.io" />
+		<span>Name your price on Itch.io</span>
+	</a>
 </BaseLayout>

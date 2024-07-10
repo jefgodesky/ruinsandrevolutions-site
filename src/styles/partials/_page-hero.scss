@@ -1,0 +1,29 @@
+@use "../modules/mixins";
+
+#page-hero {
+  position: relative;
+  text-decoration: none;
+
+  span {
+    @include mixins.set-style("color", "fg");
+    display: block;
+    font-family: 'Alegreya SC', serif;
+    text-align: center;
+    width: 100%;
+
+    @media (min-width: 450px) {
+      margin: -3.5rem 2rem 0 0;
+      text-align: right;
+    }
+
+    @media (min-width: 650px) {
+      @include mixins.set-style("color", "bg");
+      position: absolute;
+      left: 0;
+      margin: 0;
+      right: 0;
+      text-align: center;
+      top: 64%;
+    }
+  }
+}

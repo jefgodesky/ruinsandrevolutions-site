@@ -13,6 +13,8 @@
 @use "./partials/tags";
 @use "./partials/footer";
 
+@use "./partials/page-hero";
+
 html {
   @media (min-width: 60rem) {
     font-size: 1.1rem;
