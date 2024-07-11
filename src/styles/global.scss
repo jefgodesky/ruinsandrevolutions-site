@@ -16,6 +16,7 @@
 
 @use "./partials/buckets";
 @use "./partials/page-hero";
+@use "./partials/catalogue-menu";
 
 html {
   @media (min-width: 60rem) {

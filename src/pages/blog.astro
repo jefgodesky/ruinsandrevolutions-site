@@ -6,6 +6,6 @@ const posts = await getCollection('posts')
 ---
 
 <BaseLayout title="Ruins & Revolutions Blog">
-	<h1>Blog</h1>
+	<h1>The Blog</h1>
 	{posts.map(post => <BlogPostListing url={`/posts/${post.slug}`} frontmatter={post.data} />)}
 </BaseLayout>

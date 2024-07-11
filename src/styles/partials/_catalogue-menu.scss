@@ -1,0 +1,26 @@
+@use "../modules/mixins";
+
+.catalogue-menu {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    font-family: 'Alegreya SC', serif;
+    font-weight: 700;
+    padding: 0;
+  }
+
+  a {
+    @include mixins.set-style("color", "fg");
+    display: block;
+    padding: 0.25rem;
+    text-decoration: none;
+
+    &:hover {
+      @include mixins.set-style("background", "bg-subdued");
+    }
+  }
+}
