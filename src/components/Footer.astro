@@ -1,9 +1,30 @@
 ---
+import ThemedImage from '../components/ThemedImage.astro'
 import { Image } from 'astro:assets'
+import dragonWhite from '../assets/dragonhead.white.png'
+import dragonBlack from '../assets/dragonhead.black.png'
 import RSSIcon from '../assets/rss.png'
 ---
 
 <footer>
+  <ThemedImage light={dragonWhite} dark={dragonBlack} alt="A decorative dragon’s head" classes="footer-mast" />
+  <p><em>Ruins &amp; Revolutions</em>, the blog, the catalogue, and everything
+    else on this website is released under a
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons
+    Attribution-ShareAlike 4.0 International License</a> (CC BY-SA 4.0). You
+    can find the source code for this website&rsquo;s
+    <a href="https://github.com/jefgodesky/ruinsandrevolutions-site">front</a>
+    and <a href="https://github.com/jefgodesky/rnrapi">back</a> end code
+    on <a href="https://github.com/">GitHub</a>, both licensed under a
+    <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public
+      3.0 License</a> (GPL-3).</p>
+  <p><em>Translation from the original Infernal to the Common Tongue:</em>
+    <em>Ruins &amp; Revolutions</em> is completely open source,
+    bindingly and irrevocably. When you write adventures or other
+    supplements for <em>Ruins &amp; Revolutions</em>, they belong to
+    <em>you</em>, and there&rsquo;s absolutely nothing that we or any other
+    individual, corporate entity, or other species of voracious dragon will
+    ever be able to do to change that.</p>
   <a href="/rss.xml" class="rss">
     <Image src={RSSIcon} alt="RSS" />
     <span>Blog RSS Feed</span>

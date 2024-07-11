@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets'
-const { light, dark, alt } = Astro.props
+const { light, dark, alt, classes } = Astro.props
 ---
 
-<Image src={light} alt={alt} class="themed-image light" />
-<Image src={dark} alt={alt} class="themed-image dark" />
+<Image src={light} alt={alt} class={['themed-image', 'light', classes].join(' ')} />
+<Image src={dark} alt={alt} class={['themed-image', 'dark', classes].join(' ')} />
