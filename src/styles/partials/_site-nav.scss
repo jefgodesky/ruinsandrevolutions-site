@@ -8,15 +8,23 @@
 
   ul {
     @extend %unstyled-list;
+    display: flex;
+    justify-content: center;
 
     li {
       display: inline-block;
-      margin: 0.5rem;
+      padding: 0;
     }
 
     a {
       @include mixins.set-style("color", "fg");
+      display: block;
+      padding: 0.5rem 1.5rem;
       text-decoration: none;
+
+      &:hover {
+        @include mixins.set-style("background", "bg-subdued");
+      }
     }
   }
 }

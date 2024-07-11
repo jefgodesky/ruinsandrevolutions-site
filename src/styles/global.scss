@@ -4,6 +4,7 @@
 @use "./partials/fonts";
 @use "./partials/links";
 @use "./partials/images";
+@use "./partials/hr";
 @use "./partials/figures";
 @use "./partials/themed-images";
 @use "./partials/theme-toggle";
@@ -13,6 +14,7 @@
 @use "./partials/tags";
 @use "./partials/footer";
 
+@use "./partials/buckets";
 @use "./partials/page-hero";
 
 html {
