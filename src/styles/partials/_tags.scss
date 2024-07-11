@@ -1,6 +1,14 @@
 @use "../modules/mixins";
 @use "../modules/placeholders";
 
+h1.tag .pre {
+  display: block;
+  font-family: 'Alegreya', serif;
+  font-size: 2rem;
+  font-style: italic;
+  font-weight: normal;
+}
+
 nav.tags {
   p {
     font-family: 'Alegreya SC', serif;
@@ -15,6 +23,7 @@ nav.tags {
   li {
     display: inline;
     margin-right: 0.5rem;
+    padding: 0 1rem 0 0;
   }
 
   a,
@@ -25,6 +34,10 @@ nav.tags {
 
     &:before {
       content: '#';
+    }
+
+    &:hover {
+      text-decoration: underline;
     }
   }
 }

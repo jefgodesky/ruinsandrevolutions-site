@@ -20,6 +20,9 @@ const { tag } = Astro.params
 const { posts } = Astro.props
 ---
 <BaseLayout title={`Posts tagged “${tag}”`}>
-  <h1>Posts tagged with &ldquo;{tag}&rdquo;</h1>
+  <h1 class="tag">
+    <span class="pre">Posts tagged with</span>
+    {tag}
+  </h1>
   {posts.map(post => <BlogPostListing url={`/posts/${post.slug}`} frontmatter={post.data} />)}
 </BaseLayout>
