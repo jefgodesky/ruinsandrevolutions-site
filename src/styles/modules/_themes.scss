@@ -1,6 +1,7 @@
 $themes: (
   "light": (
     "bg": #fff,
+    "bg-subdued": #eee,
     "fg": #333,
     "fg-subdued": #555,
     "links": (
@@ -11,7 +12,8 @@ $themes: (
     )
   ),
   "dark": (
-    "bg": #000,
+    "bg": #222,
+    "bg-subdued": #444,
     "fg": #ccc,
     "fg-subdued": #aaa,
     "links": (
