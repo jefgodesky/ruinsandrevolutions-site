@@ -9,6 +9,28 @@ $themes: (
       "hover": #4286f4,
       "active": #a40a38,
       "visited": #870bc1
+    ),
+    "messages": (
+      "info": (
+        "bg": #daedf7,
+        "border": #3398db,
+      ),
+      "tip": (
+        "bg": #393522,
+        "border": #f2c413
+      ),
+      "warning": (
+        "bg": #250e07,
+        "border": #ffa404
+      ),
+      "error": (
+        "bg": #f2dede,
+        "border": #c23c2b
+      ),
+      "success": (
+        "bg": #e0f1d9,
+        "border": #06b440
+      )
     )
   ),
   "dark": (
@@ -21,6 +43,28 @@ $themes: (
       "hover": #d2e0f9,
       "active": #e887a4,
       "visited": #c987e8
+    ),
+    "messages": (
+      "info": (
+        "bg": #0d374f,
+        "border": #3398db,
+      ),
+      "tip": (
+        "bg": #42370e,
+        "border": #f2c413
+      ),
+      "warning": (
+        "bg": #42300f,
+        "border": #ffa404
+      ),
+      "error": (
+        "bg": #711515,
+        "border": #c23c2b
+      ),
+      "success": (
+        "bg": #1b2f12,
+        "border": #06b440
+      )
     )
   )
 )

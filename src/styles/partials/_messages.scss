@@ -1,0 +1,30 @@
+@use "../modules/mixins";
+
+.message {
+  @include mixins.set-style("background", "messages.info.bg");
+  @include mixins.set-style("border-color", "messages.info.border");
+  border-style: solid;
+  border-width: 1px;
+  margin: 1rem 0;
+  padding: 1rem;
+
+  &.warning {
+    @include mixins.set-style("background", "messages.warning.bg");
+    @include mixins.set-style("border-color", "messages.warning.border");
+  }
+
+  &.error {
+    @include mixins.set-style("background", "messages.error.bg");
+    @include mixins.set-style("border-color", "messages.error.border");
+  }
+
+  &.success {
+    @include mixins.set-style("background", "messages.success.bg");
+    @include mixins.set-style("border-color", "messages.success.border");
+  }
+
+  &.tip {
+    @include mixins.set-style("background", "messages.tip.bg");
+    @include mixins.set-style("border-color", "messages.tip.border");
+  }
+}
