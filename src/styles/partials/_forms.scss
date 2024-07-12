@@ -1,0 +1,61 @@
+@use "../modules/mixins";
+
+form {
+  font-family: 'Alegreya Sans', sans-serif;
+}
+
+input,
+textarea {
+  @include mixins.set-style("background", "bg-subdued");
+  @include mixins.set-style("border-color", "fg-subdued");
+  @include mixins.set-style("color", "fg");
+  appearance: none;
+  border-style: solid;
+  border-width: 1px;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  outline: none;
+  padding: 0.5rem;
+  width: calc(100% - 1rem);
+
+  &:focus {
+    @include mixins.set-style("border-color", "links.base");
+  }
+}
+
+textarea {
+  height: 5rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+
+  .note {
+    display: block;
+    font-size: 80%;
+    font-weight: normal;
+  }
+}
+
+button {
+  @include mixins.set-style("background", "links.base");
+  @include mixins.set-style("color", "bg");
+  border: 0;
+  cursor: pointer;
+  font-family: 'Alegreya SC', serif;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem 1.5rem;
+
+  &:hover {
+    @include mixins.set-style("background", "links.hover");
+  }
+
+  &:active {
+    @include mixins.set-style("background", "links.active");
+  }
+}
