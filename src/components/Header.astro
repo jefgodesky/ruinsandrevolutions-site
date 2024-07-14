@@ -1,12 +1,12 @@
 ---
 import logoBlack from '../assets/logo.black.png'
 import logoWhite from '../assets/logo.white.png'
+import AuthHeader from './AuthHeader.astro'
 import Navigation from './Navigation.astro'
 import ThemedImage from './ThemedImage.astro'
-import ThemeToggle from './ThemeToggle.astro'
 ---
 <header>
-  <ThemeToggle />
+  <AuthHeader />
   <a href="/">
     <ThemedImage light={logoBlack} dark={logoWhite} alt="Ruins & Revolutions" />
   </a>

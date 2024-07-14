@@ -1,0 +1,45 @@
+@use "../modules/mixins";
+
+nav.auth {
+  ul {
+    font-family: 'Alegreya SC', serif;
+    font-weight: 600;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @media (min-width: 40rem) {
+      display: flex;
+    }
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  a {
+    @include mixins.set-style("color", "fg");
+    display: block;
+    padding: 0.5rem 1.5rem;
+    text-decoration: none;
+
+    &:hover {
+      @include mixins.set-style("background", "bg-subdued");
+    }
+  }
+
+  @media (min-width: 40rem) {
+    align-items: center;
+    display: flex;
+
+    ul {
+      flex-grow: 1;
+    }
+
+    #theme-toggle {
+      flex-shrink: 0;
+      margin: 0;
+    }
+  }
+}

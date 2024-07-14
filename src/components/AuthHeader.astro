@@ -1,0 +1,16 @@
+---
+import ThemeToggle from './ThemeToggle.astro'
+
+const username = Astro.cookies.get('username')?.value
+const authenticated = username !== undefined
+console.log({ username, authenticated })
+---
+<nav class="auth">
+  <ul>
+    {!authenticated && <li><a href="/login">Log in</a></li>}
+    {!authenticated && <li><a href="/register">Register</a></li>}
+    {authenticated && <li><a href="/dashboard">Dashboard</a></li>}
+    {authenticated && <li><a href="/logout">Log out</a></li>}
+  </ul>
+  <ThemeToggle />
+</nav>
