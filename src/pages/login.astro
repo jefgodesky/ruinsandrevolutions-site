@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../data'
+
+let message = ''
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const username = formData.get('username')
+    const password = formData.get('password')
+
+    try {
+      const res = await fetch(`${apiRoot}/keys`, {
+        method: 'POST',
+        headers: apiHeaders,
+        body: JSON.stringify({ username, password })
+      })
+
+      const data = await res.json()
+      if (res.status !== 200) {
+        throw new Error(data.error)
+      }
+
+      const maxAge = 60 * 60 * 24 * 7
+      const cookieParams = { httpOnly: true, secure: true, path: '/', maxAge }
+      Astro.cookies.set('api_key', data.value, cookieParams)
+      Astro.cookies.set('username', username, cookieParams)
+
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `/dashboard`,
+        },
+      })
+    } catch (err) {
+      message = 'Sorry, something went wrong. Please try again.'
+      console.log(err)
+    }
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Login">
+  <h1>Login</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <form action="/login" method="POST">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username" required placeholder="gygax38" />
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required />
+    <button>Log In</button>
+    <p><strong>On Cookies:</strong> By registering, you agree to allow this website
+      to place cookies on your browser, because that&rsquo;s what logging in
+      means. While you might be able to call it &rdquo;tracking&ldquo; that
+      we can see the contributions you&rsquo;ve made, there&rsquo;s nothing
+      more going on behind the scenes than giving you access so that you can
+      add your contributions to the Catalogue. You don&rsquo;t even have to
+      take our word for it: you can take a look through our
+      <a href="https://github.com/jefgodesky/ruinsandrevolutions-site">source
+        code</a>. Your data is never used for any other purpose, and it will
+      never be sold to anyone.</p>
+  </form>
+</BaseLayout>

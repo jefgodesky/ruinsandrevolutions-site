@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import MarkdownContent from '../../components/MarkdownContent.astro'
+import { apiRoot, apiHeaders } from '../../data'
+const { username } = Astro.params
+let name = 'Who’s that?'
+let bio = 'Sorry, stranger, but we don’t know anyone who goes by that name around here.'
+
+try {
+  const url = `${apiRoot}/users/${username}`
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: apiHeaders
+  })
+
+  const data = await res.json()
+  if (res.status !== 200) {
+    throw new Error(data.error)
+  }
+
+  name = data.name
+  bio = data.bio
+} catch (err) {
+  console.error(err)
+}
+
+const title = `${name} - Ruins & Revolutions`
+---
+<BaseLayout title={title}>
+  <h1>{name}</h1>
+  <MarkdownContent tag="article" content={bio} />
+</BaseLayout>

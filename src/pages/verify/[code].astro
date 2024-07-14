@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../data'
+const { code } = Astro.params
+const parts = code.split('-')
+const id = parts.pop()
+const uuid = parts.join('-')
+let message = 'Email verified!'
+
+try {
+  const apiKey = Astro.cookies.get('api_key').value
+  if (apiKey === undefined) {
+    throw new Error("You must be logged in to verify your email.")
+  }
+
+  const url = `${apiRoot}/emails/${id}/verification`
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...apiHeaders,
+      'Authorization': 'Bearer ' + apiKey,
+    },
+    body: JSON.stringify({ code: uuid })
+  })
+
+  const data = await res.json()
+  if (res.status !== 200) {
+    throw new Error(data.message)
+  }
+
+  message = `Thank you for verifying ${data.address}.`
+} catch (err) {
+  message = 'Sorry, we couldn’t verify that email address.'
+  console.error(err)
+}
+---
+<BaseLayout title="Verify Email Address">
+  <h1>Email Verification</h1>
+  <p>{message}</p>
+</BaseLayout>

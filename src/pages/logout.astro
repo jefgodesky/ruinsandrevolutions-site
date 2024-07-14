@@ -1,0 +1,11 @@
+---
+Astro.cookies.delete("username")
+Astro.cookies.delete("api_key")
+
+return new Response(null, {
+  status: 302,
+  headers: {
+    Location: `/`,
+  },
+})
+---
