@@ -1,0 +1,6 @@
+---
+import { parseMarkdown} from '../utils/parse-markdown'
+const { content, tag: Tag = 'div' } = Astro.props
+const html = await parseMarkdown(content)
+---
+<Tag set:html={html}></Tag>
