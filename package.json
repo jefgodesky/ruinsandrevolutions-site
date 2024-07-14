@@ -21,6 +21,7 @@
     "@astrojs/rss": "^4.0.6",
     "astro": "^4.10.1",
     "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.0",
     "typescript": "^5.4.5",
     "unified": "^11.0.5"
   },
