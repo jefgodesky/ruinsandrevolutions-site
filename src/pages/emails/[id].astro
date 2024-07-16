@@ -1,0 +1,31 @@
+---
+import { apiRoot, apiHeaders } from '../../data'
+const { id } = Astro.params
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData()
+  const op = formData.get('op')
+
+  if (op === "DELETE") {
+    try {
+      const apiKey = Astro.cookies.get("api_key")?.value
+      const res = await fetch(`${apiRoot}/emails/${id}`, {
+        method: 'DELETE',
+        headers: {
+          ...apiHeaders,
+          Authorization: `Bearer ${apiKey}`,
+        }
+      })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+}
+
+return new Response(null, {
+  status: 302,
+  headers: {
+    Location: `/dashboard`,
+  },
+})
+---
