@@ -1,0 +1,35 @@
+---
+import Pagination from './Pagination.astro'
+const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
+---
+<h2>Email Addresses</h2>
+<a href="/emails">+ Add a new email address</a>
+<table>
+  <thead>
+  <tr>
+    <th>Address</th>
+    <th class="short">Verified</th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  {page.emails.length < 1 && <tr class="null">
+    <td colspan="3">
+      <strong>No email addresses</strong>
+      <a href="/emails">+ Add a new email address</a>
+    </td>
+  </tr>}
+  {page.emails.map(email => (<tr key={email.id}>
+    <td>{email.address}</td>
+    <td class="short">{email.verified && '✓'}</td>
+    <td class="actions">
+      <form method="POST" action={`/emails/${email.id}`}>
+        <input type="hidden" name="op" value="DELETE" />
+        <button>Delete</button>
+      </form>
+    </td>
+  </tr>))}
+  </tbody>
+</table>
+<Pagination page={page} baseUrl={baseUrl} pageParam={pageParam} pageSizeParam={pageSizeParam} />
+

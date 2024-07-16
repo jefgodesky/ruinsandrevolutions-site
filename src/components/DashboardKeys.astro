@@ -1,0 +1,34 @@
+---
+import Pagination from './Pagination.astro'
+const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
+---
+<h2>API Keys</h2>
+<a href="/keys">+ Create a new API key</a>
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th class="short">Ephemeral</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {page.keys.length < 1 && <tr class="null">
+    <td colspan="3">
+      <strong>No API keys</strong>
+      <a href="/keys">+ Add a new API keys</a>
+    </td>
+  </tr>}
+  {page.keys.map(key => (<tr key={key.id}>
+    <td>{key.label}</td>
+    <td class="short">{key.ephemeral && '✓'}</td>
+    <td class="actions">
+      <form method="POST" action={`/keys/${key.id}`}>
+        <input type="hidden" name="op" value="DELETE" />
+        <button>Delete</button>
+      </form>
+    </td>
+  </tr>))}
+  </tbody>
+</table>
+<Pagination page={page} baseUrl={baseUrl} pageParam={pageParam} pageSizeParam={pageSizeParam} />

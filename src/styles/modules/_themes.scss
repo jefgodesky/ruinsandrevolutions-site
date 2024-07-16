@@ -2,8 +2,10 @@ $themes: (
   "light": (
     "bg": #fff,
     "bg-subdued": #eee,
+    "bg-more-subdued": #f7f7f7,
     "fg": #333,
     "fg-subdued": #555,
+    "fg-more-subdued": #444444,
     "links": (
       "base": #0b51c1,
       "hover": #4286f4,
@@ -36,8 +38,10 @@ $themes: (
   "dark": (
     "bg": #222,
     "bg-subdued": #444,
+    "bg-more-subdued": #333,
     "fg": #ccc,
     "fg-subdued": #aaa,
+    "fg-more-subdued": #bbb,
     "links": (
       "base": #87ace8,
       "hover": #d2e0f9,

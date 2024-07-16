@@ -1,7 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import DashboardEmails from '../components/DashboardEmails.astro'
+import DashboardKeys from '../components/DashboardKeys.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../data'
+
+const apiKey = Astro.cookies.get("api_key")?.value
+const params = {
+  method: 'GET',
+  headers: {
+    ...apiHeaders,
+    Authorization: `Bearer ${apiKey}`,
+  }
+}
+
+const keyPageParam = "key_page"
+const keyPageSizeParam = "key_page_size"
+const keyPage = Astro.url.searchParams.get(keyPageParam) ?? 1
+const keyPageSize = Astro.url.searchParams.get(keyPageSizeParam) ?? defaultPageSize
+const keyURL = `${apiRoot}/keys?page=${keyPage}&page_size=${keyPageSize}`
+const keysRes = await fetch(keyURL, params)
+const keys = await keysRes.json()
+
+const emailPageParam = "email_page"
+const emailPageSizeParam = "email_page_size"
+const emailPage = Astro.url.searchParams.get(emailPageParam) ?? 1
+const emailPageSize = Astro.url.searchParams.get(emailPageSizeParam) ?? defaultPageSize
+const emailURL = `${apiRoot}/emails?page=${emailPage}&page_size=${emailPageSize}`
+const emailsRes = await fetch(emailURL, params)
+const emails = await emailsRes.json()
 ---
 
 <BaseLayout title="Dashboard">
   <h1>Dashboard</h1>
+  {keys && <DashboardKeys page={keys} baseUrl="/dashboard" pageParam="key_page" pageSizeParam="key_page_size" />}
+  {emails && <DashboardEmails page={emails} baseUrl="/dashboard" pageParam="email_page" pageSizeParam="email_page_size" />}
 </BaseLayout>

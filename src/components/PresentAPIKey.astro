@@ -1,0 +1,19 @@
+---
+const { key } = Astro.props
+---
+
+<p>Your new API key is:</p>
+<p class="api-key">{key}</p>
+<p><strong>Write this down! We will never show you this again!</strong>
+In fact, we don&rsquo;t even <em>keep</em> it. We use a technique called
+<em>hashing</em> to protect your API keys the same way we protect your
+passwords. It&rsquo;s a one-way encryption process, so given the same input
+we&rsquo;ll always get the same output, but there&rsquo;s no way to reverse it
+to get the original version from the hash. It means that when you give us an
+API key or a password, we can confirm that it&rsquo;s the same thing you gave us
+before, but we don&rsquo;t have to actually store what you gave us before
+anywhere. So if someone cracks our database, they don&rsquo;t have your API
+keys, because <em>we</em> don&rsquo;t have your API keys.</p>
+<p>Which means you should write this down and keep it safe, maybe in an
+encrypted password manager app. If you lose it, you can always delete it and
+generate a new key.</p>

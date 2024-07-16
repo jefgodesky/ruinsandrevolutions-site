@@ -24,6 +24,24 @@ textarea {
   }
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+  height: 1rem;
+  width: 1rem;
+
+  &:checked:before {
+    @include mixins.set-style("color", "links.base");
+    content: "\2714";
+    display: block;
+    margin: -0.5rem 0 0 -0.3rem;
+  }
+
+  &:has(+ label) {
+    float: left;
+    margin-right: -2rem;
+  }
+}
+
 textarea {
   height: 5rem;
 }
@@ -39,6 +57,13 @@ label {
     font-size: 80%;
     font-weight: normal;
   }
+}
+
+input[type="checkbox"] + label,
+input[type="radio"] + label {
+  font-weight: normal;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
 }
 
 button {

@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import PresentAPIKey from '../components/PresentAPIKey.astro'
+import { apiRoot, apiHeaders } from '../data'
+
+let message = ''
+let key = ''
+const username = Astro.cookies.get('username')?.value
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const label = formData.get('label')
+    const password = formData.get('password')
+    const ephemeral = formData.get('ephemeral') === 'on'
+
+    try {
+      const res = await fetch(`${apiRoot}/keys`, {
+        method: 'POST',
+        headers: apiHeaders,
+        body: JSON.stringify({ username, password, label, ephemeral })
+      })
+
+      const data = await res.json()
+      if (res.status !== 200) {
+        throw new Error(data.error)
+      }
+
+      key = data.value
+    } catch (err) {
+      message = 'Sorry, something went wrong. Please try again.'
+      console.log(err)
+    }
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create an API Key">
+  <h1>Create an API Key</h1>
+  {message && <aside class="message error">{message}</aside>}
+  {key && <PresentAPIKey key={key}></PresentAPIKey>}
+  {(!key || key === '') && <form action="/keys" method="POST">
+    <input type="hidden" name="op" value="POST" />
+    <label for="label">
+      Label
+      <span class="note">This is a label for you to remember what this
+      key is for later.</span>
+    </label>
+    <input type="text" id="label" name="label" required placeholder="My API Key" />
+    <label for="password">
+      Password
+      <span class="note">You&rsquo;re still logged in, but creating a new
+        API key is a sensitive thing, so please provide your password again
+        just to make sure we&rsquo;re not handing out long-term accesss to
+        your account to someone else.</span>
+    </label>
+    <input type="password" id="password" name="password" required />
+    <input type="checkbox" id="ephemeral" name="ephemeral" checked />
+    <label for="ephemeral" class="checkbox">
+      <strong>Create an ephemeral API key.</strong> Ephemeral API keys might
+      be deleted when they&rsquo;re more than an hour old. You generate an
+      ephemeral API key each time you log in. To make a long-lasting API key
+      for other uses, deselect this option.
+    </label>
+    <button>Create API Key</button>
+  </form>}
+</BaseLayout>

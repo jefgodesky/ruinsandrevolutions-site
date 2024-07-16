@@ -1,0 +1,38 @@
+---
+import getQuery from '../utils/get-query'
+import makeQueryString from '../utils/make-query-string'
+const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
+const currPage: number = page.page
+const pageSize = page.page_size
+const totalPages = Math.ceil(page.total / page.page_size)
+const prev = currPage > 1 ? currPage - 1 : null
+const next = currPage < totalPages ? currPage + 1 : null
+
+const query = getQuery(Astro.url.searchParams)
+const makeLink = (page: number): string => {
+  const newQuery: { [key: string]: string | number } = {}
+  newQuery[pageParam] = page
+  newQuery[pageSizeParam] = pageSize
+  const q = makeQueryString(query, newQuery)
+  return baseUrl + q
+}
+
+const width = 3
+const pages = []
+for (let i = 1; i <= totalPages; i++) {
+  const min = currPage - width
+  const max = currPage + width
+  if (i === currPage) {
+    pages.push(`<strong>${i}</strong>`)
+  } else if (i >= min && i <= max) {
+    pages.push(`<a href="${makeLink(i)}">${i}</a>`)
+  }
+}
+---
+{totalPages > 1 && <nav class="pagination">
+  {prev && <a href={makeLink(prev)} class="prev">Previous</a>}
+  <ul>
+    {pages.map(page => (<li set:html={page}></li>))}
+  </ul>
+  {next && <a href={makeLink(next)} class="next">Next</a>}
+</nav>}

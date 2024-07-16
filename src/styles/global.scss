@@ -7,6 +7,7 @@
 @use "./partials/hr";
 @use "./partials/figures";
 @use "./partials/forms";
+@use "./partials/tables";
 @use "./partials/themed-images";
 @use "./partials/theme-toggle";
 @use "./partials/auth-nav";
@@ -14,12 +15,14 @@
 @use "./partials/blog-post-title";
 @use "./partials/byline";
 @use "./partials/tags";
+@use "./partials/pagination";
 @use "./partials/footer";
 
 @use "./partials/messages";
 @use "./partials/buckets";
 @use "./partials/page-hero";
 @use "./partials/catalogue-menu";
+@use "./partials/api-key";
 
 html {
   @media (min-width: 60rem) {

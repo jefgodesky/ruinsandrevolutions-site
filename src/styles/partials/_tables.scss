@@ -1,0 +1,47 @@
+@use "../modules/mixins";
+
+table {
+  border-collapse: collapse;
+  font-family: 'Alegreya Sans', sans-serif;
+  margin: 1rem -0.5rem;
+  width: calc(100% + 1rem);
+}
+
+td, th {
+  padding: 0.25rem 0.5rem;
+  text-align: left;
+}
+
+tr:nth-child(odd) td {
+  @include mixins.set-style("background-color", "bg-more-subdued");
+}
+
+th {
+  @include mixins.set-style("border-bottom-color", "fg-subdued");
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.short,
+.num {
+  text-align: center;
+}
+
+.actions {
+  text-align: right;
+}
+
+tr.null td {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  text-align: center;
+
+  strong {
+    display: block;
+  }
+
+  a {
+    display: block;
+    font-size: 80%;
+  }
+}

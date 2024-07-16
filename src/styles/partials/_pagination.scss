@@ -1,0 +1,29 @@
+.pagination {
+  align-items: center;
+  display: grid;
+  grid-template-areas: "prev pages next";
+  grid-template-columns: 1fr 3fr 1fr;
+
+  ul {
+    grid-area: pages;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  li {
+    display: inline-block;
+    padding: 0.5rem;
+  }
+
+  .prev {
+    grid-area: prev;
+    text-align: left;
+  }
+
+  .next {
+    grid-area: next;
+    text-align: right;
+  }
+}

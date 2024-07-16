@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../data'
+
+let message = ''
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const address = formData.get('email')
+
+    try {
+      const apiKey = Astro.cookies.get("api_key")?.value
+      const res = await fetch(`${apiRoot}/emails`, {
+        method: 'POST',
+        headers: {
+          ...apiHeaders,
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({ address })
+      })
+
+      const data = await res.json()
+      if (res.status !== 200) {
+        throw new Error(data.error)
+      }
+
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: `/dashboard`,
+        },
+      })
+    } catch (err) {
+      message = 'Sorry, something went wrong. Please try again.'
+      console.log(err)
+    }
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Add an Email Address">
+  <h1>Add an Email Address</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <form action="/emails" method="POST">
+    <input type="hidden" name="op" value="POST" />
+    <label for="email">
+      Email Address
+      <span class="note">The email address that you&rsquo;d like to add.</span>
+    </label>
+    <input type="email" id="email" name="email" required placeholder="you@domain.com" />
+    <button>Add</button>
+  </form>
+</BaseLayout>
