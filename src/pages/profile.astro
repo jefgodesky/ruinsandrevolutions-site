@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ProfileForm from '../components/ProfileForm.astro'
+import { apiHeaders, apiRoot } from '../data'
+
+const authUser = Astro.cookies.get('username')?.value
+const apiKey = Astro.cookies.get("api_key")?.value
+let data = {}
+
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData()
+  const username = formData.get('username') as string ?? ''
+  const password = formData.get('password') as string ?? ''
+  const name = formData.get('name') as string ?? ''
+  const bio = formData.get('bio') as string ?? ''
+
+  try {
+    const profile: { [key: string]: string } = { username, name, bio }
+    if (password.length > 0) { profile.password = password }
+
+    console.log(JSON.stringify(profile))
+    const res = await fetch(`${apiRoot}/users`, {
+      method: 'PUT',
+      headers: {
+        ...apiHeaders,
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify(profile)
+    })
+
+    console.log(res.body)
+    data = await res.json()
+    if (res.status !== 200) {
+      throw new Error("Could not process update")
+    }
+  } catch (err) {
+    console.error('Error in POST request:', err);
+    console.error(err)
+  }
+}
+
+try {
+  const res = await fetch(`${apiRoot}/users/${authUser}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`,
+    }
+  })
+
+  data = await res.json()
+} catch (err) {
+  console.error('Error in GET request:', err)
+}
+---
+<BaseLayout title="Edit Profile">
+  <h1>Edit Profile</h1>
+  <ProfileForm action="/account" data={data} />
+</BaseLayout>

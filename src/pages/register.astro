@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import ProfileForm from '../components/ProfileForm.astro'
 import { apiRoot, apiHeaders } from '../data'
 
 let message = ''
@@ -74,45 +75,5 @@ if (Astro.request.method === 'POST') {
 <BaseLayout title="Register">
   <h1>Register</h1>
   {message && <aside class="message error">{message}</aside>}
-  <form action="/register" method="POST">
-    <label for="username">
-      Username
-      <span class="note">You&rsquo;ll use this to log in.</span>
-    </label>
-    <input type="text" id="username" name="username" required placeholder="gygax38" />
-    <label for="password">
-      Password
-      <span class="note">Keep it secret. Keep it safe. (Maybe in a password manager.)</span>
-    </label>
-    <input type="password" id="password" name="password" required />
-    <label for="name">
-      Name
-      <span class="note">How you&rsquo;d like to be credited if someone uses
-        your work.</span>
-    </label>
-    <input type="text" id="name" name="name" required placeholder="Gary Gygax" />
-    <label for="email">
-      Email
-      <span class="note">If you ever need to reset your password, we&rsquo;ll
-        create a new one and send it to this address. That&rsquo;s the
-        <em>only</em> thing we will <em>ever</em> use this for.</span>
-    </label>
-    <input type="email" id="email" name="email" required placeholder="gygax@tsr.com" />
-    <label for="bio">
-      Introduction
-      <span class="note">A little bit about you.</span>
-    </label>
-    <textarea id="bio" name="bio" placeholder="Gary was an American game designer and author best known for co-creating the pioneering tabletop role-playing game Dungeons & Dragons (D&D) with Dave Arneson." />
-    <button>Register</button>
-    <p><strong>On Cookies:</strong> By registering, you agree to allow this website
-      to place cookies on your browser, because that&rsquo;s what logging in
-      means. While you might be able to call it &rdquo;tracking&ldquo; that
-      we can see the contributions you&rsquo;ve made, there&rsquo;s nothing
-      more going on behind the scenes than giving you access so that you can
-      add your contributions to the Catalogue. You don&rsquo;t even have to
-      take our word for it: you can take a look through our
-      <a href="https://github.com/jefgodesky/ruinsandrevolutions-site">source
-      code</a>. Your data is never used for any other purpose, and it will
-      never be sold to anyone.</p>
-  </form>
+  <ProfileForm action="/register" />
 </BaseLayout>

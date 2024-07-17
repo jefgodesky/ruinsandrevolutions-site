@@ -32,6 +32,7 @@ const emails = await emailsRes.json()
 
 <BaseLayout title="Dashboard">
   <h1>Dashboard</h1>
+  <p><a href="/profile">Edit your profile</a></p>
   {keys && <DashboardKeys page={keys} baseUrl="/dashboard" pageParam="key_page" pageSizeParam="key_page_size" />}
   {emails && <DashboardEmails page={emails} baseUrl="/dashboard" pageParam="email_page" pageSizeParam="email_page_size" />}
 </BaseLayout>
