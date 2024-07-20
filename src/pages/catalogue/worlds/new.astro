@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import NoJS from '../../../components/NoJS.astro'
+import SlugField from '../../../components/client/SlugField.tsx'
+import UserPicker from '../../../components/client/UserPicker.tsx'
+import { apiRoot, apiHeaders } from '../../../data'
+
+const apiKey = Astro.cookies.get("api_key")?.value
+let message = ''
+
+if (apiKey === undefined) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: '/catalogue/worlds'
+    },
+  })
+}
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug')
+    const creators = (formData.get('creators') as string).split(',').map(c => c.trim())
+    const description = formData.get('description')
+    const isPublic = formData.get('public') === 'on'
+
+    const res = await fetch(`${apiRoot}/worlds`, {
+      method: 'POST',
+      headers: {
+        ...apiHeaders,
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({ name, slug, creators, description, public: isPublic })
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/worlds/${data.slug}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create a New World">
+  <h1>Create a New World</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <form action="/catalogue/worlds/new" method="POST">
+    <label for="name">
+      Name
+      <span class="note">What is your world called?</span>
+    </label>
+    <input type="text" name="name" id="name" required placeholder="Middle Earth" />
+    <label for="slug" class="no-js">
+      Slug
+      <span class="note">A unique identifier for your world.</span>
+    </label>
+    <input type="text" name="slug" id="slug" required placeholder="middle-earth" />
+    <SlugField
+      client:only="react"
+      name="name"
+      slug="slug"
+      slugNote="A unique identifier for your world."
+      placeholder="Middle Earth" />
+    <label for="creators">
+      Creators
+      <span class="note">These users will have permission to view and edit
+        this world and the species and societies in it, even if it&rsquo;s
+        private. <span class="no-js">Enter the username of each user
+        you&rsquo;d like to designate as a creator of this world, separated
+        by commas.</span></span>
+    </label>
+    <input type="text" name="creators" id="creators" class="user-picker" placeholder="tolkien" />
+    <UserPicker client:only="react" src="creators" />
+    <label for="description">
+      Description
+      <span class="note">Provide a short summary of your world and what
+      makes it unique.</span>
+    </label>
+    <textarea name="description" id="description" required placeholder="The world in which the elvish languages that I’ve been developing since the Great War are spoken." />
+    <input type="checkbox" id="public" name="public" />
+    <label for="public" class="checkbox">
+      <strong>Make it public.</strong> Public worlds can be seen by everyone.
+      Leave this unchecked if you&rsquo;re not ready to share your world
+      with everyone, or if you just want to keep it private. Private worlds
+      can only be seen by the creators listed above.
+    </label>
+    <button>Create</button>
+  </form>
+  <NoJS />
+</BaseLayout>

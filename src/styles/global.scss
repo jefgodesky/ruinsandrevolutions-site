@@ -22,7 +22,10 @@
 @use "./partials/buckets";
 @use "./partials/page-hero";
 @use "./partials/catalogue-menu";
+@use "./partials/span-state";
 @use "./partials/api-key";
+@use "./partials/slug-field";
+@use "./partials/user-picker";
 
 html {
   @media (min-width: 60rem) {

@@ -1,0 +1,11 @@
+@use "../modules/mixins";
+
+span.success {
+  @include mixins.set-style("color", "messages.success.border");
+  font-weight: bold;
+}
+
+span.failure {
+  @include mixins.set-style("color", "messages.error.border");
+  font-weight: bold;
+}
