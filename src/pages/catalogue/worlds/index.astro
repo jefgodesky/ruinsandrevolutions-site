@@ -3,8 +3,9 @@ import BaseLayout from '../../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
 import Pagination from '../../../components/Pagination.astro'
 import WorldListing from '../../../components/WorldListing.astro'
+import getAuth from '../../../utils/get-auth'
 
-const apiKey = Astro.cookies.get("api_key")?.value
+const { apiKey } = getAuth(Astro)
 let data: { [key: string]: any } = {}
 
 const pageParam = 'page'

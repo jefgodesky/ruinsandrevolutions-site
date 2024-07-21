@@ -4,8 +4,9 @@ import NoJS from '../../../components/NoJS.astro'
 import SlugField from '../../../components/client/SlugField.tsx'
 import UserPicker from '../../../components/client/UserPicker.tsx'
 import { apiRoot, apiHeaders } from '../../../data'
+import getAuth from '../../../utils/get-auth'
 
-const apiKey = Astro.cookies.get("api_key")?.value
+const { apiKey } = getAuth(Astro)
 let message = ''
 
 if (apiKey === undefined) {

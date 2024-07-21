@@ -1,5 +1,6 @@
 ---
 import { apiRoot, apiHeaders } from '../../data'
+import getAuth from '../../utils/get-auth'
 const { id } = Astro.params
 
 if (Astro.request.method === 'POST') {
@@ -8,7 +9,7 @@ if (Astro.request.method === 'POST') {
 
   if (op === "DELETE") {
     try {
-      const apiKey = Astro.cookies.get("api_key")?.value
+      const { apiKey } = getAuth(Astro)
       const res = await fetch(`${apiRoot}/keys/${id}`, {
         method: 'DELETE',
         headers: {

@@ -2,9 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ProfileForm from '../components/ProfileForm.astro'
 import { apiHeaders, apiRoot } from '../data'
+import getAuth from '../utils/get-auth'
 
-const authUser = Astro.cookies.get('username')?.value
-const apiKey = Astro.cookies.get("api_key")?.value
+const auth = getAuth(Astro)
+
 let data = {}
 
 if (Astro.request.method === 'POST') {
@@ -23,7 +24,7 @@ if (Astro.request.method === 'POST') {
       method: 'PUT',
       headers: {
         ...apiHeaders,
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${auth.apiKey}`,
       },
       body: JSON.stringify(profile)
     })
@@ -40,11 +41,11 @@ if (Astro.request.method === 'POST') {
 }
 
 try {
-  const res = await fetch(`${apiRoot}/users/${authUser}`, {
+  const res = await fetch(`${apiRoot}/users/${auth.username}`, {
     method: 'GET',
     headers: {
       ...apiHeaders,
-      Authorization: `Bearer ${apiKey}`,
+      Authorization: `Bearer ${auth.apiKey}`,
     }
   })
 

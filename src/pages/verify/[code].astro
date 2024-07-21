@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders } from '../../data'
+import getAuth from '../utils/get-auth'
+
 const { code } = Astro.params
 const parts = code.split('-')
 const id = parts.pop()
@@ -8,7 +10,7 @@ const uuid = parts.join('-')
 let message = 'Email verified!'
 
 try {
-  const apiKey = Astro.cookies.get('api_key').value
+  const { apiKey } = getAuth(Astro)
   if (apiKey === undefined) {
     throw new Error("You must be logged in to verify your email.")
   }

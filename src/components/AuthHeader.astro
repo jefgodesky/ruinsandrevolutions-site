@@ -1,8 +1,7 @@
 ---
 import ThemeToggle from './ThemeToggle.astro'
-
-const username = Astro.cookies.get('username')?.value
-const authenticated = username !== undefined
+import getAuth from '../utils/get-auth'
+const authenticated = getAuth(Astro) !== null
 ---
 <nav class="auth">
   <ul>

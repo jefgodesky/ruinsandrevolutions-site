@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import getAuth from '../../utils/get-auth'
 import { apiRoot, apiHeaders } from '../../data'
 
 let message = ''
@@ -10,7 +11,7 @@ if (Astro.request.method === 'POST') {
     const address = formData.get('email')
 
     try {
-      const apiKey = Astro.cookies.get("api_key")?.value
+      const { apiKey } = getAuth(Astro)
       const res = await fetch(`${apiRoot}/emails`, {
         method: 'POST',
         headers: {

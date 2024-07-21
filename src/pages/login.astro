@@ -1,4 +1,5 @@
 ---
+import jwt from 'jsonwebtoken'
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders } from '../data'
 
@@ -22,10 +23,15 @@ if (Astro.request.method === 'POST') {
         throw new Error(data.error)
       }
 
+      const token = jwt.sign(
+        { username, apiKey: data.value },
+        import.meta.env.JWT_SECRET,
+        { expiresIn: '7d' }
+      )
+
       const maxAge = 60 * 60 * 24 * 7
       const cookieParams = { httpOnly: true, secure: true, path: '/', maxAge }
-      Astro.cookies.set('api_key', data.value, cookieParams)
-      Astro.cookies.set('username', username, cookieParams)
+      Astro.cookies.set('auth', token, cookieParams)
 
       return new Response(null, {
         status: 302,

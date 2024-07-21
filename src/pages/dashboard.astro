@@ -3,8 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import DashboardEmails from '../components/DashboardEmails.astro'
 import DashboardKeys from '../components/DashboardKeys.astro'
 import { apiRoot, apiHeaders, defaultPageSize } from '../data'
+import getAuth from '../utils/get-auth'
 
-const apiKey = Astro.cookies.get("api_key")?.value
+const { apiKey } = getAuth(Astro)
 const params = {
   method: 'GET',
   headers: {
