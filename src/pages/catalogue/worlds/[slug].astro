@@ -4,11 +4,13 @@ import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
 import UserLink from '../../../components/UserLink.astro'
 import MarkdownContent from '../../../components/MarkdownContent.astro'
 import getAuth from '../../../utils/get-auth'
+import Breadcrumbs from '../../../components/Breadcrumbs.astro'
 
 const { apiKey, username } = getAuth(Astro)
 const { slug } = Astro.params
 let world: { [key: string]: any } | null = null
 let isCreator = false
+let ancestors = []
 
 try {
   const res = await fetch(`${apiRoot}/worlds/${slug}`, {
@@ -18,6 +20,11 @@ try {
       Authorization: `Bearer ${apiKey}`
     }
   })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/worlds', name: 'Worlds' },
+  ]
 
   if (res.status === 200) {
     world = await res.json()
@@ -39,6 +46,7 @@ try {
   )}
   {world && (
     <>
+      <Breadcrumbs ancestors={ancestors} current={world.name} />
       {isCreator && <a href={`/catalogue/worlds/${slug}/edit`}>Edit</a>}
       <h1>{world.name}</h1>
       <p class="byline">Created by {world.creators.map(creator => (<UserLink user={creator} />))}</p>

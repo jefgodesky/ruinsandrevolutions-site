@@ -1,0 +1,13 @@
+---
+const { ancestors, current } = Astro.props
+---
+<nav class="breadcrumbs">
+  <ul>
+    {ancestors.map((page, index) => (
+      <li key={index}>
+        <a href={page.path}>{page.name}</a>
+      </li>
+    ))}
+    <li class="current">{current}</li>
+  </ul>
+</nav>
