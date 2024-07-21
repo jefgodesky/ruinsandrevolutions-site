@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
+import UserLink from '../../../components/UserLink.astro'
+import MarkdownContent from '../../../components/MarkdownContent.astro'
+
+const apiKey = Astro.cookies.get("api_key")?.value
+const username = Astro.cookies.get("username")?.value
+const { slug } = Astro.params
+let world: { [key: string]: any } | null = null
+let isCreator = false
+
+try {
+  const res = await fetch(`${apiRoot}/worlds/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  if (res.status === 200) {
+    world = await res.json()
+    isCreator = world.creators.map(creator => creator.username).includes(username)
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title="Worlds">
+  {!world && (
+    <h1>The Space Between Worlds</h1>
+    <p class="byline">404 Not Found</p>
+    <p>Across the infinite planes of the multiverse, nary a whisper of such
+    a place can be heard. Perhaps you&rsquo;d like to
+    <a href="/catalogue/worlds">explore the known worlds</a>, or perhaps,
+    if the one you seek does not yet exist, you might have the power to
+    <a href="/catalogue/worlds/new">create it</a>.</p>
+  )}
+  {world && (
+    <>
+      {isCreator && <a href={`/catalogue/worlds/${slug}/edit`}>Edit</a>}
+      <h1>{world.name}</h1>
+      <p class="byline">Created by {world.creators.map(creator => (<UserLink user={creator} />))}</p>
+      <MarkdownContent tag="div" content={world.description} />
+    </>
+  )}
+</BaseLayout>

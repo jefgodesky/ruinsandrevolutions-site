@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
+import Pagination from '../../../components/Pagination.astro'
+import WorldListing from '../../../components/WorldListing.astro'
+
+const apiKey = Astro.cookies.get("api_key")?.value
+let data: { [key: string]: any } = {}
+
+const pageParam = 'page'
+const pageSizeParam = 'page_size'
+const page = Astro.url.searchParams.get(pageParam) ?? 1
+const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
+const url = `${apiRoot}/worlds?page=${page}&page_size=${pageSize}`
+
+try {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  data = await res.json()
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title="Worlds">
+  <h1>Worlds</h1>
+  {data.worlds && data.worlds.length > 0 && data.worlds.map(world => (
+    <WorldListing world={world} />
+  ))}
+  {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/worlds" pageParam="page" pageSizeParam="page_size" />)}
+</BaseLayout>

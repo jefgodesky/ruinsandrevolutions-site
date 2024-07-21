@@ -1,0 +1,10 @@
+@use "../modules/mixins";
+
+.catalogue-listing h2 a {
+  @include mixins.set-style("color", "fg");
+  text-decoration: none;
+}
+
+.catalogue-listing h2:has(+ .byline) {
+  margin-bottom: 0;
+}

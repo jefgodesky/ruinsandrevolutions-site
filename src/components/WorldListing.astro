@@ -1,0 +1,16 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+import UserLink from './UserLink.astro'
+
+const { world } = Astro.props
+const slug = world.path.substring(8)
+---
+<article class="world catalogue-listing">
+  <header>
+    <h2>
+      <a href={`/catalogue/worlds/${slug}`}>{world.name}</a>
+    </h2>
+    <p class="byline">Created by {world.creators.map(creator => (<UserLink user={creator} />))}</p>
+  </header>
+  <MarkdownContent tag="div" content={world.description} />
+</article>
