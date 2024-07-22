@@ -1,0 +1,53 @@
+---
+import SlugField from './client/SlugField'
+import UserPicker from './client/UserPicker'
+const { action, button, isEdit } = Astro.props
+const world = Astro.props.world ?? {}
+const creators = world.creators ?? []
+const creatorUsernames = creators.map(creator => creator.username).join(', ')
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is your world called?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Middle Earth" value={world.name} />
+  <label for="slug" class="no-js">
+    Slug
+    <span class="note">A unique identifier for your world.</span>
+  </label>
+  <input type="text" name="slug" id="slug" required placeholder="middle-earth" value={world.slug} />
+  <SlugField
+    client:only="react"
+    isEdit={isEdit}
+    name={world.name}
+    slug={world.slug}
+    nameField="name"
+    slugField="slug"
+    slugNote="A unique identifier for your world."
+    placeholder="Middle Earth" />
+  <label for="creators">
+    Creators
+    <span class="note">These users will have permission to view and edit
+        this world and the species and societies in it, even if it&rsquo;s
+        private. <span class="no-js">Enter the username of each user
+        you&rsquo;d like to designate as a creator of this world, separated
+        by commas.</span></span>
+  </label>
+  <input type="text" name="creators" id="creators" class="user-picker" placeholder="tolkien" value={creatorUsernames} />
+  <UserPicker client:only="react" src="creators" users={creatorUsernames} />
+  <label for="description">
+    Description
+    <span class="note">Provide a short summary of your world and what
+      makes it unique.</span>
+  </label>
+  <textarea name="description" id="description" required placeholder="The world in which the elvish languages that I’ve been developing since the Great War are spoken.">{world.description}</textarea>
+  <input type="checkbox" id="public" name="public" checked={world.public} />
+  <label for="public" class="checkbox">
+    <strong>Make it public.</strong> Public worlds can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your world
+    with everyone, or if you just want to keep it private. Private worlds
+    can only be seen by the creators listed above.
+  </label>
+  <button>{button}</button>
+</form>

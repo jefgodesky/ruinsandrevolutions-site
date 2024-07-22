@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import NoJS from '../../../../components/NoJS.astro'
+import WorldForm from '../../../../components/WorldForm.astro'
+import { apiRoot, apiHeaders } from '../../../../data'
+import getAuth from '../../../../utils/get-auth'
+
+const { apiKey, username } = getAuth(Astro)
+const { slug } = Astro.params
+let world: { [key: string]: any } | null = null
+let isCreator = false
+let ancestors = []
+let message = ''
+
+if (apiKey === undefined) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: '/catalogue/worlds'
+    },
+  })
+}
+
+try {
+  const res = await fetch(`${apiRoot}/worlds/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/worlds', name: 'Worlds' },
+  ]
+
+  if (res.status === 200) {
+    world = await res.json()
+    isCreator = world.creators.map(creator => creator.username).includes(username)
+  }
+} catch (err) {
+  console.error(err)
+}
+
+if (!isCreator) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/worlds/${slug}`,
+    },
+  })
+}
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const newSlug = formData.get('slug')
+    const creators = (formData.get('creators') as string).split(',').map(c => c.trim())
+    const description = formData.get('description')
+    const isPublic = formData.get('public') === 'on'
+
+    console.log(`${apiRoot}/worlds/${slug}`)
+    const res = await fetch(`${apiRoot}/worlds/${slug}`, {
+      method: 'PUT',
+      headers: {
+        ...apiHeaders,
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({ name, slug: newSlug, creators, description, public: isPublic })
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/worlds/${data.slug}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create a New World">
+  <h1>{world.name}</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <WorldForm
+    world={world}
+    action={`/catalogue/worlds/${world.slug}/edit`}
+    button="Save"
+    isEdit={true} />
+  <NoJS />
+</BaseLayout>

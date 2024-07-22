@@ -3,6 +3,7 @@ import axios from 'axios'
 
 interface UserPickerProps {
   src: string
+  users: string
 }
 
 interface UserRecord {
@@ -10,13 +11,14 @@ interface UserRecord {
   name: string
 }
 
-const UserPicker: React.FC<UserPickerProps> = ({ src }) => {
+const UserPicker: React.FC<UserPickerProps> = ({ src, users }) => {
   const [value, setValue] = useState('')
   const [candidates, setCandidates] = useState<UserRecord[]>([])
-  const [users, setUsers] = useState<UserRecord[]>([])
+  const [userList, setUsers] = useState<UserRecord[]>([])
   const debounceTimeout = useRef<number | null>(null)
   const srcInput = useRef<HTMLInputElement | null>(null)
   const candidateItems = useRef<(HTMLLIElement | null)[]>([])
+  const apiBase = 'https://api.ruinsandrevolutions.com/v1'
 
   useEffect(() => {
     srcInput.current = document.getElementById(src) as HTMLInputElement
@@ -24,11 +26,35 @@ const UserPicker: React.FC<UserPickerProps> = ({ src }) => {
   }, [src])
 
   useEffect(() => {
+    fetchInitialUsers()
+  })
+
+  useEffect(() => {
     if (srcInput.current) {
-      const usernames = users.map((user: UserRecord) => user.username)
+      const usernames = userList.map((user: UserRecord) => user.username)
       srcInput.current.value = usernames.join(', ')
     }
-  }, [users])
+  }, [userList])
+
+  function isNotNull<T>(value: T | null): value is T {
+    return value !== null
+  }
+
+  const fetchInitialUsers = async (): Promise<void> => {
+    if (!users || !users.length) return
+    const usernames = users.split(',').map(username => username.trim())
+    const fetchedUsers: (UserRecord | null)[] = await Promise.all(usernames.map(async (username: string) => {
+      try {
+        const res = await axios.get(`${apiBase}/users/${username}`)
+        return { username: res.data.username, name: res.data.name }
+      } catch (err) {
+        console.error(`Error fetching ${username}:`, err)
+        return null
+      }
+    }))
+    const filteredUsers: UserRecord[] = fetchedUsers.filter(isNotNull)
+    setUsers(filteredUsers)
+  }
 
   const handleUserKeyDown = (event: KeyboardEvent<HTMLLIElement>, username: string) => {
     const remove = ['Enter', 'Escape', 'x', 'X']
@@ -81,8 +107,7 @@ const UserPicker: React.FC<UserPickerProps> = ({ src }) => {
     }
 
     try {
-      const base = 'https://api.ruinsandrevolutions.com/v1'
-      const endpoint = `${base}/users`
+      const endpoint = `${apiBase}/users`
       const res = await axios.get(`${endpoint}?q=${value}`)
       const candidates = res.data.users.map((user: any) => ({
         username: user.username,
@@ -95,26 +120,26 @@ const UserPicker: React.FC<UserPickerProps> = ({ src }) => {
     }
   }
 
-  const setCandidatesList = (newCandidates: UserRecord[], selected: UserRecord[] = users) => {
+  const setCandidatesList = (newCandidates: UserRecord[], selected: UserRecord[] = userList) => {
     const usernames = selected.map((user: UserRecord) => user.username)
     const filtered = newCandidates.filter((user: UserRecord) => !usernames.includes(user.username))
     setCandidates(filtered)
   }
 
   const addUser = (user: UserRecord) => {
-    const newUsers: UserRecord[] = [...users, user]
+    const newUsers: UserRecord[] = [...userList, user]
     setUsers(newUsers)
     setCandidatesList(candidates, newUsers)
   }
 
   const removeUser = (username: string) => {
-    setUsers(users.filter((user) => user.username !== username))
+    setUsers(userList.filter((user) => user.username !== username))
   }
 
   return (
     <>
-      {users && users.length > 0 && (<ul className='user-picker-selected'>
-        {users.map((user: UserRecord) => (
+      {userList && userList.length > 0 && (<ul className='user-picker-selected'>
+        {userList.map((user: UserRecord) => (
           <li
             key={`${src}-users-${user.username}`}
             onClick={() => removeUser(user.username)}

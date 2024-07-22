@@ -5,24 +5,28 @@ import slugify from 'slugify'
 interface SlugFieldProps {
   name: string
   slug: string
+  nameField: string
+  slugField: string
   slugNote: string
   placeholder: string
+  isEdit: boolean
 }
 
-const SlugField: React.FC<SlugFieldProps> = ({ name, slug, slugNote, placeholder }) => {
+const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, slugField, slugNote, placeholder, isEdit }) => {
   const AUTO_MODE = 'auto'
   const MANUAL_MODE = 'manual'
+  const initialMode = slug === slugify(name) ? AUTO_MODE : MANUAL_MODE
 
-  const [nameValue, setNameValue] = useState('')
-  const [slugValue, setSlugValue] = useState('')
+  const [nameValue, setNameValue] = useState(name)
+  const [slugValue, setSlugValue] = useState(slug)
   const [isAvailable, setIsAvailable] = useState<boolean>(true)
-  const [mode, setMode] = useState<string>(AUTO_MODE)
+  const [mode, setMode] = useState<string>(initialMode)
   const debounceTimeout = useRef<number | null>(null)
 
   useEffect(() => {
-    document.getElementById(name)?.remove()
-    document.getElementById(slug)?.remove()
-  }, [name, slug])
+    document.getElementById(nameField)?.remove()
+    document.getElementById(slugField)?.remove()
+  }, [nameField, slugField])
 
   useEffect(() => {
     if (slugValue) {
@@ -59,7 +63,9 @@ const SlugField: React.FC<SlugFieldProps> = ({ name, slug, slugNote, placeholder
   }
 
   const displayAvailability = () => {
-    if (isAvailable) {
+    if (isEdit && slugValue === slug) {
+      return
+    } else if (isAvailable) {
       return (<span className='success'>/{slugValue} is available</span>)
     } else {
       return (<span className='failure'>/{slugValue} already exists</span>)
@@ -70,8 +76,8 @@ const SlugField: React.FC<SlugFieldProps> = ({ name, slug, slugNote, placeholder
     <>
       <input
         type='text'
-        name={name}
-        id={name}
+        name={nameField}
+        id={nameField}
         placeholder={placeholder}
         value={nameValue}
         onChange={handleNameChange}
@@ -90,8 +96,8 @@ const SlugField: React.FC<SlugFieldProps> = ({ name, slug, slugNote, placeholder
         </label>
         <input
           type='text'
-           name={slug}
-           id={slug}
+           name={slugField}
+           id={slugField}
           value={slugValue}
           onChange={handleSlugChange}
         />

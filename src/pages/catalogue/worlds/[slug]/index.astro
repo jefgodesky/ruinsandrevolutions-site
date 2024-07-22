@@ -1,10 +1,10 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
-import UserLink from '../../../components/UserLink.astro'
-import MarkdownContent from '../../../components/MarkdownContent.astro'
-import getAuth from '../../../utils/get-auth'
-import Breadcrumbs from '../../../components/Breadcrumbs.astro'
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
+import UserLink from '../../../../components/UserLink.astro'
+import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import getAuth from '../../../../utils/get-auth'
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
 
 const { apiKey, username } = getAuth(Astro)
 const { slug } = Astro.params
@@ -39,10 +39,10 @@ try {
     <h1>The Space Between Worlds</h1>
     <p class="byline">404 Not Found</p>
     <p>Across the infinite planes of the multiverse, nary a whisper of such
-    a place can be heard. Perhaps you&rsquo;d like to
-    <a href="/catalogue/worlds">explore the known worlds</a>, or perhaps,
-    if the one you seek does not yet exist, you might have the power to
-    <a href="/catalogue/worlds/new">create it</a>.</p>
+      a place can be heard. Perhaps you&rsquo;d like to
+      <a href="/catalogue/worlds">explore the known worlds</a>, or perhaps,
+      if the one you seek does not yet exist, you might have the power to
+      <a href="/catalogue/worlds/new">create it</a>.</p>
   )}
   {world && (
     <>
