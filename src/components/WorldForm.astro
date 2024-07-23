@@ -35,7 +35,7 @@ const creatorUsernames = creators.map(creator => creator.username).join(', ')
         by commas.</span></span>
   </label>
   <input type="text" name="creators" id="creators" class="user-picker" placeholder="tolkien" value={creatorUsernames} />
-  <UserPicker client:only="react" src="creators" users={creatorUsernames} />
+  <UserPicker client:only="react" src="creators" users={world.creators} />
   <label for="description">
     Description
     <span class="note">Provide a short summary of your world and what

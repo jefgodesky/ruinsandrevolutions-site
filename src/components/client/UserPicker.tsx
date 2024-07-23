@@ -3,7 +3,7 @@ import axios from 'axios'
 
 interface UserPickerProps {
   src: string
-  users: string
+  users: UserRecord[]
 }
 
 interface UserRecord {
@@ -11,10 +11,10 @@ interface UserRecord {
   name: string
 }
 
-const UserPicker: React.FC<UserPickerProps> = ({ src, users }) => {
+const UserPicker: React.FC<UserPickerProps> = ({ src, users = [] }) => {
   const [value, setValue] = useState('')
   const [candidates, setCandidates] = useState<UserRecord[]>([])
-  const [userList, setUsers] = useState<UserRecord[]>([])
+  const [userList, setUsers] = useState<UserRecord[]>(users)
   const debounceTimeout = useRef<number | null>(null)
   const srcInput = useRef<HTMLInputElement | null>(null)
   const candidateItems = useRef<(HTMLLIElement | null)[]>([])
@@ -26,35 +26,11 @@ const UserPicker: React.FC<UserPickerProps> = ({ src, users }) => {
   }, [src])
 
   useEffect(() => {
-    fetchInitialUsers()
-  })
-
-  useEffect(() => {
     if (srcInput.current) {
       const usernames = userList.map((user: UserRecord) => user.username)
       srcInput.current.value = usernames.join(', ')
     }
   }, [userList])
-
-  function isNotNull<T>(value: T | null): value is T {
-    return value !== null
-  }
-
-  const fetchInitialUsers = async (): Promise<void> => {
-    if (!users || !users.length) return
-    const usernames = users.split(',').map(username => username.trim())
-    const fetchedUsers: (UserRecord | null)[] = await Promise.all(usernames.map(async (username: string) => {
-      try {
-        const res = await axios.get(`${apiBase}/users/${username}`)
-        return { username: res.data.username, name: res.data.name }
-      } catch (err) {
-        console.error(`Error fetching ${username}:`, err)
-        return null
-      }
-    }))
-    const filteredUsers: UserRecord[] = fetchedUsers.filter(isNotNull)
-    setUsers(filteredUsers)
-  }
 
   const handleUserKeyDown = (event: KeyboardEvent<HTMLLIElement>, username: string) => {
     const remove = ['Enter', 'Escape', 'x', 'X']
