@@ -28,6 +28,8 @@
 @use "./partials/api-key";
 @use "./partials/slug-field";
 @use "./partials/user-picker";
+@use "./partials/affinities-aversion";
+@use "./partials/stages";
 
 html {
   @media (min-width: 60rem) {

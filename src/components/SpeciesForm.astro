@@ -1,0 +1,165 @@
+---
+import AffinityAversion from './client/AffinityAversion'
+import SlugField from './client/SlugField'
+import StageDirector from './client/StageDirector'
+const { action, button, isEdit, worlds } = Astro.props
+const species: any = Astro.props.species ?? {}
+
+const getNumStages = (): number => {
+  const defaultValue = 4
+  const orig = Astro.url.searchParams.get('stages')
+  const parsed = parseInt(orig)
+  return isNaN(parsed) ? defaultValue : parsed
+}
+
+const physical = ['Strength', 'Dexterity', 'Constitution']
+const mental = ['Intelligence', 'Wisdom', 'Charisma']
+const stages: string[] = []
+
+for (let i = 1; i <= getNumStages(); i++) {
+  stages.push(`stage-${i}`)
+}
+
+const everyStage = '* **Ability Shift:** You may increase one of your abilities by one at the cost of decreasing a different ability by one.\n* **Socially Favored Shift:** You may repeat the ability shift step a second time if the ability you increase is one of your society’s favored abilities.'
+const stagePlaceholders = {
+  name: ['Childhood', 'Young Adulthood', 'Mature Adulthood', 'Elderhood'],
+  min: [null, 10, 30, 60],
+  max: [10, 30, 60, null],
+  procedures: [
+    `* **Language Acquisition:** You are fluent in all of the languages spoken by your society.\n${everyStage}`,
+    everyStage,
+    everyStage,
+    `* **Aging:** Reduce your strength, dexterity, and constitution abilites each by one.\n${everyStage}`
+  ]
+}
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is this species called?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Humans" value={species.name} />
+  <label for="slug" class="no-js">
+    Slug
+    <span class="note">A string which, when combined with your world&rsquo;s slug, uniquely identifies this species.</span>
+  </label>
+  <input type="text" name="slug" id="slug" required placeholder="humans" value={species.slug} />
+  <SlugField
+    client:only="react"
+    isEdit={isEdit}
+    worlds={worlds}
+    collection="species"
+    name={species.name}
+    slug={species.slug}
+    world={species.world}
+    nameField="name"
+    slugField="slug"
+    slugNote="A string which, when combined with your world&rsquo;s slug, uniquely identifies this species."
+    worldField="world"
+    worldNote="What world does this species come from?"
+    placeholder="Humans" />
+  <label for="name" class="no-js">
+    World
+    <span class="note">What world does this species come from?</span>
+  </label>
+  <select name="world" id="world" class="no-js">
+    {worlds.map(world => {
+      const isSelected = world.slug === species?.world?.slug
+      return (<option selected={isSelected} value={world.slug}>{world.name}</option>)
+    })}
+  </select>
+  <label for="description">
+    Description
+    <span class="note">Provide a short summary of this species and what
+      makes them unique.</span>
+  </label>
+  <textarea name="description" id="description" required placeholder="Humans are only the default from a deeply anthropocentric point of view. Every species is uniquely adapted to its own particular niche, and humans are no exception.">{species.description}</textarea>
+  <label for="affinity1" class="no-js">
+    Affinities
+    <span class="note">Each species has two <strong>affinities</strong> &mdash;
+    abilities that its members are naturally gifted at, due to their biological
+    or magical nature.</span>
+  </label>
+  <select name="affinity1" id="affinity1" class="no-js">
+    {physical.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+  </select>
+  <select name="affinity2" id="affinity2" class="no-js">
+    {mental.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+  </select>
+  <label for="aversion" class="no-js">
+    Aversion
+    <span class="note">Each species has an <strong>aversion</strong> &mdash;
+    one ability that its members struggle with due to their biological or
+    magical nature.</span>
+  </label>
+  <select name="aversion" id="aversion" class="no-js">
+    {[...physical, ...mental].map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+  </select>
+  <AffinityAversion
+    client:only="react"
+    species={species}
+    physical={physical}
+    mental={mental} />
+  <fieldset name="stages" class="stages">
+    <legend>Stages of Life</legend>
+    <p>The stages of life vary from one species to another
+      in terms of number, age, and what matters of physical, mental, or magical
+      maturity they involve.</p>
+    {stages.map((id, index) => (
+      <fieldset name={id} key={id} id={id}>
+        <label for={`${id}-name`} class="stage-name">
+          Name
+          <span class="note">What is this stage of life called?</span>
+        </label>
+        <input
+          type="text"
+          name={`${id}-name`}
+          id={`${id}-name`}
+          class="stage-name"
+          placeholder={index < stagePlaceholders.name.length ? stagePlaceholders.name[index] : ''} />
+        <label for={`${id}-min`} class="stage-min">
+          Minimum Age
+          <span class="note">The age at which this stage of life generally
+          begins for members of this species.</span>
+        </label>
+        <input
+          type="number"
+          name={`${id}-min`}
+          id={`${id}-min`}
+          class="stage-min"
+          placeholder={index < stagePlaceholders.min.length ? stagePlaceholders.min[index] : ''} />
+        <label for={`${id}-max`} class="stage-max">
+          Maximum Age
+          <span class="note">The age at which this stage of life generally
+          ends for members of this species.</span>
+        </label>
+        <input
+          type="number"
+          name={`${id}-max`}
+          id={`${id}-max`}
+          class="stage-max"
+          placeholder={index < stagePlaceholders.max.length ? stagePlaceholders.max[index] : ''} />
+        <label for={`${id}-procedures`} class="stage-procedures">
+          Procedures
+          <span class="note">Instructions for a player creating a character
+          in this stage of life.</span>
+        </label>
+        <textarea
+          name={`${id}-procedures`}
+          id={`${id}-procedures`}
+          class="stage-procedures"
+          placeholder={index < stagePlaceholders.procedures.length ? stagePlaceholders.procedures[index] : ''}
+        ></textarea>
+      </fieldset>
+    ))}
+    <StageDirector client:only="react" stages={stages} />
+  </fieldset>
+  <input type="checkbox" id="public" name="public" checked={species.public} />
+  <label for="public" class="checkbox">
+    <strong>Make it public.</strong> Public species can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your species
+    with everyone, or if you just want to keep it private. Private species
+    can only be seen by the creators of the worlds they belong to.
+  </label>
+  <button>{button}</button>
+</form>

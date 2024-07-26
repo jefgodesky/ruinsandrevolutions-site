@@ -1,0 +1,27 @@
+@use "../modules/mixins";
+
+.affinities-aversion {
+  font-family: 'Alegreya SC', serif;
+
+  .selection {
+    @include mixins.set-style("color", "fg-subdued");
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .selected {
+    font-weight: 600;
+  }
+
+  .selected.affinity,
+  .label.affinity {
+    @include mixins.set-style("color", "messages.success.border");
+    font-weight: 600;
+  }
+
+  .selected.aversion,
+  .label.aversion{
+    @include mixins.set-style("color", "messages.error.border");
+    font-weight: 600;
+  }
+}

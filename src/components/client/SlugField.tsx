@@ -1,24 +1,39 @@
 import React, { useEffect, useRef, useState, type ChangeEvent, type MouseEvent } from 'react'
 import axios from 'axios'
 import slugify from 'slugify'
+import type { WorldRecord } from '../../utils/get-worlds'
 
 interface SlugFieldProps {
   name: string
   slug: string
+  world: WorldRecord | null
+  worlds: WorldRecord[] | null
+  collection: string
   nameField: string
   slugField: string
   slugNote: string
+  worldField: string
+  worldNote: string
   placeholder: string
   isEdit: boolean
 }
 
-const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, slugField, slugNote, placeholder, isEdit }) => {
+const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worlds, collection, nameField, slugField, slugNote, worldField, worldNote, placeholder, isEdit }) => {
   const AUTO_MODE = 'auto'
   const MANUAL_MODE = 'manual'
   const initialMode = slug === slugify(name) ? AUTO_MODE : MANUAL_MODE
+  const initialSlug = world
+    ? `${world.slug}/${slug}`
+    : slug
+  const initialWorld = world
+    ? world
+    : worlds && worlds.length > 0
+      ? worlds[0]
+      : null
 
   const [nameValue, setNameValue] = useState(name)
-  const [slugValue, setSlugValue] = useState(slug)
+  const [slugValue, setSlugValue] = useState(initialSlug)
+  const [worldValue, setWorldValue] = useState(initialWorld)
   const [isAvailable, setIsAvailable] = useState<boolean>(true)
   const [mode, setMode] = useState<string>(initialMode)
   const debounceTimeout = useRef<number | null>(null)
@@ -40,7 +55,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, 
   const checkAvailability = async (): Promise<void> => {
     try {
       const base = 'https://api.ruinsandrevolutions.com/v1'
-      const endpoint = `${base}/worlds/${slugValue}`
+      const endpoint = [base, collection, slugValue].join('/')
       await axios.head(endpoint)
       setIsAvailable(false)
     } catch (err: any) {
@@ -48,13 +63,31 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, 
     }
   }
 
+  const makeSlug = (value: string): string => {
+    const slugElem = worldValue !== null && value.startsWith(worldValue.slug)
+      ? value.substring(worldValue.slug.length + 1)
+      : value
+    return worldValue === null
+      ? value
+      : [worldValue.slug, slugElem].join('/')
+  }
+
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNameValue(event.target.value)
-    if (mode === AUTO_MODE) setSlugValue(slugify(event.target.value, { lower: true }))
+    if (mode === AUTO_MODE) setSlugValue(makeSlug(slugify(event.target.value, { lower: true })))
   }
 
   const handleSlugChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSlugValue(event.target.value)
+    setSlugValue(makeSlug(event.target.value))
+  }
+
+  const handleWorldChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const slug = event.target.value
+    const name = worlds?.find(w => w.slug === slug)?.name ?? slug
+    setWorldValue({ name, slug })
+
+    const slugElems = slugValue.split('/')
+    setSlugValue([slug, slugElems[1]].join('/'))
   }
 
   const handleEditClick = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -82,7 +115,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, 
         value={nameValue}
         onChange={handleNameChange}
       />
-      {mode === AUTO_MODE && (<input type="hidden" name={slug} value={slugValue}/>)}
+      {mode === AUTO_MODE && (<input type="hidden" name={slugField} value={slugValue}/>)}
       {slugValue && slugValue !== '' && mode === AUTO_MODE && <p className='slug'>
         <strong>Slug:</strong>&nbsp;
         /{slugValue}&nbsp;
@@ -90,7 +123,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, 
         {displayAvailability()}
       </p>}
       {mode === MANUAL_MODE && (<>
-        <label htmlFor={slug}>
+        <label htmlFor={slugField}>
           Slug
           <span className='note'>{slugNote}</span>
         </label>
@@ -102,6 +135,15 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', nameField, 
           onChange={handleSlugChange}
         />
         <p className='status'>{displayAvailability()}</p>
+      </>)}
+      {worlds && worlds.length > 0 && (<>
+        <label htmlFor={worldField}>
+          World
+          <span className='note'>{worldNote}</span>
+        </label>
+        <select name={worldField} id={worldField} onChange={handleWorldChange}>
+          {worlds.map(world => (<option key={world.slug} value={world.slug}>{world.name}</option>))}
+        </select>
       </>)}
     </>
   )

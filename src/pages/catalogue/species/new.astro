@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import NoJS from '../../../components/NoJS.astro'
+import SpeciesForm from '../../../components/SpeciesForm.astro'
+import { apiRoot, apiHeaders } from '../../../data'
+import getAuth from '../../../utils/get-auth'
+import getWorlds from '../../../utils/get-worlds'
+
+const { apiKey } = getAuth(Astro)
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
+}
+
+if (apiKey === undefined) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: '/catalogue/species'
+    },
+  })
+}
+
+const worlds = await getWorlds(apiRoot, headers)
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug') as string
+    const description = formData.get('description')
+    const affinity1 = (formData.get('affinity1') as string).toLowerCase()
+    const affinity2 = (formData.get('affinity2') as string).toLowerCase()
+    const aversion = (formData.get('aversion') as string).toLowerCase()
+    const world = formData.get('world') as string
+    const isPublic = formData.get('public') === 'on'
+    const stageIndex = {}
+    const stages: { name: string, min: number | null, max: number | null, procedures: string }[] = []
+
+    for (const key of formData.keys()) {
+      if (key.startsWith('stage-')) {
+        const elems = key.split('-')
+        if (elems.length < 2) continue
+        const parsed = parseInt(elems[1])
+        if (isNaN(parsed)) continue
+        if (!stageIndex[elems[1]]) stageIndex[elems[1]] = parsed
+      }
+    }
+
+    const stageNumbers = Object.values(stageIndex).sort()
+    for (const num of stageNumbers) {
+      const ages: (number | null)[] = [
+        formData.get(`stage-${num}-min`) as string,
+        formData.get(`stage-${num}-max`) as string
+      ]
+        .map(str => parseInt(str))
+        .map(el => isNaN(el) ? null : el)
+      stages.push({
+        name: formData.get(`stage-${num}-name`) as string,
+        procedures: formData.get(`stage-${num}-procedures`) as string,
+        min: ages[0],
+        max: ages[1]
+      })
+    }
+
+    const payload = {
+      name,
+      slug: slug.substring(world.length + 1),
+      description,
+      affinities: [affinity1, affinity2],
+      aversion,
+      stages,
+      world,
+      public: isPublic
+    }
+
+    const res = await fetch(`${apiRoot}/species`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/species/${data.world.slug}/${data.slug}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create a New Species">
+  <h1>Create a New Species</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <SpeciesForm
+    action="/catalogue/species/new"
+    button="Create"
+    worlds={worlds}
+    isEdit={false} />
+  <NoJS />
+</BaseLayout>

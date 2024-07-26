@@ -20,6 +20,7 @@ const creatorUsernames = creators.map(creator => creator.username).join(', ')
   <SlugField
     client:only="react"
     isEdit={isEdit}
+    collection="worlds"
     name={world.name}
     slug={world.slug}
     nameField="name"
