@@ -1,0 +1,68 @@
+---
+const { action, button, isEdit } = Astro.props
+const character = Astro.props.character ?? {}
+const abilities = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']
+const abbreviations = {
+  Strength: 'Str',
+  Dexterity: 'Dex',
+  Constitution: 'Con',
+  Intelligence: 'Int',
+  Wisdom: 'Wis',
+  Charisma: 'Cha',
+}
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is your character&rsquo;s name?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Smaug" value={character.name} />
+  <label for="description">
+    Description
+    <span class="note">What special abilities does your character have?</span>
+  </label>
+  <textarea
+    name="description"
+    id="description"
+    placeholder="My armour is like tenfold shields, my teeth are swords, my claws spears, the shock of my tail is a thunderbolt, my wings a hurricane, and my breath death!"
+  >{character.description}</textarea>
+  <ul class="character-abilities">
+    {abilities.map(ability => (
+      <li key={ability.toLowerCase()}>
+        <label for={ability.toLowerCase()}>
+          <span class="full">{ability}</span>
+          <abbr>{abbreviations[ability]}</abbr>
+        </label>
+        <input
+          type="number"
+          min="-3"
+          max="3"
+          value={character[ability] ?? 0}
+          name={ability.toLowerCase()}
+          id={ability.toLowerCase()} />
+      </li>
+    ))}
+  </ul>
+  <label for="notes">
+    Notes
+    <span class="note">What special abilities does your character have?</span>
+  </label>
+  <textarea
+    name="notes"
+    id="notes"
+    placeholder="* **Vulnerable Underbelly:** If a character notices the single scale missing on Smaug’s underbelly, they add the 12+ row to the Attacking Smaug random table."
+  >{character.description}</textarea>
+  <input type="checkbox" id="pc" name="pc" checked={character.pc} />
+  <label for="pc" class="checkbox">
+    <strong>Player character.</strong> Check here if this is a player
+    character (PC) of yours.
+  </label>
+  <input type="checkbox" id="public" name="public" checked={character.public} />
+  <label for="public" class="checkbox">
+    <strong>Make hen public.</strong> Public characters can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your character
+    with everyone, or if you just want to keep hen private. Private characters
+    can only be seen by you.
+  </label>
+  <button>{button}</button>
+</form>

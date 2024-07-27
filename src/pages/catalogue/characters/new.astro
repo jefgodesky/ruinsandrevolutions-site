@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import NoJS from '../../../components/NoJS.astro'
+import CharacterForm from '../../../components/CharacterForm.astro'
+import { apiRoot, apiHeaders } from '../../../data'
+import getAuth from '../../../utils/get-auth'
+
+const { apiKey } = getAuth(Astro)
+let message = ''
+
+if (apiKey === undefined) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: '/catalogue/characters'
+    },
+  })
+}
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const description = formData.get('description')
+    const notes = formData.get('notes')
+    const isPC = formData.get('pc') === 'on'
+    const isPublic = formData.get('public') === 'on'
+
+    const abilityNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']
+    const abilities: { [key: string]: number } = {}
+    for (const ability of abilityNames) {
+      const str = formData.get(ability) as string
+      const parsed = parseInt(str)
+      abilities[ability] = isNaN(parsed) ? 0 : parsed
+    }
+
+    const payload = {
+      name,
+      description,
+      abilities,
+      notes,
+      public: isPublic,
+      pc: isPC
+    }
+
+    console.log(payload)
+
+    const res = await fetch(`${apiRoot}/characters`, {
+      method: 'POST',
+      headers: {
+        ...apiHeaders,
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/characters/${data.id}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create a New Character">
+  <h1>Create a New Character</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <CharacterForm
+    action="/catalogue/characters/new"
+    button="Create"
+    isEdit={false} />
+  <NoJS />
+</BaseLayout>
