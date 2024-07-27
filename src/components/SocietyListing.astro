@@ -1,0 +1,16 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+const { society, context } = Astro.props
+const [ ,, worldSlug, societySlug ] = society.path.split('/')
+const societyPath = `/catalogue/societies/${worldSlug}/${societySlug}`
+const worldPath = `/catalogue/worlds/${worldSlug}`
+const link = `<a href="${societyPath}">${society.name}</a>`
+---
+<article class="society catalogue-listing">
+  <header>
+    {(context === 'index' || context === 'world-index') && <h2 set:html={link}></h2>}
+    {context === 'world' && <h3 set:html={link}></h3>}
+    {context === 'index' && <p class="byline">From <a href={worldPath}>{society.world.name}</a></p>}
+  </header>
+  <MarkdownContent tag="div" content={society.description} />
+</article>

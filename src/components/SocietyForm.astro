@@ -9,7 +9,10 @@ const world: WorldRecord | null = society.world
 
 const physical = ['Strength', 'Dexterity', 'Constitution']
 const mental = ['Intelligence', 'Wisdom', 'Charisma']
-const stages: string[] = []
+
+const isInSet = (set: string[], ability: string): boolean => {
+  return set.map(ability => ability.toLowerCase()).includes(ability.toLowerCase())
+}
 ---
 <form action={action} method="POST">
   <label for="name">
@@ -59,10 +62,22 @@ const stages: string[] = []
     pursue?</span>
   </label>
   <select name="favored1" id="favored1">
-    {physical.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+    {physical.map((ability) => (
+      <option
+        key={ability.toLowerCase()}
+        value={ability.toLowerCase()}
+        selected={isInSet(society.favored, ability)}
+      >{ability}</option>
+    ))}
   </select>
   <select name="favored2" id="favored2">
-    {mental.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+    {mental.map((ability) => (
+      <option
+        key={ability.toLowerCase()}
+        value={ability.toLowerCase()}
+        selected={isInSet(society.favored, ability)}
+      >{ability}</option>
+    ))}
   </select>
   <label>
     Languages

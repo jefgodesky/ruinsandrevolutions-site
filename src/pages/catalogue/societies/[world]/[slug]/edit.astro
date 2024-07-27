@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import NoJS from '../../../../../components/NoJS.astro'
+import SocietyForm from '../../../../../components/SocietyForm.astro'
+import { apiRoot, apiHeaders } from '../../../../../data'
+import getAuth from '../../../../../utils/get-auth'
+import getWorlds from '../../../../../utils/get-worlds'
+
+const { world, slug } = Astro.params
+const { apiKey, username } = getAuth(Astro)
+let society: { [key: string]: any } | null = null
+let title = 'Edit Society'
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
+}
+
+const redirectToRetrieve = () => {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/societies/${world}/${slug}`,
+    },
+  })
+}
+
+if (apiKey === undefined) {
+  return redirectToRetrieve()
+}
+
+const worlds = await getWorlds(apiRoot, headers)
+
+try {
+  const res = await fetch(`${apiRoot}/societies/${world}/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  if (res.status === 200) {
+    society = await res.json()
+    title = society.name
+    if (!society.world.creators.map(creator => creator.username).includes(username)) {
+      return redirectToRetrieve()
+    }
+  }
+
+  if (Astro.request.method === 'POST') {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug') as string
+    const description = formData.get('description')
+    const favored1 = (formData.get('favored1') as string).toLowerCase()
+    const favored2 = (formData.get('favored2') as string).toLowerCase()
+    const languages = formData.get('languages')
+    const world = formData.get('world') as string
+    const isPublic = formData.get('public') === 'on'
+
+    const payload = {
+      name,
+      slug,
+      description,
+      favored: [favored1, favored2],
+      languages,
+      world,
+      public: isPublic
+    }
+
+    const res = await fetch(`${apiRoot}/societies/${world}/${slug}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+    return redirectToRetrieve()
+  }
+} catch (err) {
+  message = 'Sorry, something went wrong. Please try again.'
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  <h1>{title}</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <SocietyForm
+    action={`/catalogue/societies/${world}/${slug}/edit`}
+    button="Save"
+    society={society}
+    worlds={worlds}
+    isEdit={true} />
+  <NoJS />
+</BaseLayout>

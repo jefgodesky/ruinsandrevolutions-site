@@ -1,6 +1,7 @@
 @use "../modules/mixins";
 
-.world-species article.species {
+.world-species article.species,
+.world-societies article.society {
   @include mixins.set-style("background", "bg-more-subdued");
   padding: 1rem;
   margin: 1rem -1rem;

@@ -14,7 +14,7 @@ const pageParam = 'page'
 const pageSizeParam = 'page_size'
 const page = Astro.url.searchParams.get(pageParam) ?? 1
 const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
-const url = `${apiRoot}/species?world${world}&page=${page}&page_size=${pageSize}`
+const url = `${apiRoot}/species?world=${world}&page=${page}&page_size=${pageSize}`
 
 try {
   const res = await fetch(url, {

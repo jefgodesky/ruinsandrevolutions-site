@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
+import Pagination from '../../../components/Pagination.astro'
+import SocietyListing from '../../../components/SocietyListing.astro'
+import getAuth from '../../../utils/get-auth'
+
+const { apiKey } = getAuth(Astro)
+let data: { [key: string]: any } = {}
+
+const pageParam = 'page'
+const pageSizeParam = 'page_size'
+const page = Astro.url.searchParams.get(pageParam) ?? 1
+const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
+const url = `${apiRoot}/societies?page=${page}&page_size=${pageSize}`
+
+try {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  data = await res.json()
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title="Societies">
+  <h1>Societies</h1>
+  {data.societies && data.societies.length > 0 && data.societies.map(society => (
+    <SocietyListing society={society} context="index" />
+  ))}
+  {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/societies" pageParam="page" pageSizeParam="page_size" />)}
+</BaseLayout>

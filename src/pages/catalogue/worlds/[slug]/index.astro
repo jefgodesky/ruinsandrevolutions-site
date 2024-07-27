@@ -3,9 +3,11 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
 import UserLink from '../../../../components/UserLink.astro'
 import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import SocietyListing from '../../../../components/SocietyListing.astro'
 import SpeciesListing from '../../../../components/SpeciesListing.astro'
 import getAuth from '../../../../utils/get-auth'
 import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
+import SocietyListing from '../../../../components/SocietyListing.astro'
 
 const { apiKey, username } = getAuth(Astro)
 const { slug } = Astro.params
@@ -56,6 +58,11 @@ try {
       <section class="world-species">
         <h2>Species</h2>
         {world.species.map(species => (<SpeciesListing key={species.slug} species={species} context="world" />))}
+      </section>
+
+      <section class="world-societies">
+        <h2>Societies</h2>
+        {world.societies.map(society => (<SocietyListing key={society.slug} society={society} context="world" />))}
       </section>
     </>
   )}

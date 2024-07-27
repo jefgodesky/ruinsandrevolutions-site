@@ -26,7 +26,6 @@ const redirectToRetrieve = () => {
 }
 
 if (apiKey === undefined) {
-  console.log('No API key found.')
   return redirectToRetrieve()
 }
 
@@ -45,7 +44,6 @@ try {
     species = await res.json()
     title = species.name
     if (!species.world.creators.map(creator => creator.username).includes(username)) {
-      console.log('You are not a creator.')
       return redirectToRetrieve()
     }
   }
@@ -91,7 +89,7 @@ try {
 
     const payload = {
       name,
-      slug: slug.substring(world.length + 1),
+      slug,
       description,
       affinities: [affinity1, affinity2],
       aversion,
@@ -99,8 +97,6 @@ try {
       world,
       public: isPublic
     }
-
-    console.log(payload)
 
     const res = await fetch(`${apiRoot}/species/${world}/${slug}`, {
       method: 'PUT',
@@ -113,7 +109,6 @@ try {
       throw new Error(data.error)
     }
 
-    console.log('All good on this end')
     return redirectToRetrieve()
   }
 } catch (err) {

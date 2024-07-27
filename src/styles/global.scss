@@ -30,7 +30,7 @@
 @use "./partials/user-picker";
 @use "./partials/affinities-aversion";
 @use "./partials/stages";
-@use "./partials/species";
+@use "./partials/world-listing";
 
 html {
   @media (min-width: 60rem) {

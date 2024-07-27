@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../../../data'
+import MarkdownContent from '../../../../../components/MarkdownContent.astro'
+import capitalize from '../../../../../utils/capitalize'
+import getAuth from '../../../../../utils/get-auth'
+import Breadcrumbs from '../../../../../components/Breadcrumbs.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { world, slug } = Astro.params
+let society: { [key: string]: any } | null = null
+let ancestors = []
+let title = 'Lost Civilization'
+let isCreator = false
+
+try {
+  const res = await fetch(`${apiRoot}/societies/${world}/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/societies', name: 'Societies' },
+    { path: `/catalogue/species/${world}`, name: 'World' }
+  ]
+
+  if (res.status === 200) {
+    society = await res.json()
+    ancestors[2].name = society.world.name
+    title = society.name
+    isCreator = society.world.creators.map(creator => creator.username).includes(username)
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {!society && (
+    <h1>Lost Civilization</h1>
+    <p class="byline">404 Not Found</p>
+    <p>You have invoked the name of some culture so forgotten that all
+      knowledge even of its name has passed beyond record or memory. Or
+      perhaps it never existed at all. We invite you to peruse
+      <a href="/catalogue/societies">our collection of known societies</a>,
+      or, if you have knowledge of this forgotten people, you may
+      <a href="/catalogue/societies/new">add it to the catalogue</a>.</p>
+  )}
+  {society && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={society.name} />
+      {isCreator && <a href={`/catalogue/societies/${world}/${slug}/edit`}>Edit</a>}
+      <h1>{society.name}</h1>
+      <p class="byline">From <a href={`/catalogue/worlds/${world}`}>{society.world.name}</a></p>
+      <MarkdownContent tag="div" content={society.description}></MarkdownContent>
+      <table class="affinities-aversion-display">
+        <tbody>
+        <tr>
+          <th>Favored Abilities</th>
+          <td>{society.favored.map(ability => capitalize(ability)).join(', ')}</td>
+        </tr>
+        <tr>
+          <th>Languages</th>
+          <td>{society.languages}</td>
+        </tr>
+        </tbody>
+      </table>
+    </>
+  )}
+</BaseLayout>
