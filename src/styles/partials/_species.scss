@@ -1,0 +1,22 @@
+@use "../modules/mixins";
+
+.world-species article.species {
+  @include mixins.set-style("background", "bg-more-subdued");
+  padding: 1rem;
+  margin: 1rem -1rem;
+
+  &,
+  & h3 {
+    font-family: "Alegreya Sans", sans-serif;
+  }
+
+  h3 {
+    font-style: normal;
+    margin: 1rem 0 0 0;
+
+    a {
+      @include mixins.set-style("color", "fg");
+      text-decoration: none;
+    }
+  }
+}

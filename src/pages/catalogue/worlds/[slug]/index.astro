@@ -3,6 +3,7 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
 import UserLink from '../../../../components/UserLink.astro'
 import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import SpeciesListing from '../../../../components/SpeciesListing.astro'
 import getAuth from '../../../../utils/get-auth'
 import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
 
@@ -50,7 +51,12 @@ try {
       {isCreator && <a href={`/catalogue/worlds/${slug}/edit`}>Edit</a>}
       <h1>{world.name}</h1>
       <p class="byline">Created by {world.creators.map(creator => (<UserLink user={creator} />))}</p>
-      <MarkdownContent tag="div" content={world.description} />
+      <MarkdownContent tag="div" content={world.description}></MarkdownContent>
+
+      <section class="world-species">
+        <h2>Species</h2>
+        {world.species.map(species => (<SpeciesListing key={species.slug} species={species} context="world" />))}
+      </section>
     </>
   )}
 </BaseLayout>

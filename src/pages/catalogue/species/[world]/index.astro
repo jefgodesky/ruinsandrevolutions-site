@@ -40,7 +40,7 @@ try {
   )}
   {!data.species && <h1>Species</h1>}
   {data.species && data.species.length > 0 && data.species.map(species => (
-    <SpeciesListing species={species} />
+    <SpeciesListing species={species} context="world-index" />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl={`/catalogue/species?world=${world}`} pageParam="page" pageSizeParam="page_size" />)}
 </BaseLayout>
