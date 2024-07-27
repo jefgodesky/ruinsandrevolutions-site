@@ -1,0 +1,15 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+const { species } = Astro.props
+const slug = species.path.substring(9)
+const worldPath = `/catalogue/worlds/${species.world.path.substring(8)}`
+---
+<article class="species catalogue-listing">
+  <header>
+    <h2>
+      <a href={`/catalogue/species/${slug}`}>{species.name}</a>
+    </h2>
+    <p class="byline">From <a href={worldPath}>{species.world.name}</a></p>
+  </header>
+  <MarkdownContent tag="div" content={species.description} />
+</article>

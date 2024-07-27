@@ -25,3 +25,15 @@
     font-weight: 600;
   }
 }
+
+.affinities-aversion-display {
+  width: auto;
+
+  th {
+    border-bottom: 0px;
+  }
+
+  tr:nth-child(odd) td {
+    background: transparent;
+  }
+}

@@ -1,0 +1,19 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+const { data } = Astro.props
+const hasMin = data.min !== null
+const hasMax = data.max !== null
+let ages: string | null = null
+if (!hasMin && hasMax) {
+  ages = `Up to age ${data.max}`
+} else if (hasMin && !hasMax) {
+  ages = `Age ${data.min} and older`
+} else {
+  ages = `Ages ${data.min}-${data.max}`
+}
+---
+<section class="stage">
+  <h3>{data.name}</h3>
+  {ages && (<p class="age">{ages}</p>)}
+  <MarkdownContent tag="div" content={data.procedures}></MarkdownContent>
+</section>

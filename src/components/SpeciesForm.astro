@@ -2,14 +2,31 @@
 import AffinityAversion from './client/AffinityAversion'
 import SlugField from './client/SlugField'
 import StageDirector from './client/StageDirector'
+import type { WorldRecord } from '../utils/get-worlds'
 const { action, button, isEdit, worlds } = Astro.props
 const species: any = Astro.props.species ?? {}
+const world: WorldRecord | null = species.world
+  ? { name: species.world.name, slug: species.world.path.substring(8) }
+  : null
+
+interface Stage {
+  name: string
+  min: number | null
+  max: number | null
+  procedures: string
+}
 
 const getNumStages = (): number => {
   const defaultValue = 4
   const orig = Astro.url.searchParams.get('stages')
   const parsed = parseInt(orig)
-  return isNaN(parsed) ? defaultValue : parsed
+  const defaultNumber = isNaN(parsed) ? defaultValue : parsed
+  return Math.max(defaultNumber, species.stages.length ?? 0)
+}
+
+const getStage = (index: number): Stage | null => {
+  if (index > species.stages.length) return null
+  return species.stages[index]
 }
 
 const physical = ['Strength', 'Dexterity', 'Constitution']
@@ -51,7 +68,7 @@ const stagePlaceholders = {
     collection="species"
     name={species.name}
     slug={species.slug}
-    world={species.world}
+    world={world}
     nameField="name"
     slugField="slug"
     slugNote="A string which, when combined with your world&rsquo;s slug, uniquely identifies this species."
@@ -116,6 +133,7 @@ const stagePlaceholders = {
           name={`${id}-name`}
           id={`${id}-name`}
           class="stage-name"
+          value={getStage(index)?.name}
           placeholder={index < stagePlaceholders.name.length ? stagePlaceholders.name[index] : ''} />
         <label for={`${id}-min`} class="stage-min">
           Minimum Age
@@ -127,6 +145,7 @@ const stagePlaceholders = {
           name={`${id}-min`}
           id={`${id}-min`}
           class="stage-min"
+          value={getStage(index)?.min}
           placeholder={index < stagePlaceholders.min.length ? stagePlaceholders.min[index] : ''} />
         <label for={`${id}-max`} class="stage-max">
           Maximum Age
@@ -138,6 +157,7 @@ const stagePlaceholders = {
           name={`${id}-max`}
           id={`${id}-max`}
           class="stage-max"
+          value={getStage(index)?.max}
           placeholder={index < stagePlaceholders.max.length ? stagePlaceholders.max[index] : ''} />
         <label for={`${id}-procedures`} class="stage-procedures">
           Procedures
@@ -149,7 +169,7 @@ const stagePlaceholders = {
           id={`${id}-procedures`}
           class="stage-procedures"
           placeholder={index < stagePlaceholders.procedures.length ? stagePlaceholders.procedures[index] : ''}
-        ></textarea>
+        >{getStage(index)?.procedures}</textarea>
       </fieldset>
     ))}
     <StageDirector client:only="react" stages={stages} />

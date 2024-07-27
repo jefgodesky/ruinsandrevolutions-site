@@ -14,57 +14,65 @@ const AffinityAversionSelector: React.FC<AffinityAversionProps> = ({ species, ph
   const [affinities, setAffinities] = useState(species?.affinities ?? ['Dexterity', 'Charisma'])
   const [aversion, setAversion] = useState(species?.aversion ?? 'Strength')
 
+  const isSameAbility = (a: string, b: string): boolean => {
+    return a.toLowerCase() === b.toLowerCase()
+  }
+
+  const isInSet = (set: string[], ability: string): boolean => {
+    return set.map(ability => ability.toLowerCase()).includes(ability.toLowerCase())
+  }
+
   const getAffinity = (set: string[]): string => {
     for (const affinity of affinities) {
-      if (set.includes(affinity)) return affinity
+      if (isInSet(set, affinity)) return affinity
     }
     return set[0] ?? ''
   }
 
   const getNotAffinity = (affinities: string[]): string => {
     const abilities = [...physical, ...mental]
-    const filtered = abilities.filter(ability => !affinities.includes(ability))
+    console.log(abilities)
+    const filtered = abilities.filter(ability => !isInSet(affinities, ability))
     return filtered.length ? filtered[0] : ''
   }
 
   const avoidAversionConflict = (affinities: string[]) => {
-    if (affinities.includes(aversion)) {
+    if (isInSet(affinities, aversion)) {
       setAversion(getNotAffinity(affinities))
     }
   }
 
   const avoidAffinityConflict = (abilities: string[], aversion: string) => {
-    if (abilities.includes(aversion)) {
-      const filtered = abilities.filter(ability => ability !== aversion)
-      console.log({ abilities, aversion, filtered })
-      const newAffinities = affinities.filter((ability: string) => ability !== aversion)
+    if (isInSet(abilities, aversion)) {
+      const filtered = abilities.filter(ability => !isSameAbility(ability, aversion))
+      const newAffinities = affinities.filter((ability: string) => !isSameAbility(ability, aversion))
       if (filtered.length) newAffinities.push(filtered[0])
       setAffinities(newAffinities)
     }
   }
 
   const replaceAffinity = (oldAbility: string, newAbility: string) => {
-    const newAffinities = [...affinities.filter((ability: string) => ability !== oldAbility), newAbility]
+    const newAffinities = [...affinities.filter((ability: string) => !isSameAbility(ability, oldAbility)), newAbility]
     setAffinities(newAffinities)
     avoidAversionConflict(newAffinities)
   }
 
   const setPhysicalAffinity = (ability: string) => {
-    if (!physical.includes(ability)) return
+    if (!isInSet(physical, ability)) return
     const currentPhysical = getAffinity(physical)
     replaceAffinity(currentPhysical, ability)
   }
 
   const setMentalAffinity = (ability: string) => {
-    if (!mental.includes(ability)) return
+    if (!isInSet(mental, ability)) return
     const currentMental = getAffinity(mental)
     replaceAffinity(currentMental, ability)
   }
 
   const pickAversion = (ability: string) => {
     setAversion(ability)
-    if (affinities.includes(ability)) {
-      const set = physical.includes(ability) ? physical : mental
+    if (isInSet(affinities, ability)) {
+      const set = isInSet(physical, ability) ? physical : mental
       avoidAffinityConflict(set, ability)
     }
   }
@@ -73,8 +81,8 @@ const AffinityAversionSelector: React.FC<AffinityAversionProps> = ({ species, ph
     const affinityClasses = ['selection', 'affinity']
     const aversionClasses = ['selection', 'aversion']
     const labelClasses = ['label']
-    if (affinities.includes(ability)) { affinityClasses.push('selected'); labelClasses.push('affinity') }
-    if (aversion === ability) { aversionClasses.push('selected'); labelClasses.push('aversion') }
+    if (isInSet(affinities, ability)) { affinityClasses.push('selected'); labelClasses.push('affinity') }
+    if (isSameAbility(aversion, ability)) { aversionClasses.push('selected'); labelClasses.push('aversion') }
     const onAffinityClick = type === 'physical' ? setPhysicalAffinity : setMentalAffinity
 
     return (<tr key={ability}>

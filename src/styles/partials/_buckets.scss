@@ -3,6 +3,16 @@ ul.buckets {
   margin: 0;
   padding: 0;
 
+  li {
+    padding: 2rem;
+    text-align: center;
+
+    strong {
+      display: block;
+      font-family: 'Alegreya SC', serif;
+    }
+  }
+
   @media (min-width: 50rem) {
     display: flex;
 
@@ -10,15 +20,5 @@ ul.buckets {
       flex-grow: 1;
       flex-basis: 0;
     }
-  }
-}
-
-li {
-  padding: 2rem;
-  text-align: center;
-
-  strong {
-    display: block;
-    font-family: 'Alegreya SC', serif;
   }
 }

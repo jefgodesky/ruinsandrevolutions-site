@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../../../data'
+import MarkdownContent from '../../../../../components/MarkdownContent.astro'
+import Stage from '../../../../../components/Stage.astro'
+import capitalize from '../../../../../utils/capitalize'
+import getAuth from '../../../../../utils/get-auth'
+import Breadcrumbs from '../../../../../components/Breadcrumbs.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { world, slug } = Astro.params
+let species: { [key: string]: any } | null = null
+let ancestors = []
+let title = 'Mythical Beast'
+let isCreator = false
+
+try {
+  const res = await fetch(`${apiRoot}/species/${world}/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/species', name: 'Species' },
+    { path: `/catalogue/species/${world}`, name: 'World' }
+  ]
+
+  if (res.status === 200) {
+    species = await res.json()
+    ancestors[2].name = species.world.name
+    title = species.name
+    isCreator = species.world.creators.map(creator => creator.username).includes(username)
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {!species && (
+    <h1>Mythical Beast</h1>
+    <p class="byline">404 Not Found</p>
+    <p>The sages and loremasters assure us that no such creature exists on
+      any known world or plane of reality. You have been taken in by some
+      fantastical work of fiction, we&rsquo;re afraid. We invite you to
+      peruse <a href="/catalogue/species">our collection of well-attested
+      species</a>, like dragons or unicorns. But if you have evidence of
+      your claim that such a creature exists, you may
+      <a href="/catalogue/species/new">add it to the catalogue</a>.</p>
+  )}
+  {species && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={species.name} />
+      {isCreator && <a href={`/catalogue/species/${world}/${slug}/edit`}>Edit</a>}
+      <h1>{species.name}</h1>
+      <p class="byline">From <a href={`/catalogue/worlds/${world}`}>{species.world.name}</a></p>
+      <MarkdownContent tag="div" content={species.description}></MarkdownContent>
+      <table class="affinities-aversion-display">
+        <tbody>
+          <tr>
+            <th>Affinities</th>
+            <td>{species.affinities.map(affinity => capitalize(affinity)).join(', ')}</td>
+          </tr>
+          <tr>
+            <th>Aversion</th>
+            <td>{capitalize(species.aversion)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <section id="stages">
+        <h2>Stages of Life</h2>
+        {species.stages.map(stage => (<Stage data={stage} />))}
+      </section>
+    </>
+  )}
+</BaseLayout>

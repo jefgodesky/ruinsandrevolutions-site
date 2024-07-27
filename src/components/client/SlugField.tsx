@@ -21,15 +21,17 @@ interface SlugFieldProps {
 const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worlds, collection, nameField, slugField, slugNote, worldField, worldNote, placeholder, isEdit }) => {
   const AUTO_MODE = 'auto'
   const MANUAL_MODE = 'manual'
-  const initialMode = slug === slugify(name) ? AUTO_MODE : MANUAL_MODE
   const initialSlug = world
-    ? `${world.slug}/${slug}`
+    ? [world.slug, slug].join('/')
     : slug
   const initialWorld = world
     ? world
     : worlds && worlds.length > 0
       ? worlds[0]
       : null
+  const initialMode = initialWorld
+    ? initialSlug === [initialWorld.slug, slugify(name, { lower: true })].join('/') ? AUTO_MODE : MANUAL_MODE
+    : slug === slugify(name) ? AUTO_MODE : MANUAL_MODE
 
   const [nameValue, setNameValue] = useState(name)
   const [slugValue, setSlugValue] = useState(initialSlug)
@@ -96,7 +98,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worl
   }
 
   const displayAvailability = () => {
-    if (isEdit && slugValue === slug) {
+    if (isEdit && slugValue === initialSlug) {
       return
     } else if (isAvailable) {
       return (<span className='success'>/{slugValue} is available</span>)
@@ -115,7 +117,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worl
         value={nameValue}
         onChange={handleNameChange}
       />
-      {mode === AUTO_MODE && (<input type="hidden" name={slugField} value={slugValue}/>)}
+      {mode === AUTO_MODE && (<input type="hidden" name={slugField} value={slugValue.substring(slugValue.lastIndexOf('/') + 1)}/>)}
       {slugValue && slugValue !== '' && mode === AUTO_MODE && <p className='slug'>
         <strong>Slug:</strong>&nbsp;
         /{slugValue}&nbsp;
@@ -131,7 +133,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worl
           type='text'
            name={slugField}
            id={slugField}
-          value={slugValue}
+          value={slugValue.substring(slugValue.lastIndexOf('/') + 1)}
           onChange={handleSlugChange}
         />
         <p className='status'>{displayAvailability()}</p>
