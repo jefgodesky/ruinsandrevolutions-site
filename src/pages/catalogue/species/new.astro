@@ -89,7 +89,7 @@ if (Astro.request.method === 'POST') {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: `/catalogue/species/${data.world.slug}/${data.slug}`,
+        Location: `/catalogue/species/${data.world.path.substring(8)}/${data.slug}`,
       },
     })
   } catch (err) {

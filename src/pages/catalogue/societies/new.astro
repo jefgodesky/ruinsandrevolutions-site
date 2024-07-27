@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import NoJS from '../../../components/NoJS.astro'
+import SocietyForm from '../../../components/SocietyForm.astro'
+import { apiRoot, apiHeaders } from '../../../data'
+import getAuth from '../../../utils/get-auth'
+import getWorlds from '../../../utils/get-worlds'
+
+const { apiKey } = getAuth(Astro)
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
+}
+
+if (apiKey === undefined) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: '/catalogue/societies'
+    },
+  })
+}
+
+const worlds = await getWorlds(apiRoot, headers)
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug') as string
+    const description = formData.get('description')
+    const favored1 = (formData.get('favored1') as string).toLowerCase()
+    const favored2 = (formData.get('favored2') as string).toLowerCase()
+    const languages = formData.get('languages')
+    const world = formData.get('world') as string
+    const isPublic = formData.get('public') === 'on'
+
+    const payload = {
+      name,
+      slug,
+      description,
+      favored: [favored1, favored2],
+      languages,
+      world,
+      public: isPublic
+    }
+
+    const res = await fetch(`${apiRoot}/societies`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    console.log(data)
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/societies/${data.world.path.substring(8)}/${data.slug}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create a New Society">
+  <h1>Create a New Society</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <SocietyForm
+    action="/catalogue/societies/new"
+    button="Create"
+    worlds={worlds}
+    isEdit={false} />
+  <NoJS />
+</BaseLayout>

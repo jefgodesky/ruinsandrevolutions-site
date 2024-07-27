@@ -29,9 +29,11 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worl
     : worlds && worlds.length > 0
       ? worlds[0]
       : null
-  const initialMode = initialWorld
-    ? initialSlug === [initialWorld.slug, slugify(name, { lower: true })].join('/') ? AUTO_MODE : MANUAL_MODE
-    : slug === slugify(name) ? AUTO_MODE : MANUAL_MODE
+  const initialMode = name === '' && slug === ''
+    ? AUTO_MODE
+    : initialWorld
+      ? initialSlug === [initialWorld.slug, slugify(name, { lower: true })].join('/') ? AUTO_MODE : MANUAL_MODE
+      : slug === slugify(name, { lower: true }) ? AUTO_MODE : MANUAL_MODE
 
   const [nameValue, setNameValue] = useState(name)
   const [slugValue, setSlugValue] = useState(initialSlug)
@@ -118,7 +120,7 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worl
         onChange={handleNameChange}
       />
       {mode === AUTO_MODE && (<input type="hidden" name={slugField} value={slugValue.substring(slugValue.lastIndexOf('/') + 1)}/>)}
-      {slugValue && slugValue !== '' && mode === AUTO_MODE && <p className='slug'>
+      {slugValue && slugValue !== '' && slugValue !== `${worldValue?.slug}/` && mode === AUTO_MODE && <p className='slug'>
         <strong>Slug:</strong>&nbsp;
         /{slugValue}&nbsp;
         <a href='#' onClick={handleEditClick}>Edit</a>&nbsp;

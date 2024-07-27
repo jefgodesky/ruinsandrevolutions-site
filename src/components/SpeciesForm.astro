@@ -21,12 +21,12 @@ const getNumStages = (): number => {
   const orig = Astro.url.searchParams.get('stages')
   const parsed = parseInt(orig)
   const defaultNumber = isNaN(parsed) ? defaultValue : parsed
-  return Math.max(defaultNumber, species.stages.length ?? 0)
+  return Math.max(defaultNumber, species.stages?.length ?? 0)
 }
 
 const getStage = (index: number): Stage | null => {
-  if (index > species.stages.length) return null
-  return species.stages[index]
+  if (index > species.stages?.length ?? 0) return null
+  return species.stages ? species.stages[index] : null
 }
 
 const physical = ['Strength', 'Dexterity', 'Constitution']
@@ -80,9 +80,9 @@ const stagePlaceholders = {
     <span class="note">What world does this species come from?</span>
   </label>
   <select name="world" id="world" class="no-js">
-    {worlds.map(world => {
-      const isSelected = world.slug === species?.world?.slug
-      return (<option selected={isSelected} value={world.slug}>{world.name}</option>)
+    {worlds.map(w => {
+      const isSelected = w.slug === world?.slug
+      return (<option selected={isSelected} value={w.slug}>{w.name}</option>)
     })}
   </select>
   <label for="description">

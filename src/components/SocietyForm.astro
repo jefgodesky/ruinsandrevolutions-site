@@ -1,0 +1,80 @@
+---
+import SlugField from './client/SlugField'
+import type { WorldRecord } from '../utils/get-worlds'
+const { action, button, isEdit, worlds } = Astro.props
+const society: any = Astro.props.society ?? {}
+const world: WorldRecord | null = society.world
+  ? { name: society.world.name, slug: society.world.path.substring(8) }
+  : null
+
+const physical = ['Strength', 'Dexterity', 'Constitution']
+const mental = ['Intelligence', 'Wisdom', 'Charisma']
+const stages: string[] = []
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is this society called?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Lilliputian" value={society.name} />
+  <label for="slug" class="no-js">
+    Slug
+    <span class="note">A string which, when combined with your world&rsquo;s slug, uniquely identifies this society.</span>
+  </label>
+  <input type="text" name="slug" id="slug" required placeholder="lilliputian" value={society.slug} />
+  <SlugField
+    client:only="react"
+    isEdit={isEdit}
+    worlds={worlds}
+    collection="societies"
+    name={society.name}
+    slug={society.slug}
+    world={world}
+    nameField="name"
+    slugField="slug"
+    slugNote="A string which, when combined with your world&rsquo;s slug, uniquely identifies this society."
+    worldField="world"
+    worldNote="What world does this society come from?"
+    placeholder="Lilliputian" />
+  <label for="name" class="no-js">
+    World
+    <span class="note">What world does this society come from?</span>
+  </label>
+  <select name="world" id="world" class="no-js">
+    {worlds.map(w => {
+      const isSelected = w.slug === world?.slug
+      return (<option selected={isSelected} value={w.slug}>{w.name}</option>)
+    })}
+  </select>
+  <label for="description">
+    Description
+    <span class="note">Provide a short summary of this society and what
+      makes them unique.</span>
+  </label>
+  <textarea name="description" id="description" required placeholder="Lilliputians are very small.">{society.description}</textarea>
+  <label>
+    Favored Abilities
+    <span class="note">What two abilities does this society hold in high
+    regard? What abilities do they promote and want their members to
+    pursue?</span>
+  </label>
+  <select name="favored1" id="favored1">
+    {physical.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+  </select>
+  <select name="favored2" id="favored2">
+    {mental.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+  </select>
+  <label>
+    Languages
+    <span class="note">What languages do the people of this society speak?</span>
+  </label>
+  <input type="text" name="languages" id="languages" placeholder="Lilliputian" value={society.languages} />
+  <input type="checkbox" id="public" name="public" checked={society.public} />
+  <label for="public" class="checkbox">
+    <strong>Make it public.</strong> Public societies can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your society
+    with everyone, or if you just want to keep it private. Private societies
+    can only be seen by the creators of the worlds they belong to.
+  </label>
+  <button>{button}</button>
+</form>
