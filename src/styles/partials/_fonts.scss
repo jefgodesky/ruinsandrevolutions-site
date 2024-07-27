@@ -9,6 +9,14 @@ h1 {
   line-height: 1;
   margin: 2.5rem 0 1.5rem;
   text-align: center;
+
+  .sub {
+    display: block;
+    font-family: 'Alegreya', serif;
+    font-style: italic;
+    font-size: 2rem;
+    font-weight: normal;
+  }
 }
 
 h2 {

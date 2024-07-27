@@ -7,6 +7,7 @@ import getAuth from '../../../../utils/get-auth'
 
 const { apiKey } = getAuth(Astro)
 let data: { [key: string]: any } = {}
+let title = 'Species'
 
 const { world } = Astro.params
 const pageParam = 'page'
@@ -14,7 +15,6 @@ const pageSizeParam = 'page_size'
 const page = Astro.url.searchParams.get(pageParam) ?? 1
 const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
 const url = `${apiRoot}/species?world${world}&page=${page}&page_size=${pageSize}`
-let title = 'Species'
 
 try {
   const res = await fetch(url, {
@@ -32,7 +32,13 @@ try {
 }
 ---
 <BaseLayout title={title}>
-  <h1>{title}</h1>
+  {data.species && data.species.length >0 && (
+    <>
+      <h1><span class="sub">Species of</span> {data.species[0].world.name}</h1>
+      <p class="byline"><a href={`/catalogue/worlds/${data.species[0].world.path.substring(8)}`}>Explore {data.species[0].world.name}</a></p>
+    </>
+  )}
+  {!data.species && <h1>Species</h1>}
   {data.species && data.species.length > 0 && data.species.map(species => (
     <SpeciesListing species={species} />
   ))}
