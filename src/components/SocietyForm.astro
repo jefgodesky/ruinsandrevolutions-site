@@ -3,14 +3,18 @@ import SlugField from './client/SlugField'
 import type { WorldRecord } from '../utils/get-worlds'
 const { action, button, isEdit, worlds } = Astro.props
 const society: any = Astro.props.society ?? {}
+const qWorld = Astro.url.searchParams.get('world')
 const world: WorldRecord | null = society.world
   ? { name: society.world.name, slug: society.world.path.substring(8) }
-  : null
+  : qWorld
+    ? worlds.filter(world => world.slug === qWorld)[0]
+    : null
 
 const physical = ['Strength', 'Dexterity', 'Constitution']
 const mental = ['Intelligence', 'Wisdom', 'Charisma']
 
 const isInSet = (set: string[], ability: string): boolean => {
+  console.log({ set, ability})
   return set.map(ability => ability.toLowerCase()).includes(ability.toLowerCase())
 }
 ---
@@ -66,7 +70,7 @@ const isInSet = (set: string[], ability: string): boolean => {
       <option
         key={ability.toLowerCase()}
         value={ability.toLowerCase()}
-        selected={isInSet(society.favored, ability)}
+        selected={isInSet(society?.favored ?? [], ability)}
       >{ability}</option>
     ))}
   </select>
@@ -75,7 +79,7 @@ const isInSet = (set: string[], ability: string): boolean => {
       <option
         key={ability.toLowerCase()}
         value={ability.toLowerCase()}
-        selected={isInSet(society.favored, ability)}
+        selected={isInSet(society?.favored ?? [], ability)}
       >{ability}</option>
     ))}
   </select>

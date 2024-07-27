@@ -31,7 +31,10 @@ th {
   text-align: right;
 }
 
-tr.null td {
+tr.null td,
+.null {
+  @include mixins.set-style("background-color", "bg-more-subdued");
+  font-family: 'Alegreya Sans', sans-serif;
   padding-top: 3rem;
   padding-bottom: 3rem;
   text-align: center;

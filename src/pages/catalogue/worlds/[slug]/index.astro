@@ -58,11 +58,19 @@ try {
       <section class="world-species">
         <h2>Species</h2>
         {world.species.map(species => (<SpeciesListing key={species.slug} species={species} context="world" />))}
+        {(!world.species || world.species.length < 1) && (<div class="null">
+          <p>No species</p>
+          <a href={`/catalogue/species/new?world=${slug}`}>+ Add a new species</a>
+        </div>)}
       </section>
 
       <section class="world-societies">
         <h2>Societies</h2>
         {world.societies.map(society => (<SocietyListing key={society.slug} society={society} context="world" />))}
+        {(!world.societies || world.societies.length < 1) && (<div class="null">
+          <p>No societies</p>
+          <a href={`/catalogue/societies/new?world=${slug}`}>+ Add a new society</a>
+        </div>)}
       </section>
     </>
   )}

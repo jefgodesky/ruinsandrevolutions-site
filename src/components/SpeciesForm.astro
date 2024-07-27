@@ -5,9 +5,12 @@ import StageDirector from './client/StageDirector'
 import type { WorldRecord } from '../utils/get-worlds'
 const { action, button, isEdit, worlds } = Astro.props
 const species: any = Astro.props.species ?? {}
+const qWorld = Astro.url.searchParams.get('world')
 const world: WorldRecord | null = species.world
   ? { name: species.world.name, slug: species.world.path.substring(8) }
-  : null
+  : qWorld
+    ? worlds.filter(world => world.slug === qWorld)[0]
+    : null
 
 interface Stage {
   name: string
