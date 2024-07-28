@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import CharacterListing from '../../components/CharacterListing.astro'
+import CampaignListing from '../../components/CampaignListing.astro'
 import MarkdownContent from '../../components/MarkdownContent.astro'
 import { apiRoot, apiHeaders } from '../../data'
 const { username } = Astro.params
 let name = 'Who’s that?'
 let bio = 'Sorry, stranger, but we don’t know anyone who goes by that name around here.'
 let characters = []
+let campaigns = []
 
 try {
   const url = `${apiRoot}/users/${username}`
@@ -23,6 +25,7 @@ try {
   name = data.name
   bio = data.bio
   characters = data.characters
+  campaigns = data.campaigns
 } catch (err) {
   console.error(err)
 }
@@ -32,6 +35,12 @@ const title = `${name} - Ruins & Revolutions`
 <BaseLayout title={title}>
   <h1>{name}</h1>
   <MarkdownContent tag="article" content={bio} />
+
+  {campaigns.length > 0 && (<section>
+    <h2>Campaigns</h2>
+    {campaigns.map(campaign => (<CampaignListing key={`${campaign.world.path}/${campaign.slug}`} campaign={campaign}></CampaignListing>))}
+  </section>)}
+
   {characters.length > 0 && (<section>
     <h2>Player Characters</h2>
     {characters.map(character => (<CharacterListing key={character.id} character={character} context="player-profile"></CharacterListing>))}
