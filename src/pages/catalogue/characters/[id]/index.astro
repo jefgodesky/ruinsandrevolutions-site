@@ -3,17 +3,15 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
 import UserLink from '../../../../components/UserLink.astro'
 import MarkdownContent from '../../../../components/MarkdownContent.astro'
-import SocietyListing from '../../../../components/SocietyListing.astro'
-import SpeciesListing from '../../../../components/SpeciesListing.astro'
 import getAuth from '../../../../utils/get-auth'
 import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
-import SocietyListing from '../../../../components/SocietyListing.astro'
 
 const { apiKey, username } = getAuth(Astro)
 const { id } = Astro.params
 let character: { [key: string]: any } | null = null
 let isPlayer = false
 let ancestors = []
+let title = 'Character'
 
 try {
   const res = await fetch(`${apiRoot}/characters/${id}`, {
@@ -31,7 +29,7 @@ try {
 
   if (res.status === 200) {
     character = await res.json()
-    console.log(character)
+    title = character.name
     isPlayer = username === character.player.username
   }
 } catch (err) {
@@ -60,7 +58,7 @@ const displayStat = (group: string, stat: string): string => {
       : `+${val.toString()}`
 }
 ---
-<BaseLayout title="Worlds">
+<BaseLayout title={title}>
   {!character && (
     <h1>Hero Not Found</h1>
     <p class="byline">404 Not Found</p>
