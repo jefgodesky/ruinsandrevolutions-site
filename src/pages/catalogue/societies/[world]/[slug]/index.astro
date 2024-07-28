@@ -56,18 +56,12 @@ try {
       <h1>{society.name}</h1>
       <p class="byline">From <a href={`/catalogue/worlds/${world}`}>{society.world.name}</a></p>
       <MarkdownContent tag="div" content={society.description}></MarkdownContent>
-      <table class="affinities-aversion-display">
-        <tbody>
-        <tr>
-          <th>Favored Abilities</th>
-          <td>{society.favored.map(ability => capitalize(ability)).join(', ')}</td>
-        </tr>
-        <tr>
-          <th>Languages</th>
-          <td>{society.languages}</td>
-        </tr>
-        </tbody>
-      </table>
+      <dl class="details">
+        <dt>Favored Abilities</dt>
+        <dd>{society.favored.map(ability => capitalize(ability)).join(', ')}</dd>
+        <dt>Languages</dt>
+        <dd>{society.languages}</dd>
+      </dl>
     </>
   )}
 </BaseLayout>

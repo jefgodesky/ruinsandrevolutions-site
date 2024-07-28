@@ -38,8 +38,26 @@ try {
   console.error(err)
 }
 
-const displayStat = (val: number): string => {
-  return val < 0 ? val.toString() : `+${val.toString()}`
+const stats = {
+  physical: ['Strength', 'Dexterity', 'Constitution'],
+  mental: ['Intelligence', 'Wisdom', 'Charisma'],
+  resistances: ['Fortitude', 'Reflex', 'Will']
+}
+
+const src = {
+  physical: character?.abilities ?? {},
+  mental: character?.abilities ?? {},
+  resistances: character?.resistances ?? {}
+}
+
+const displayStat = (group: string, stat: string): string => {
+  const set = src[group]
+  const val = set[stat.toLowerCase()]
+  return val === undefined
+    ? 0
+    : val < 0
+      ? val.toString()
+      : `+${val.toString()}`
 }
 ---
 <BaseLayout title="Worlds">
@@ -60,54 +78,12 @@ const displayStat = (val: number): string => {
       <p class="byline">Played by <UserLink user={character.player}></UserLink></p>
       <MarkdownContent tag="div" content={character.description}></MarkdownContent>
       <div class="character-abilities-display">
-        <table class="affinities-aversion-display physical">
-          <tbody>
-          <tr>
-            <th>Strength</th>
-            <td>{displayStat(character.abilities.strength)}</td>
-          </tr>
-          <tr>
-            <th>Dexterity</th>
-            <td>{displayStat(character.abilities.dexterity)}</td>
-          </tr>
-          <tr>
-            <th>Constitution</th>
-            <td>{displayStat(character.abilities.constitution)}</td>
-          </tr>
-          </tbody>
-        </table>
-        <table class="affinities-aversion-display mental">
-          <tbody>
-          <tr>
-            <th>Intelligence</th>
-            <td>{displayStat(character.abilities.intelligence)}</td>
-          </tr>
-          <tr>
-            <th>Wisdom</th>
-            <td>{displayStat(character.abilities.wisdom)}</td>
-          </tr>
-          <tr>
-            <th>Charisma</th>
-            <td>{displayStat(character.abilities.charisma)}</td>
-          </tr>
-          </tbody>
-        </table>
-        <table class="affinities-aversion-display resistances">
-          <tbody>
-          <tr>
-            <th>Fortitude</th>
-            <td>{displayStat(character.resistances.fortitude)}</td>
-          </tr>
-          <tr>
-            <th>Reflex</th>
-            <td>{displayStat(character.resistances.reflexes)}</td>
-          </tr>
-          <tr>
-            <th>Will</th>
-            <td>{displayStat(character.resistances.will)}</td>
-          </tr>
-          </tbody>
-        </table>
+        {Object.keys(src).map((group: string) => (<dl class="details">
+          {stats[group].map((stat: string) => (<>
+            <dt>{stat}</dt>
+            <dd>{displayStat(group, stat)}</dd>
+          </>))}
+        </dl>))}
       </div>
       <MarkdownContent tag="div" content={character.notes}></MarkdownContent>
     </>

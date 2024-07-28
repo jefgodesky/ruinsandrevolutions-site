@@ -58,18 +58,12 @@ try {
       <h1>{species.name}</h1>
       <p class="byline">From <a href={`/catalogue/worlds/${world}`}>{species.world.name}</a></p>
       <MarkdownContent tag="div" content={species.description}></MarkdownContent>
-      <table class="affinities-aversion-display">
-        <tbody>
-          <tr>
-            <th>Affinities</th>
-            <td>{species.affinities.map(affinity => capitalize(affinity)).join(', ')}</td>
-          </tr>
-          <tr>
-            <th>Aversion</th>
-            <td>{capitalize(species.aversion)}</td>
-          </tr>
-        </tbody>
-      </table>
+      <dl class="details">
+        <dt>Affinities</dt>
+        <dd>{species.affinities.map(affinity => capitalize(affinity)).join(', ')}</dd>
+        <dt>Aversion</dt>
+        <dd>{capitalize(species.aversion)}</dd>
+      </dl>
       <section id="stages">
         <h2>Stages of Life</h2>
         {species.stages.map(stage => (<Stage data={stage} />))}

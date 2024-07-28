@@ -6,11 +6,10 @@ const speciesPath = `/catalogue/species/${worldSlug}/${speciesSlug}`
 const worldPath = `/catalogue/worlds/${worldSlug}`
 const link = `<a href="${speciesPath}">${species.name}</a>`
 ---
-<article class="species catalogue-listing">
+<article class="card species catalogue-listing">
   <header>
-    {(context === 'index' || context === 'world-index') && <h2 set:html={link}></h2>}
-    {context === 'world' && <h3 set:html={link}></h3>}
-    {context === 'index' && <p class="byline">From <a href={worldPath}>{species.world.name}</a></p>}
+    <h3 set:html={link}></h3>
+    {context === 'index' && <p class="secondary">From <a href={worldPath}>{species.world.name}</a></p>}
   </header>
   <MarkdownContent tag="div" content={species.description} />
 </article>

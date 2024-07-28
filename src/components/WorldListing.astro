@@ -5,12 +5,12 @@ import UserLink from './UserLink.astro'
 const { world } = Astro.props
 const slug = world.path.substring(8)
 ---
-<article class="world catalogue-listing">
+<article class="world card">
   <header>
-    <h2>
+    <h3>
       <a href={`/catalogue/worlds/${slug}`}>{world.name}</a>
-    </h2>
-    <p class="byline">Created by {world.creators.map(creator => (<UserLink user={creator} />))}</p>
+    </h3>
+    <p class="secondary">Created by {world.creators.map(creator => (<UserLink user={creator}></UserLink>))}</p>
   </header>
-  <MarkdownContent tag="div" content={world.description} />
+  <MarkdownContent tag="div" content={world.description}></MarkdownContent>
 </article>

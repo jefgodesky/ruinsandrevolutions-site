@@ -1,0 +1,16 @@
+dl.details {
+  display: grid;
+  font-family: 'Alegreya Sans', sans-serif;
+  grid-gap: 0.5rem 1rem;
+  grid-template-columns: auto minmax(0, 1fr);
+
+  dt {
+    font-weight: bold;
+    grid-column: 1;
+  }
+
+  dd {
+    grid-column: 2;
+    margin-inline-start: 0;
+  }
+}

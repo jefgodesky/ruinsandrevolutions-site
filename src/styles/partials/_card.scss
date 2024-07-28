@@ -1,0 +1,35 @@
+@use "../modules/mixins";
+
+.card {
+  @include mixins.set-style("background", "bg-more-subdued");
+  font-family: 'Alegreya Sans', sans-serif;
+  margin: 1rem -1rem;
+  padding: 1rem;
+
+  h3 {
+    font-family: 'Alegreya Sans', sans-serif;
+    font-style: normal;
+    margin: 0 0 1rem 0;
+    text-align: center;
+
+    a {
+      @include mixins.set-style("color", "fg");
+      font-style: normal;
+      text-decoration: none;
+    }
+  }
+
+  .secondary {
+    font-style: italic;
+    text-align: center;
+  }
+
+  h3 + .secondary {
+    margin-top: -1rem;
+  }
+
+  @media (min-width: 50rem) {
+    margin: 1rem -2rem;
+    padding: 2rem;
+  }
+}
