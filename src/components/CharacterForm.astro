@@ -10,6 +10,12 @@ const abbreviations = {
   Wisdom: 'Wis',
   Charisma: 'Cha',
 }
+
+const getAbility = (ability: string): number => {
+  return character.abilities
+    ? character.abilities[ability.toLowerCase()]
+    : 0
+}
 ---
 <form action={action} method="POST">
   <label for="name">
@@ -37,7 +43,7 @@ const abbreviations = {
           type="number"
           min="-3"
           max="3"
-          value={character[ability] ?? 0}
+          value={getAbility(ability)}
           name={ability.toLowerCase()}
           id={ability.toLowerCase()} />
       </li>

@@ -1,29 +1,29 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import NoJS from '../../../../components/NoJS.astro'
-import WorldForm from '../../../../components/WorldForm.astro'
+import CharacterForm from '../../../../components/CharacterForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
 
 const { apiKey, username } = getAuth(Astro)
-const { slug } = Astro.params
-let world: { [key: string]: any } | null = null
-let isCreator = false
-let ancestors = []
+const { id } = Astro.params
+let character: { [key: string]: any } | null = null
+let isPlayer = false
 let title = 'Edit'
+let ancestors = []
 let message = ''
 
 if (apiKey === undefined) {
   return new Response(null, {
     status: 302,
     headers: {
-      Location: '/catalogue/worlds'
+      Location: `/catalogue/characters/${id}`
     },
   })
 }
 
 try {
-  const res = await fetch(`${apiRoot}/worlds/${slug}`, {
+  const res = await fetch(`${apiRoot}/characters/${id}`, {
     method: 'GET',
     headers: {
       ...apiHeaders,
@@ -33,23 +33,23 @@ try {
 
   ancestors = [
     { path: '/catalogue', name: 'Catalogue' },
-    { path: '/catalogue/worlds', name: 'Worlds' },
+    { path: '/catalogue/characters', name: 'Characters' },
   ]
 
   if (res.status === 200) {
-    world = await res.json()
-    title = `Edit ${world.name}`
-    isCreator = world.creators.map(creator => creator.username).includes(username)
+    character = await res.json()
+    title = `Edit ${character.name}`
+    isPlayer = username === character.player.username
   }
 } catch (err) {
   console.error(err)
 }
 
-if (!isCreator) {
+if (!isPlayer) {
   return new Response(null, {
     status: 302,
     headers: {
-      Location: `/catalogue/worlds/${slug}`,
+      Location: `/catalogue/characters/${id}`,
     },
   })
 }
@@ -58,18 +58,35 @@ if (Astro.request.method === 'POST') {
   try {
     const formData = await Astro.request.formData()
     const name = formData.get('name')
-    const newSlug = formData.get('slug')
-    const creators = (formData.get('creators') as string).split(',').map(c => c.trim())
     const description = formData.get('description')
+    const notes = formData.get('notes')
+    const isPC = formData.get('pc') === 'on'
     const isPublic = formData.get('public') === 'on'
 
-    const res = await fetch(`${apiRoot}/worlds/${slug}`, {
+    const abilityNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']
+    const abilities: { [key: string]: number } = {}
+    for (const ability of abilityNames) {
+      const str = formData.get(ability) as string
+      const parsed = parseInt(str)
+      abilities[ability] = isNaN(parsed) ? 0 : parsed
+    }
+
+    const payload = {
+      name,
+      description,
+      abilities,
+      notes,
+      public: isPublic,
+      pc: isPC
+    }
+
+    const res = await fetch(`${apiRoot}/characters/${id}`, {
       method: 'PUT',
       headers: {
         ...apiHeaders,
         Authorization: `Bearer ${apiKey}`
       },
-      body: JSON.stringify({ name, slug: newSlug, creators, description, public: isPublic })
+      body: JSON.stringify(payload)
     })
 
     const data = await res.json()
@@ -80,7 +97,7 @@ if (Astro.request.method === 'POST') {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: `/catalogue/worlds/${data.slug}`,
+        Location: `/catalogue/characters/${data.id}`,
       },
     })
   } catch (err) {
@@ -90,11 +107,11 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title={title}>
-  <h1>{world.name}</h1>
+  <h1>{character.name}</h1>
   {message && <aside class="message error">{message}</aside>}
-  <WorldForm
-    world={world}
-    action={`/catalogue/worlds/${world.slug}/edit`}
+  <CharacterForm
+    character={character}
+    action={`/catalogue/characters/${character.id}/edit`}
     button="Save"
     isEdit={true} />
   <NoJS />

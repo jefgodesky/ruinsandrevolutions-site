@@ -1,4 +1,5 @@
 .character-abilities {
+  font-family: "Alegreya Sans", sans-serif;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 1fr 1fr 1fr;
@@ -27,5 +28,21 @@
 
   @media (min-width: 45rem) {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+
+.character-abilities-display {
+  th {
+    width: 6rem;
+  }
+
+  td {
+    text-align: right;
+  }
+
+  @media (min-width: 45rem) {
+    display: grid;
+    grid-gap: 3rem;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }

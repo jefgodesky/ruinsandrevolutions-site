@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
+import UserLink from '../../../../components/UserLink.astro'
+import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import SocietyListing from '../../../../components/SocietyListing.astro'
+import SpeciesListing from '../../../../components/SpeciesListing.astro'
+import getAuth from '../../../../utils/get-auth'
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
+import SocietyListing from '../../../../components/SocietyListing.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { id } = Astro.params
+let character: { [key: string]: any } | null = null
+let isPlayer = false
+let ancestors = []
+
+try {
+  const res = await fetch(`${apiRoot}/characters/${id}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/characters', name: 'Characters' },
+  ]
+
+  if (res.status === 200) {
+    character = await res.json()
+    console.log(character)
+    isPlayer = username === character.player.username
+  }
+} catch (err) {
+  console.error(err)
+}
+
+const displayStat = (val: number): string => {
+  return val < 0 ? val.toString() : `+${val.toString()}`
+}
+---
+<BaseLayout title="Worlds">
+  {!character && (
+    <h1>Hero Not Found</h1>
+    <p class="byline">404 Not Found</p>
+    <p>If you&rsquo;re holding out, we have
+      <a href="/catalogue/characters">a wide variety</a> of streetwise
+      Hercules to choose from &mdash; or, if you&rsquo;re strong, fast,
+      and fresh from the fight, <a href="/catalogue/characters/new">maybe
+      you can join them</a>.</p>
+  )}
+  {character && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={character.name} />
+      {isPlayer && <a href={`/catalogue/characters/${id}/edit`}>Edit</a>}
+      <h1>{character.name}</h1>
+      <p class="byline">Played by <UserLink user={character.player}></UserLink></p>
+      <MarkdownContent tag="div" content={character.description}></MarkdownContent>
+      <div class="character-abilities-display">
+        <table class="affinities-aversion-display physical">
+          <tbody>
+          <tr>
+            <th>Strength</th>
+            <td>{displayStat(character.abilities.strength)}</td>
+          </tr>
+          <tr>
+            <th>Dexterity</th>
+            <td>{displayStat(character.abilities.dexterity)}</td>
+          </tr>
+          <tr>
+            <th>Constitution</th>
+            <td>{displayStat(character.abilities.constitution)}</td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="affinities-aversion-display mental">
+          <tbody>
+          <tr>
+            <th>Intelligence</th>
+            <td>{displayStat(character.abilities.intelligence)}</td>
+          </tr>
+          <tr>
+            <th>Wisdom</th>
+            <td>{displayStat(character.abilities.wisdom)}</td>
+          </tr>
+          <tr>
+            <th>Charisma</th>
+            <td>{displayStat(character.abilities.charisma)}</td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="affinities-aversion-display resistances">
+          <tbody>
+          <tr>
+            <th>Fortitude</th>
+            <td>{displayStat(character.resistances.fortitude)}</td>
+          </tr>
+          <tr>
+            <th>Reflex</th>
+            <td>{displayStat(character.resistances.reflexes)}</td>
+          </tr>
+          <tr>
+            <th>Will</th>
+            <td>{displayStat(character.resistances.will)}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <MarkdownContent tag="div" content={character.notes}></MarkdownContent>
+    </>
+  )}
+</BaseLayout>
