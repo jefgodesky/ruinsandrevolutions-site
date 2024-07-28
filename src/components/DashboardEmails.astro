@@ -3,7 +3,11 @@ import Pagination from './Pagination.astro'
 const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
 ---
 <h2>Email Addresses</h2>
-<a href="/emails">+ Add a new email address</a>
+<nav class="actions">
+  <ul>
+    <li><a href="/emails">+ Add a new email address</a></li>
+  </ul>
+</nav>
 <table>
   <thead>
   <tr>

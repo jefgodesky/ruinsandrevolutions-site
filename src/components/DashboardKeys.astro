@@ -3,7 +3,11 @@ import Pagination from './Pagination.astro'
 const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
 ---
 <h2>API Keys</h2>
-<a href="/keys">+ Create a new API key</a>
+<nav class="actions">
+  <ul>
+    <li><a href="/keys">+ Create a new API key</a></li>
+  </ul>
+</nav>
 <table>
   <thead>
     <tr>
