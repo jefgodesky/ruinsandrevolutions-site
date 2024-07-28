@@ -53,8 +53,7 @@ try {
   )}
   {species && (
     <>
-      <Breadcrumbs ancestors={ancestors} current={species.name} />
-      {isCreator && <a href={`/catalogue/species/${world}/${slug}/edit`}>Edit</a>}
+      <Breadcrumbs ancestors={ancestors} current={species.name}></Breadcrumbs>
       <h1>{species.name}</h1>
       <p class="byline">From <a href={`/catalogue/worlds/${world}`}>{species.world.name}</a></p>
       <MarkdownContent tag="div" content={species.description}></MarkdownContent>
@@ -68,6 +67,12 @@ try {
         <h2>Stages of Life</h2>
         {species.stages.map(stage => (<Stage data={stage} />))}
       </section>
+
+      {isCreator && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/species/${world}/${slug}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
     </>
   )}
 </BaseLayout>

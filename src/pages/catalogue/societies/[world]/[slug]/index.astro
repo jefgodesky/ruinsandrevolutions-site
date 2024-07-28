@@ -51,8 +51,7 @@ try {
   )}
   {society && (
     <>
-      <Breadcrumbs ancestors={ancestors} current={society.name} />
-      {isCreator && <a href={`/catalogue/societies/${world}/${slug}/edit`}>Edit</a>}
+      <Breadcrumbs ancestors={ancestors} current={society.name}></Breadcrumbs>
       <h1>{society.name}</h1>
       <p class="byline">From <a href={`/catalogue/worlds/${world}`}>{society.world.name}</a></p>
       <MarkdownContent tag="div" content={society.description}></MarkdownContent>
@@ -62,6 +61,12 @@ try {
         <dt>Languages</dt>
         <dd>{society.languages}</dd>
       </dl>
+
+      {isCreator && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/societies/${world}/${slug}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
     </>
   )}
 </BaseLayout>

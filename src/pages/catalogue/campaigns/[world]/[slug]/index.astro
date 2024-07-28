@@ -54,8 +54,7 @@ try {
   )}
   {campaign && (
     <>
-      <Breadcrumbs ancestors={ancestors} current={campaign.name} />
-      {isGM && <a href={`/catalogue/campaigns/${world}/${slug}/edit`}>Edit</a>}
+      <Breadcrumbs ancestors={ancestors} current={campaign.name}></Breadcrumbs>
       <h1>{campaign.name}</h1>
       <MarkdownContent tag="div" content={campaign.description}></MarkdownContent>
       <dl class="details">
@@ -66,6 +65,12 @@ try {
         <dt>Player Characters</dt>
         <dd>{campaign.pcs.map(pc => (<a href={`/catalogue/characters/${pc.id}`}>{pc.name}</a>))}</dd>
       </dl>
+
+      {isGM && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/campaigns/${world}/${slug}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
     </>
   )}
 </BaseLayout>

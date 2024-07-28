@@ -49,8 +49,7 @@ try {
   )}
   {world && (
     <>
-      <Breadcrumbs ancestors={ancestors} current={world.name} />
-      {isCreator && <a href={`/catalogue/worlds/${slug}/edit`}>Edit</a>}
+      <Breadcrumbs ancestors={ancestors} current={world.name}></Breadcrumbs>
       <h1>{world.name}</h1>
       <p class="byline">Created by {world.creators.map(creator => (<UserLink user={creator} />))}</p>
       <MarkdownContent tag="div" content={world.description}></MarkdownContent>
@@ -72,6 +71,12 @@ try {
           <a href={`/catalogue/societies/new?world=${slug}`}>+ Add a new society</a>
         </div>)}
       </section>
+
+      {isCreator && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/worlds/${slug}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
     </>
   )}
 </BaseLayout>

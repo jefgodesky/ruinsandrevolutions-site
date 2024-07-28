@@ -70,8 +70,7 @@ const displayStat = (group: string, stat: string): string => {
   )}
   {character && (
     <>
-      <Breadcrumbs ancestors={ancestors} current={character.name} />
-      {isPlayer && <a href={`/catalogue/characters/${id}/edit`}>Edit</a>}
+      <Breadcrumbs ancestors={ancestors} current={character.name}></Breadcrumbs>
       <h1>{character.name}</h1>
       <p class="byline">Played by <UserLink user={character.player}></UserLink></p>
       <MarkdownContent tag="div" content={character.description}></MarkdownContent>
@@ -84,6 +83,12 @@ const displayStat = (group: string, stat: string): string => {
         </dl>))}
       </div>
       <MarkdownContent tag="div" content={character.notes}></MarkdownContent>
+
+      {isPlayer && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/characters/${id}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
     </>
   )}
 </BaseLayout>
