@@ -81,7 +81,7 @@ try {
         {world.campaigns.map(campaign => (<CampaignListing key={campaign.id} campaign={campaign} />))}
         {(!world.campaigns || world.campaigns.length < 1) && (<div class="null">
           <p>No campaigns</p>
-          <a href={`/catalogue/campaigns/new`}>+ Add a new campaign</a>
+          <a href={`/catalogue/campaigns/new?world=${slug}`}>+ Add a new campaign</a>
         </div>)}
       </section>
 
