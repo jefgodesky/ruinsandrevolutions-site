@@ -1,0 +1,74 @@
+---
+import UserPicker from './client/UserPicker'
+import getCampaigns, { type CampaignRecord, type CampaignWorld } from '../utils/get-campaigns'
+import getHeaders from '../utils/get-headers'
+import { apiRoot, apiHeaders } from '../data'
+
+const headers = getHeaders(Astro)
+const { action, button, isEdit } = Astro.props
+const scroll = Astro.props.scroll ?? {}
+const writers = scroll.writers ?? []
+const readers = scroll.readers ?? []
+const writerUsernames = writers.map(writer => writer.username).join(', ')
+const readerUsernames = readers.map(reader => reader.username).join(', ')
+const campaigns = await getCampaigns(apiRoot, headers)
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What would you like to call this scroll?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Walking to Mordor" value={scroll.name} />
+  <label for="writers">
+    Writers
+    <span class="note">The users who have the ability to edit this scroll.
+      If left blank, you&rsquo;ll be added to this list.
+      <span class="no-js">Enter the username of each user you&rsquo;d like
+        to designate as a writer for this scroll, separated by
+        commas.</span></span>
+  </label>
+  <input type="text" name="writers" id="writers" class="user-picker" placeholder="tolkien" value={writerUsernames} />
+  <UserPicker client:only="react" src="writers" users={scroll.writers} />
+  <label for="readers">
+    Readers
+    <span class="note">The users who have the ability to see this scroll.
+      If you make the scroll public, then anybody will be able to see it,
+      but even if you don&rsquo;t, the readers that you designate will.
+      If left blank, you&rsquo;ll be added to this list.
+      <span class="no-js">Enter the username of each user you&rsquo;d like
+        to designate as a reader for this scroll, separated by
+        commas.</span></span>
+  </label>
+  <input type="text" name="readers" id="readers" class="user-picker" placeholder="frodo, sam" value={readerUsernames} />
+  <UserPicker client:only="react" src="readers" users={scroll.readers} />
+  <label for="description">
+    Description
+    <span class="note">What is this scroll about? How does it work?</span>
+  </label>
+  <textarea name="description" id="description" required placeholder="The fellowship is following the East Road to Rivendell. Each day that they spend traveling down the road unseals it.">{scroll.description}</textarea>
+  <label for="seals">
+    Seals
+    <span class="note">How many seals does this scroll start with?</span>
+  </label>
+  <input type="number" min="0" name="seals" id="seals" placeholder="21" value={scroll.seals} />
+  <label for="campaign">
+    Campaign
+    <span class="note">You can associate this scroll with a campaign by
+    selecting it from the list below. This is not required.</span>
+  </label>
+  <select name="campaign" id="campaign">
+    <option>Do not associate this scroll with any campaign</option>
+    {Object.keys(campaigns).map((worldSlug: string) => (<optgroup key={worldSlug} label={campaigns[worldSlug].world.name}>
+      {campaigns[worldSlug].campaigns.map(campaign => (<option key={campaign.path} value={campaign.path}>{campaign.name}</option>))}
+    </optgroup>))}
+  </select>
+  <div></div>
+  <input type="checkbox" id="public" name="public" checked={scroll.public} />
+  <label for="public" class="checkbox">
+    <strong>Make it public.</strong> Public scrolls can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your scroll
+    with everyone, or if you just want to keep it private. Private scrolls
+    can only be seen by the writers and readers listed above.
+  </label>
+  <button>{button}</button>
+</form>

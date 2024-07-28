@@ -1,0 +1,15 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+import Seals from './Seals.astro'
+const { scroll } = Astro.props
+console.log(scroll)
+---
+<article class="card scroll catalogue-listing">
+  <header>
+    <h3>
+      <a href={`/catalogue/scrolls/${scroll.id}`}>{scroll.name}</a>
+    </h3>
+  </header>
+  <MarkdownContent tag="div" content={scroll.description} />
+  <Seals scroll={scroll} />
+</article>

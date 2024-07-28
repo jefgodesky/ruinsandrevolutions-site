@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import NoJS from '../../../../components/NoJS.astro'
-import CharacterForm from '../../../../components/CharacterForm.astro'
+import ScrollForm from '../../../../components/ScrollForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
 
@@ -9,7 +9,7 @@ const redirectToRetrieve = () => {
   return new Response(null, {
     status: 302,
     headers: {
-      Location: `/catalogue/characters/${id}`
+      Location: `/catalogue/scrolls/${id}`
     },
   })
 }
@@ -21,14 +21,14 @@ if (!auth?.apiKey) {
 }
 
 const { apiKey, username } = auth
-let character: { [key: string]: any } | null = null
-let isPlayer = false
+let scroll: { [key: string]: any } | null = null
+let isWriter = false
 let title = 'Edit'
 let ancestors = []
 let message = ''
 
 try {
-  const res = await fetch(`${apiRoot}/characters/${id}`, {
+  const res = await fetch(`${apiRoot}/scrolls/${id}`, {
     method: 'GET',
     headers: {
       ...apiHeaders,
@@ -38,49 +38,46 @@ try {
 
   ancestors = [
     { path: '/catalogue', name: 'Catalogue' },
-    { path: '/catalogue/characters', name: 'Characters' },
+    { path: '/catalogue/scrolls', name: 'Scrolls' },
   ]
 
   if (res.status === 200) {
-    character = await res.json()
-    title = `Edit ${character.name}`
-    isPlayer = username === character.player.username
+    scroll = await res.json()
+    title = `Edit ${scroll.name}`
+    isWriter = scroll.writers.map(writer => writer.username).includes(username)
   }
 } catch (err) {
   console.error(err)
 }
 
-if (!isPlayer) {
+if (!isWriter) {
   return redirectToRetrieve()
 }
 
 if (Astro.request.method === 'POST') {
   try {
     const formData = await Astro.request.formData()
-    const name = formData.get('name')
-    const description = formData.get('description')
-    const notes = formData.get('notes')
-    const isPC = formData.get('pc') === 'on'
+    const name = formData.get('name') as string
+    const description = formData.get('description') as string
+    const writers = (formData.get('writers') as string).split(',').map(c => c.trim())
+    const readers = (formData.get('readers') as string).split(',').map(c => c.trim())
+    const campaign = formData.get('campaign') as string
     const isPublic = formData.get('public') === 'on'
 
-    const abilityNames = ['strength', 'dexterity', 'constitution', 'intelligence', 'wisdom', 'charisma']
-    const abilities: { [key: string]: number } = {}
-    for (const ability of abilityNames) {
-      const str = formData.get(ability) as string
-      const parsed = parseInt(str)
-      abilities[ability] = isNaN(parsed) ? 0 : parsed
-    }
+    const sealsParsed = parseInt(formData.get('seals') as string)
+    const seals = isNaN(sealsParsed) ? 4 : sealsParsed
 
-    const payload = {
+    const payload: { [key: string]: string | string[] | number | boolean } = {
       name,
       description,
-      abilities,
-      notes,
-      public: isPublic,
-      pc: isPC
+      seals,
+      writers,
+      readers,
+      public: isPublic
     }
 
-    const res = await fetch(`${apiRoot}/characters/${id}`, {
+    if (campaign) payload.campaign = campaign
+    const res = await fetch(`${apiRoot}/scrolls/${id}`, {
       method: 'PUT',
       headers: {
         ...apiHeaders,
@@ -102,11 +99,11 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title={title}>
-  <h1>{character.name}</h1>
+  <h1>{scroll.name}</h1>
   {message && <aside class="message error">{message}</aside>}
-  <CharacterForm
-    character={character}
-    action={`/catalogue/characters/${character.id}/edit`}
+  <ScrollForm
+    scroll={scroll}
+    action={`/catalogue/scrolls/${scroll.id}/edit`}
     button="Save"
     isEdit={true} />
   <NoJS />

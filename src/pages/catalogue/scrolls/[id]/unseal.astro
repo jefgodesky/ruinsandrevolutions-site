@@ -1,0 +1,23 @@
+---
+import { apiRoot, apiHeaders } from '../../../../data'
+import getHeaders from '../../../../utils/get-headers'
+
+const { id } = Astro.params
+const headers = getHeaders(Astro)
+
+try {
+  await fetch(`${apiRoot}/scrolls/${id}/seals`, {
+    method: 'DELETE',
+    headers
+  })
+} catch (err) {
+  console.error(err)
+}
+
+return new Response(null, {
+  status: 302,
+  headers: {
+    Location: `/catalogue/scrolls/${id}`
+  },
+})
+---

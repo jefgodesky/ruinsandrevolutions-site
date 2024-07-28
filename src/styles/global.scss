@@ -35,6 +35,7 @@
 @use "./partials/world-listing";
 @use "./partials/character-abilities";
 @use "./partials/actions";
+@use "./partials/seals";
 
 html {
   @media (min-width: 60rem) {

@@ -61,9 +61,9 @@ try {
         <dt>Setting</dt>
         <dd><a href={`/catalogue/worlds/${campaign.world.path.substring(8)}`}>{campaign.world.name}</a></dd>
         <dt>Game Masters</dt>
-        <dd>{campaign.gms.map(gm => (<UserLink user={gm} />))}</dd>
+        <dd>{campaign.gms && campaign.gms.map(gm => (<UserLink user={gm} />))}</dd>
         <dt>Player Characters</dt>
-        <dd>{campaign.pcs.map(pc => (<a href={`/catalogue/characters/${pc.id}`}>{pc.name}</a>))}</dd>
+        <dd>{campaign.pcs && campaign.pcs.map(pc => (<a href={`/catalogue/characters/${pc.id}`}>{pc.name}</a>))}</dd>
       </dl>
 
       {isGM && (<nav class="actions">

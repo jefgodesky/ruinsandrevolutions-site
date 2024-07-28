@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../../data'
+import ScrollListing from '../../../../components/ScrollListing.astro'
+import UserLink from '../../../../components/UserLink.astro'
+import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import getAuth from '../../../../utils/get-auth'
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { id } = Astro.params
+let scroll: { [key: string]: any } | null = null
+let isWriter = false
+let isReader = false
+let ancestors = []
+let title = 'Scroll'
+
+try {
+  const res = await fetch(`${apiRoot}/scrolls/${id}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/scrolls', name: 'Scrolls' },
+  ]
+
+  if (res.status === 200) {
+    scroll = await res.json()
+    title = scroll.name
+    isWriter = scroll.writers.map(writer => writer.username).includes(username)
+    isReader = scroll.readers.map(reader => reader.username).includes(username)
+  }
+
+  if (!scroll.public && !isReader) {
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: '/catalogue/scrolls',
+      },
+    })
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {!scroll && (
+    <h1>Lost Scroll</h1>
+    <p class="byline">404 Not Found</p>
+    <p>The sages and loremasters assure us that no such scroll exists.
+      Would you like to browse <a href="/catalogue/scrolls">our existing
+      library</a>, or <a href="/catalogue/scrolls/new">add a new scroll
+      to it</a>?</p>
+  )}
+  {scroll && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={scroll.name}></Breadcrumbs>
+      <ScrollListing scroll={scroll}></ScrollListing>
+      {isWriter && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/scrolls/${id}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
+    </>
+  )}
+</BaseLayout>

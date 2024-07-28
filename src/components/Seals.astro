@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets'
+import sealM10 from '../assets/seals/sealm10.png'
+import sealM05 from '../assets/seals/sealm05.png'
+import sealP00 from '../assets/seals/sealp00.png'
+import sealP05 from '../assets/seals/sealp05.png'
+import sealP10 from '../assets/seals/sealp10.png'
+import ghost from '../assets/seals/ghost.png'
+import getAuth from '../utils/get-auth'
+
+const { scroll } = Astro.props
+const auth = getAuth(Astro)
+const isWriter = auth
+  ? scroll.writers.map(writer => writer.username).includes(auth.username)
+  : false
+const variations = [sealM10, sealM05, sealP00, sealP05, sealP10]
+const num = scroll.seals
+const seals = []
+for (let i = 0; i < num; i++) {
+  const variant = variations[Math.floor(Math.random() * variations.length)]
+  seals.push(variant)
+}
+---
+<div class="seals">
+  {isWriter && seals.map(seal => (<a href={`/catalogue/scrolls/${scroll.id}/unseal`} title="Remove a seal">
+    <Image src={seal} alt="Seal"></Image>
+  </a>))}
+  {!isWriter && seals.map(seal => (<Image src={seal} alt="Seal"></Image>))}
+  {isWriter && <a href={`/catalogue/scrolls/${scroll.id}/seal`} title="Add a seal" class="add">
+    <Image src={ghost} alt="Add a seal" class="add"></Image>
+  </a>}
+</div>

@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import NoJS from '../../../components/NoJS.astro'
+import ScrollForm from '../../../components/ScrollForm.astro'
+import { apiRoot, apiHeaders } from '../../../data'
+import getAuth from '../../../utils/get-auth'
+
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: '/catalogue/scrolls'
+    },
+  })
+}
+
+const { apiKey } = auth
+let message = ''
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name') as string
+    const description = formData.get('description') as string
+    const writers = (formData.get('writers') as string).split(',').map(c => c.trim())
+    const readers = (formData.get('readers') as string).split(',').map(c => c.trim())
+    const campaign = formData.get('campaign') as string
+    const isPublic = formData.get('public') === 'on'
+
+    const sealsParsed = parseInt(formData.get('seals') as string)
+    const seals = isNaN(sealsParsed) ? 4 : sealsParsed
+
+    const payload: { [key: string]: string | string[] | number | boolean } = {
+      name,
+      description,
+      seals,
+      writers,
+      readers,
+      public: isPublic
+    }
+
+    if (campaign) payload.campaign = campaign
+    const res = await fetch(`${apiRoot}/scrolls`, {
+      method: 'POST',
+      headers: {
+        ...apiHeaders,
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/scrolls/${data.id}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Create a New Scroll">
+  <h1>Create a New Scroll</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <ScrollForm
+    action="/catalogue/scrolls/new"
+    button="Create"
+    isEdit={false} />
+  <NoJS />
+</BaseLayout>

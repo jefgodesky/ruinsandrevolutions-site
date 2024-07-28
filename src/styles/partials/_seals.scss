@@ -1,0 +1,30 @@
+.seals {
+  a {
+    display: inline-block;
+  }
+
+  img {
+    display: inline-block;
+    height: 2rem;
+    margin: 0 0.125rem 0.125rem 0;
+    width: 2rem;
+  }
+
+  .add {
+    position: relative;
+
+    &:before {
+      bottom: 0.1rem;
+      content: '+';
+      font-family: 'Alegreya Sans', sans-serif;
+      font-weight: bold;
+      font-size: 2rem;
+      left: 0;
+      line-height: 1;
+      position: absolute;
+      right: 0.1rem;
+      text-align: center;
+      top: 0;
+    }
+  }
+}
