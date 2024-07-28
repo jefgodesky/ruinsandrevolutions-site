@@ -27,6 +27,10 @@ try {
 ---
 <BaseLayout title="Species">
   <h1>Species</h1>
+  {(!data.species || data.species.length < 1) && (<div class="null">
+    <p>No species found.</p>
+    <a href="/catalogue/species/new">+ Create a new species</a>
+  </div>)}
   {data.species && data.species.length > 0 && data.species.map(species => (
     <SpeciesListing species={species} context="index" />
   ))}

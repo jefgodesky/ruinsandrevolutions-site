@@ -35,7 +35,11 @@ try {
       <p class="byline"><a href={`/catalogue/worlds/${data.campaigns[0].world.path.substring(8)}`}>Explore {data.campaigns[0].world.name}</a></p>
     </>
   )}
-  {!data.campaigns && <h1>Campaigns</h1>}
+  {(!data.campaigns || data.campaigns.length < 1) && <h1>Campaigns</h1>}
+  {(!data.campaigns || data.campaigns.length < 1) && (<div class="null">
+    <p>No campaigns found.</p>
+    <a href="/catalogue/campaigns/new">+ Create a new campaign</a>
+  </div>)}
   {data.campaigns && data.campaigns.length > 0 && data.campaigns.map(campaign => (
     <CampaignListing campaign={campaign}></CampaignListing>
   ))}

@@ -35,7 +35,11 @@ try {
       <p class="byline"><a href={`/catalogue/worlds/${data.species[0].world.path.substring(8)}`}>Explore {data.species[0].world.name}</a></p>
     </>
   )}
-  {!data.species && <h1>Species</h1>}
+  {(!data.species || data.species.length < 1) && <h1>Species</h1>}
+  {(!data.species || data.species.length < 1) && (<div class="null">
+    <p>No species found.</p>
+    <a href="/catalogue/species/new">+ Create a new species</a>
+  </div>)}
   {data.species && data.species.length > 0 && data.species.map(species => (
     <SpeciesListing species={species} context="world-index" />
   ))}

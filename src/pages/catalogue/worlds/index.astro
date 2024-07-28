@@ -27,6 +27,10 @@ try {
 ---
 <BaseLayout title="Worlds">
   <h1>Worlds</h1>
+  {(!data.worlds || data.worlds.length < 1) && (<div class="null">
+    <p>No worlds found.</p>
+    <a href="/catalogue/worlds/new">+ Create a new world</a>
+  </div>)}
   {data.worlds && data.worlds.length > 0 && data.worlds.map(world => (
     <WorldListing world={world} />
   ))}

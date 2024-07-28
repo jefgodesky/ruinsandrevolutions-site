@@ -27,6 +27,10 @@ try {
 ---
 <BaseLayout title="Societies">
   <h1>Societies</h1>
+  {(!data.societies || data.societies.length < 1) && (<div class="null">
+    <p>No societies found.</p>
+    <a href="/catalogue/societies/new">+ Create a new society</a>
+  </div>)}
   {data.societies && data.societies.length > 0 && data.societies.map(society => (
     <SocietyListing society={society} context="index" />
   ))}

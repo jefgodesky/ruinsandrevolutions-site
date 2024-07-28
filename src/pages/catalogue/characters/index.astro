@@ -27,6 +27,10 @@ try {
 ---
 <BaseLayout title="Characters">
   <h1>Characters</h1>
+  {(!data.characters || data.characters.length < 1) && (<div class="null">
+    <p>No characters found.</p>
+    <a href="/catalogue/characters/new">+ Create a new character</a>
+  </div>)}
   {data.characters && data.characters.length > 0 && data.characters.map(character => (
     <CharacterListing character={character} />
   ))}

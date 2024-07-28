@@ -35,7 +35,11 @@ try {
       <p class="byline"><a href={`/catalogue/worlds/${data.societies[0].world.path.substring(8)}`}>Explore {data.societies[0].world.name}</a></p>
     </>
   )}
-  {!data.societies && <h1>Species</h1>}
+  {(!data.societies || data.societies.length < 1) && <h1>Societies</h1>}
+  {(!data.societies || data.societies.length < 1) && (<div class="null">
+    <p>No societies found.</p>
+    <a href="/catalogue/societies/new">+ Create a new society</a>
+  </div>)}
   {data.societies && data.societies.length > 0 && data.societies.map(society => (
     <SocietyListing society={society} context="world-index" />
   ))}
