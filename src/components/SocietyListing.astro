@@ -4,11 +4,12 @@ const { society, context } = Astro.props
 const [ ,, worldSlug, societySlug ] = society.path.split('/')
 const societyPath = `/catalogue/societies/${worldSlug}/${societySlug}`
 const worldPath = `/catalogue/worlds/${worldSlug}`
-const link = `<a href="${societyPath}">${society.name}</a>`
 ---
 <article class="card society catalogue-listing">
   <header>
-    <h3 set:html={link}></h3>
+    <h3>
+      <a href={societyPath}>{society.name}</a>
+    </h3>
     {context === 'index' && <p class="secondary">From <a href={worldPath}>{society.world.name}</a></p>}
   </header>
   <MarkdownContent tag="div" content={society.description} />

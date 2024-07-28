@@ -1,0 +1,16 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+import UserLink from './UserLink.astro'
+const { campaign } = Astro.props
+const worldSlug = campaign.world.path.substring(8)
+const campaignPath = `/catalogue/campaigns/${worldSlug}/${campaign.slug}`
+const worldPath = `/catalogue/worlds/${worldSlug}`
+const link = `<a href="${campaignPath}">${campaign.name}</a>`
+---
+<article class="card campaign catalogue-listing">
+  <header>
+    <h3 set:html={link}></h3>
+    <p class="secondary">Run by {campaign.gms.map(creator => (<UserLink user={creator}></UserLink>))}</p>
+  </header>
+  <MarkdownContent tag="div" content={campaign.description} />
+</article>

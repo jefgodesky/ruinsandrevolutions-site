@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import NoJS from '../../../../../components/NoJS.astro'
+import CampaignForm from '../../../../../components/CampaignForm.astro'
+import { apiRoot, apiHeaders } from '../../../../../data'
+import getAuth from '../../../../../utils/get-auth'
+import getWorlds from '../../../../../utils/get-worlds'
+
+const { world, slug } = Astro.params
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/campaigns/${world}/${slug}`
+    },
+  })
+}
+
+const { apiKey, username } = auth
+let campaign: { [key: string]: any } | null = null
+let title = 'Edit Campaign'
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
+}
+
+const redirectToRetrieve = () => {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/campaigns/${world}/${slug}`,
+    },
+  })
+}
+
+if (apiKey === undefined) {
+  return redirectToRetrieve()
+}
+
+const worlds = await getWorlds(apiRoot, headers)
+
+try {
+  const res = await fetch(`${apiRoot}/campaigns/${world}/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  if (res.status === 200) {
+    campaign = await res.json()
+    title = campaign.name
+    if (!campaign.gms.map(gm => gm.username).includes(username)) {
+      return redirectToRetrieve()
+    }
+  }
+
+  if (Astro.request.method === 'POST') {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug') as string
+    const description = formData.get('description')
+    const gms = (formData.get('gms') as string).split(',').map(c => c.trim())
+    const pcs = (formData.get('pcs') as string).split(',').map(c => c.trim())
+    const world = formData.get('world') as string
+    const isPublic = formData.get('public') === 'on'
+
+    const payload = {
+      name,
+      slug,
+      description,
+      gms,
+      pcs,
+      world,
+      public: isPublic
+    }
+
+    const res = await fetch(`${apiRoot}/campaigns/${world}/${slug}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+    return redirectToRetrieve()
+  }
+} catch (err) {
+  message = 'Sorry, something went wrong. Please try again.'
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  <h1>{title}</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <CampaignForm
+    action={`/catalogue/campaigns/${world}/${slug}/edit`}
+    button="Save"
+    campaign={campaign}
+    worlds={worlds}
+    isEdit={true} />
+  <NoJS />
+</BaseLayout>

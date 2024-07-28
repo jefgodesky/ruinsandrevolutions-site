@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
+import Pagination from '../../../../components/Pagination.astro'
+import CampaignListing from '../../../../components/CampaignListing.astro'
+import getHeaders from '../../../../utils/get-headers'
+
+const headers = getHeaders(Astro)
+let data: { [key: string]: any } = {}
+let title = 'Societies'
+
+const { world } = Astro.params
+const pageParam = 'page'
+const pageSizeParam = 'page_size'
+const page = Astro.url.searchParams.get(pageParam) ?? 1
+const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
+const url = `${apiRoot}/campaigns?world=${world}&page=${page}&page_size=${pageSize}`
+
+try {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers
+  })
+
+  data = await res.json()
+  if (data.campaigns && data.campaigns.length > 0) title = `Campaigns Set in ${data.campaigns[0].world.name}`
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {data.campaigns && data.campaigns.length >0 && (
+    <>
+      <h1><span class="sub">Campaigns Set in</span> {data.campaigns[0].world.name}</h1>
+      <p class="byline"><a href={`/catalogue/worlds/${data.campaigns[0].world.path.substring(8)}`}>Explore {data.campaigns[0].world.name}</a></p>
+    </>
+  )}
+  {!data.campaigns && <h1>Campaigns</h1>}
+  {data.campaigns && data.campaigns.length > 0 && data.campaigns.map(campaign => (
+    <CampaignListing campaign={campaign}></CampaignListing>
+  ))}
+  {data.total > data.page_size && (<Pagination page={data} baseUrl={`/catalogue/campaigns?world=${world}`} pageParam="page" pageSizeParam="page_size" />)}
+</BaseLayout>

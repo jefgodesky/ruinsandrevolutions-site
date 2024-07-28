@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../../../data'
+import MarkdownContent from '../../../../../components/MarkdownContent.astro'
+import UserLink from '../../../../../components/UserLink.astro'
+import getAuth from '../../../../../utils/get-auth'
+import Breadcrumbs from '../../../../../components/Breadcrumbs.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { world, slug } = Astro.params
+let campaign: { [key: string]: any } | null = null
+let ancestors = []
+let title = 'Forgotten Campaign'
+let isGM = false
+
+try {
+  const res = await fetch(`${apiRoot}/campaigns/${world}/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/campaigns', name: 'Campaigns' },
+    { path: `/catalogue/campaigns/${world}`, name: 'World' }
+  ]
+
+  if (res.status === 200) {
+    campaign = await res.json()
+    ancestors[2].name = campaign.world.name
+    title = campaign.name
+    isGM = campaign.gms.map(gm => gm.username).includes(username)
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {!campaign && (
+    <h1>Forgotten Campaign</h1>
+    <p class="byline">404 Not Found</p>
+    <p>Are you thinking of some campaign that was played many decades ago,
+      perhaps some distant memory of a childhood now long behind you?
+      Or are you thinking of a campaign that might yet be, in some glorious,
+      untold future? Or was it something you dreamed of, something you are
+      just now struggling to pull from the swirling miasma of possibility
+      into the world of the real? You can take a look at our listing
+      of <a href="/catalogue/campaigns">known campaigns</a> or, if you&rsquo;re
+      ready to make your mark, <a href="/catalogue/campaigns/new">bring that
+      campaign of your dreams into reality</a>.</p>
+  )}
+  {campaign && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={campaign.name} />
+      {isGM && <a href={`/catalogue/campaigns/${world}/${slug}/edit`}>Edit</a>}
+      <h1>{campaign.name}</h1>
+      <MarkdownContent tag="div" content={campaign.description}></MarkdownContent>
+      <dl class="details">
+        <dt>Setting</dt>
+        <dd><a href={`/catalogue/worlds/${campaign.world.path.substring(8)}`}>{campaign.world.name}</a></dd>
+        <dt>Game Masters</dt>
+        <dd>{campaign.gms.map(gm => (<UserLink user={gm} />))}</dd>
+        <dt>Player Characters</dt>
+        <dd>{campaign.pcs.map(pc => (<a href={`/catalogue/characters/${pc.id}`}>{pc.name}</a>))}</dd>
+      </dl>
+    </>
+  )}
+</BaseLayout>

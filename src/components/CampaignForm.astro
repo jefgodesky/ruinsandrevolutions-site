@@ -1,0 +1,81 @@
+---
+import SlugField from './client/SlugField'
+import UserPicker from './client/UserPicker'
+import type { WorldRecord } from '../utils/get-worlds'
+const { action, button, isEdit, worlds } = Astro.props
+const campaign: any = Astro.props.campaign ?? {}
+const qWorld = Astro.url.searchParams.get('world')
+const world: WorldRecord | null = campaign.world
+  ? { name: campaign.world.name, slug: campaign.world.path.substring(8) }
+  : qWorld
+    ? worlds.filter(world => world.slug === qWorld)[0]
+    : null
+const gms = campaign.gms ?? []
+const gmUsernames = gms.map(gm => gm.username).join(', ')
+const pcs = campaign.pcs ?? []
+const pcIds = pcs.map(pc => pc.id).join(', ')
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is this campaign called?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="The Lord of the Rings" value={campaign.name} />
+  <label for="slug" class="no-js">
+    Slug
+    <span class="note">A string which, when combined with the slug of the world the campaign is set in, uniquely identifies this campaign.</span>
+  </label>
+  <input type="text" name="slug" id="slug" required placeholder="lord-of-the-rings" value={campaign.slug} />
+  <SlugField
+    client:only="react"
+    isEdit={isEdit}
+    worlds={worlds}
+    collection="campaigns"
+    name={campaign.name}
+    slug={campaign.slug}
+    world={world}
+    nameField="name"
+    slugField="slug"
+    slugNote="A string which, when combined with the slug of the world the campaign is set in, uniquely identifies this campaign."
+    worldField="world"
+    worldNote="What world is this campaign set in?"
+    placeholder="Lord of the Rings" />
+  <label for="name" class="no-js">
+    World
+    <span class="note">What world is this campaign set in?</span>
+  </label>
+  <select name="world" id="world" class="no-js">
+    {worlds.map(w => {
+      const isSelected = w.slug === world?.slug
+      return (<option selected={isSelected} value={w.slug}>{w.name}</option>)
+    })}
+  </select>
+  <label for="description">
+    Description
+    <span class="note">What is this campaign about?</span>
+  </label>
+  <textarea name="description" id="description" placeholder="The ring was made in the fires of Mount Doom. Only there can it be unmade. The ring must be taken deep into Mordor and cast back into the fiery chasm from whence it came.">{campaign.description}</textarea>
+  <label for="gms">
+    Game Masters
+    <span class="note no-js">Enter the username of each user
+      you&rsquo;d like to designate as a game master of this campaign,
+      separated by commas.</span>
+  </label>
+  <input type="text" name="gms" id="gms" class="user-picker" placeholder="tolkien" value={gmUsernames} />
+  <UserPicker client:only="react" src="gms" users={campaign.gms} />
+  <label for="pcs">
+    Player Characters
+    <span class="note">Enter a comma-separated list of ID’s for each of
+      the player characters in this campaign.</span>
+  </label>
+  <input type="text" name="pcs" id="pcs" placeholder="AbCd1234, 1234aBcD" value={pcIds} />
+  <input type="checkbox" id="public" name="public" checked={campaign.public} />
+  <label for="public" class="checkbox">
+    <strong>Make it public.</strong> Public campaigns can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your campaign
+    with everyone, or if you just want to keep it private. Private campaigns
+    can only be seen by their game masters and the creators of the worlds that
+    they&rsquo;re set in.
+  </label>
+  <button>{button}</button>
+</form>
