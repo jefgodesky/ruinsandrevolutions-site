@@ -2,14 +2,14 @@
 import MarkdownContent from './MarkdownContent.astro'
 import UserLink from './UserLink.astro'
 
-const { character } = Astro.props
+const { character, context } = Astro.props
 ---
 <article class="character card">
   <header>
     <h3>
       <a href={`/catalogue/characters/${character.id}`}>{character.name}</a>
     </h3>
-    <p class="secondary">Played by <UserLink user={character.player} /></p>
+    {context !== "player-profile" && <p class="secondary">Played by <UserLink user={character.player} /></p>}
   </header>
   <MarkdownContent tag="div" content={character.description} />
 </article>
