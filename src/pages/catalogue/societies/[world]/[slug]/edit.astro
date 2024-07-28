@@ -7,7 +7,17 @@ import getAuth from '../../../../../utils/get-auth'
 import getWorlds from '../../../../../utils/get-worlds'
 
 const { world, slug } = Astro.params
-const { apiKey, username } = getAuth(Astro)
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/societies/${world}/${slug}`
+    },
+  })
+}
+
+const { apiKey, username } = auth
 let society: { [key: string]: any } | null = null
 let title = 'Edit Society'
 let message = ''

@@ -3,9 +3,9 @@ import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
 import Pagination from '../../../../components/Pagination.astro'
 import SpeciesListing from '../../../../components/SpeciesListing.astro'
-import getAuth from '../../../../utils/get-auth'
+import getHeaders from '../../../../utils/get-headers'
 
-const { apiKey } = getAuth(Astro)
+const headers = getHeaders(Astro)
 let data: { [key: string]: any } = {}
 let title = 'Species'
 
@@ -19,10 +19,7 @@ const url = `${apiRoot}/species?world=${world}&page=${page}&page_size=${pageSize
 try {
   const res = await fetch(url, {
     method: 'GET',
-    headers: {
-      ...apiHeaders,
-      Authorization: `Bearer ${apiKey}`
-    }
+    headers
   })
 
   data = await res.json()

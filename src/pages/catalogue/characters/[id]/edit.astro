@@ -5,8 +5,18 @@ import CharacterForm from '../../../../components/CharacterForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
 
-const { apiKey, username } = getAuth(Astro)
 const { id } = Astro.params
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/characters/${id}`
+    },
+  })
+}
+
+const { apiKey, username } = getAuth(Astro)
 let character: { [key: string]: any } | null = null
 let isPlayer = false
 let title = 'Edit'

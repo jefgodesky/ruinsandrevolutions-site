@@ -5,8 +5,18 @@ import WorldForm from '../../../../components/WorldForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
 
-const { apiKey, username } = getAuth(Astro)
 const { slug } = Astro.params
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/worlds/${slug}`,
+    },
+  })
+}
+
+const { apiKey, username } = auth
 let world: { [key: string]: any } | null = null
 let isCreator = false
 let ancestors = []

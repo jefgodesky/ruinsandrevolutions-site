@@ -5,10 +5,8 @@ import WorldForm from '../../../components/WorldForm.astro'
 import { apiRoot, apiHeaders } from '../../../data'
 import getAuth from '../../../utils/get-auth'
 
-const { apiKey } = getAuth(Astro)
-let message = ''
-
-if (apiKey === undefined) {
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
   return new Response(null, {
     status: 302,
     headers: {
@@ -16,6 +14,9 @@ if (apiKey === undefined) {
     },
   })
 }
+
+const { apiKey } = auth
+let message = ''
 
 if (Astro.request.method === 'POST') {
   try {

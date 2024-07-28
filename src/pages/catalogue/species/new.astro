@@ -6,20 +6,21 @@ import { apiRoot, apiHeaders } from '../../../data'
 import getAuth from '../../../utils/get-auth'
 import getWorlds from '../../../utils/get-worlds'
 
-const { apiKey } = getAuth(Astro)
-let message = ''
-const headers = {
-  ...apiHeaders,
-  Authorization: `Bearer ${apiKey}`
-}
-
-if (apiKey === undefined) {
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
   return new Response(null, {
     status: 302,
     headers: {
       Location: '/catalogue/species'
     },
   })
+}
+
+const { apiKey } = auth
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
 }
 
 const worlds = await getWorlds(apiRoot, headers)
