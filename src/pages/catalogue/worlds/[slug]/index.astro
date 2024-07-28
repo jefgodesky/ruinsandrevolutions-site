@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
-import UserLink from '../../../../components/UserLink.astro'
+import CampaignListing from '../../../../components/CampaignListing.astro'
 import MarkdownContent from '../../../../components/MarkdownContent.astro'
 import SocietyListing from '../../../../components/SocietyListing.astro'
 import SpeciesListing from '../../../../components/SpeciesListing.astro'
+import UserLink from '../../../../components/UserLink.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
 import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
 import SocietyListing from '../../../../components/SocietyListing.astro'
@@ -32,6 +33,9 @@ try {
   if (res.status === 200) {
     world = await res.json()
     isCreator = world.creators.map(creator => creator.username).includes(username)
+    world.species.forEach(species => { species.path = `/species/${slug}/${species.slug}` })
+    world.societies.forEach(society => { society.path = `/societies/${slug}/${society.slug}` })
+    world.campaigns.forEach(campaign => { campaign.world = { path: `/worlds/${slug}` } })
   }
 } catch (err) {
   console.error(err)
@@ -69,6 +73,15 @@ try {
         {(!world.societies || world.societies.length < 1) && (<div class="null">
           <p>No societies</p>
           <a href={`/catalogue/societies/new?world=${slug}`}>+ Add a new society</a>
+        </div>)}
+      </section>
+
+      <section class="world-campaigns">
+        <h2>Campaigns</h2>
+        {world.campaigns.map(campaign => (<CampaignListing key={campaign.id} campaign={campaign} />))}
+        {(!world.campaigns || world.campaigns.length < 1) && (<div class="null">
+          <p>No campaigns</p>
+          <a href={`/catalogue/campaigns/new`}>+ Add a new campaign</a>
         </div>)}
       </section>
 
