@@ -1,6 +1,17 @@
+@use "../modules/mixins";
+
 .seals {
   a {
     display: inline-block;
+
+    &,
+    &:visited {
+      @include mixins.set-style("color", "links.base");
+    }
+
+    &:hover {
+      @include mixins.set-style("color", "links.hover");
+    }
   }
 
   img {
