@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
+import Pagination from '../../../components/Pagination.astro'
+import ScaleListing from '../../../components/ScaleListing.astro'
+import getHeaders from '../../../utils/get-headers'
+
+const headers = getHeaders(Astro)
+let data: { [key: string]: any } = {}
+
+const pageParam = 'page'
+const pageSizeParam = 'page_size'
+const page = Astro.url.searchParams.get(pageParam) ?? 1
+const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
+const url = `${apiRoot}/scales?page=${page}&page_size=${pageSize}`
+
+try {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers
+  })
+
+  data = await res.json()
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title="Scales">
+  <h1>Scales</h1>
+  {(!data.scales || data.scales.length < 1) && (<div class="null">
+    <p>No scales found.</p>
+    <a href="/catalogue/scales/new">+ Create a new scale</a>
+  </div>)}
+  {data.scales && data.scales.length > 0 && data.scales.map(scale => (
+    <ScaleListing scale={scale} />
+  ))}
+  {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/scales" pageParam="page" pageSizeParam="page_size" />)}
+</BaseLayout>

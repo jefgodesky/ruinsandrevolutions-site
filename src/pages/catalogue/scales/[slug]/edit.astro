@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import NoJS from '../../../../components/NoJS.astro'
+import ScaleForm from '../../../../components/ScaleForm.astro'
+import { apiRoot, apiHeaders } from '../../../../data'
+import getAuth from '../../../../utils/get-auth'
+
+const { slug } = Astro.params
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/scales/${slug}`
+    },
+  })
+}
+
+const { apiKey, username } = auth
+let scale: { [key: string]: any } | null = null
+let title = 'Edit Scale'
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
+}
+
+const redirectToRetrieve = () => {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/scales/${slug}`,
+    },
+  })
+}
+
+if (apiKey === undefined) {
+  return redirectToRetrieve()
+}
+
+try {
+  const res = await fetch(`${apiRoot}/scales/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  if (res.status === 200) {
+    scale = await res.json()
+    title = scale.name
+    if (scale.author.username !== username) {
+      return redirectToRetrieve()
+    }
+  }
+
+  if (Astro.request.method === 'POST') {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug') as string
+    const description = formData.get('description')
+    const isPublic = formData.get('public') === 'on'
+    const levelIndex: { [key: string]: number } = {}
+    const levels: { name: string, description: string, order: number }[] = []
+
+    for (const key of formData.keys()) {
+      if (key.startsWith('level-')) {
+        const elems = key.split('-')
+        if (elems.length < 2) continue
+        const parsed = parseInt(elems[1])
+        if (isNaN(parsed)) continue
+        if (!levelIndex[elems[1]]) levelIndex[elems[1]] = parsed
+      }
+    }
+
+    const levelNumbers = Object.values(levelIndex).sort()
+    for (const num of levelNumbers) {
+      levels.push({
+        name: formData.get(`level-${num}-name`) as string,
+        description: formData.get(`level-${num}-description`) as string,
+        order: num
+      })
+    }
+
+    const payload = {
+      name,
+      slug,
+      description,
+      levels,
+      public: isPublic
+    }
+
+    const res = await fetch(`${apiRoot}/scales/${slug}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return redirectToRetrieve()
+  }
+} catch (err) {
+  message = 'Sorry, something went wrong. Please try again.'
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  <h1>{title}</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <ScaleForm
+    action={`/catalogue/scales/${slug}/edit`}
+    button="Save"
+    scale={scale}
+    isEdit={true} />
+  <NoJS />
+</BaseLayout>

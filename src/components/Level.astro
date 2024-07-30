@@ -1,0 +1,8 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+const { data } = Astro.props
+---
+<section class="card level">
+  <h3>{data.name}</h3>
+  <MarkdownContent tag="div" content={data.description}></MarkdownContent>
+</section>

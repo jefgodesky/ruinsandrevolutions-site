@@ -1,0 +1,94 @@
+---
+import SlugField from './client/SlugField'
+import LevelDirector from './client/LevelDirector'
+const { action, button, isEdit } = Astro.props
+const scale: any = Astro.props.scale ?? {}
+
+interface Level {
+  name: string
+  details: string
+}
+
+const getNumLevels = (): number => {
+  const defaultValue = 3
+  const orig = Astro.url.searchParams.get('levels')
+  const parsed = parseInt(orig)
+  const defaultNumber = isNaN(parsed) ? defaultValue : parsed
+  return Math.max(defaultNumber, scale.levels?.length ?? 0)
+}
+
+const getLevel = (index: number): Level | null => {
+  if (index > scale.levels?.length ?? 0) return null
+  return scale.levels ? scale.levels[index] : null
+}
+
+const levels: string[] = []
+for (let i = 1; i <= getNumLevels(); i++) {
+  levels.push(`level-${i}`)
+}
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is this scale called?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Character Levels" value={scale.name} />
+  <label for="slug" class="no-js">
+    Slug
+    <span class="note">A string which uniquely identifies this scale.</span>
+  </label>
+  <input type="text" name="slug" id="slug" required placeholder="character-levels" value={scale.slug} />
+  <SlugField
+    client:only="react"
+    isEdit={isEdit}
+    collection="scales"
+    name={scale.name}
+    slug={scale.slug}
+    nameField="name"
+    slugField="slug"
+    slugNote="A string which uniquely identifies this scale."
+    placeholder="Character Levels" />
+  <label for="description">
+    Description
+    <span class="note">Provide a short summary of this scale and what
+      it measures.</span>
+  </label>
+  <textarea name="description" id="description" required placeholder="Levels are a discrete measurement of character progress used in some games.">{scale.description}</textarea>
+  <fieldset name="levels" class="levels">
+    {levels.map((id, index) => (
+      <fieldset name={id} key={id} id={id}>
+        <label for={`${id}-name`} class="level-name">
+          Level {index + 1} Name
+          <span class="note">What is this level called?</span>
+        </label>
+        <input
+          type="text"
+          name={`${id}-name`}
+          id={`${id}-name`}
+          class="level-name"
+          value={getLevel(index)?.name}
+          placeholder={`Level ${index + 1}`} />
+        <label for={`${id}-description`} class="level-description">
+          Level {index + 1} Description
+          <span class="note">What does it mean for something to be
+            at this level?</span>
+        </label>
+        <textarea
+          name={`${id}-description`}
+          id={`${id}-description`}
+          class="level-description"
+          placeholder={`At level ${index + 1}, characters have access to all of the level ${index + 1} abilities.`}
+        >{getLevel(index)?.description}</textarea>
+      </fieldset>
+    ))}
+    <LevelDirector client:only="react" levels={levels} />
+  </fieldset>
+  <input type="checkbox" id="public" name="public" checked={scale.public} />
+  <label for="public" class="checkbox">
+    <strong>Make it public.</strong> Public scales can be seen by everyone.
+    Leave this unchecked if you&rsquo;re not ready to share your scale
+    with everyone, or if you just want to keep it private. Private scales
+    can only be seen by their authors (in this case, you).
+  </label>
+  <button>{button}</button>
+</form>

@@ -1,0 +1,15 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+import UserLink from './UserLink.astro'
+const { scale } = Astro.props
+const slug = scale.path.substring('/scales/'.length)
+---
+<article class="card scale catalogue-listing">
+  <header>
+    <h3>
+      <a href={`/catalogue/scales/${slug}`}>{scale.name}</a>
+    </h3>
+    <p class="secondary">By <UserLink user={scale.author}></UserLink></p>
+  </header>
+  <MarkdownContent tag="div" content={scale.description} />
+</article>

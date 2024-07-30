@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../../data'
+import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import UserLink from '../../../../components/UserLink.astro'
+import Level from '../../../../components/Level.astro'
+import getAuth from '../../../../utils/get-auth'
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { slug } = Astro.params
+let scale: { [key: string]: any } | null = null
+let ancestors = []
+let title = 'Unknown Scale'
+let isAuthor = false
+
+try {
+  const res = await fetch(`${apiRoot}/scales/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/scales', name: 'Scales' },
+  ]
+
+  if (res.status === 200) {
+    scale = await res.json()
+    title = scale.name
+    isAuthor = scale.author.username === username
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {!scale && (
+    <h1>Unknown Scale</h1>
+    <p class="byline">404 Not Found</p>
+    <p>We have no record of such a scale. You can
+      <a href="/catalogue/scales">check our listings</a>, or perhaps it
+      doesn&rsquo;t exist because
+      <a href="/catalogue/scales/new">you haven&rsquo;t made it yet</a>.</p>
+  )}
+  {scale && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={scale.name}></Breadcrumbs>
+      <h1>{scale.name}</h1>
+      <p class="byline">By <UserLink user={scale.author}></UserLink></p>
+      <MarkdownContent tag="div" content={scale.description}></MarkdownContent>
+      <section id="levels">
+        {scale.levels.map(level => (<Level data={level} />))}
+      </section>
+
+      {isAuthor && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/scales/${slug}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
+    </>
+  )}
+</BaseLayout>
