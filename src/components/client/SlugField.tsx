@@ -145,13 +145,9 @@ const SlugField: React.FC<SlugFieldProps> = ({ name = '', slug = '', world, worl
           World
           <span className='note'>{worldNote}</span>
         </label>
-        <select name={worldField} id={worldField} onChange={handleWorldChange}>
+        <select name={worldField} id={worldField} onChange={handleWorldChange} defaultValue={initialWorld?.slug}>
           {worlds.map(world => (
-            <option
-              key={world.slug}
-              value={world.slug}
-              selected={world.slug === initialWorld?.slug}
-            >{world.name}</option>
+            <option key={world.slug} value={world.slug}>{world.name}</option>
           ))}
         </select>
       </>)}
