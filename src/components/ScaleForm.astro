@@ -1,6 +1,9 @@
 ---
+import AddRemoveRepeatableElements from '../components/AddRemoveRepeatableElements.astro'
+import LevelForm from '../components/LevelForm.astro'
 import SlugField from './client/SlugField'
-import LevelDirector from './client/LevelDirector'
+import getRepeatableElements from '../utils/get-repeatable-elements'
+import StageForm from './StageForm.astro'
 const { action, button, isEdit } = Astro.props
 const scale: any = Astro.props.scale ?? {}
 
@@ -9,23 +12,11 @@ interface Level {
   details: string
 }
 
-const getNumLevels = (): number => {
-  const defaultValue = 3
-  const orig = Astro.url.searchParams.get('levels')
-  const parsed = parseInt(orig)
-  const defaultNumber = isNaN(parsed) ? defaultValue : parsed
-  return Math.max(defaultNumber, scale.levels?.length ?? 0)
-}
-
-const getLevel = (index: number): Level | null => {
-  if (index > scale.levels?.length ?? 0) return null
-  return scale.levels ? scale.levels[index] : null
-}
-
-const levels: string[] = []
-for (let i = 1; i <= getNumLevels(); i++) {
-  levels.push(`level-${i}`)
-}
+const levels = getRepeatableElements<Level>(
+  scale?.levels ?? [],
+  3,
+  Astro.url.searchParams.get('levels')
+)
 ---
 <form action={action} method="POST">
   <label for="name">
@@ -54,35 +45,21 @@ for (let i = 1; i <= getNumLevels(); i++) {
       it measures.</span>
   </label>
   <textarea name="description" id="description" required placeholder="Levels are a discrete measurement of character progress used in some games.">{scale.description}</textarea>
-  <fieldset name="levels" class="levels">
-    {levels.map((id, index) => (
-      <fieldset name={id} key={id} id={id}>
-        <label for={`${id}-name`} class="level-name">
-          Level {index + 1} Name
-          <span class="note">What is this level called?</span>
-        </label>
-        <input
-          type="text"
-          name={`${id}-name`}
-          id={`${id}-name`}
-          class="level-name"
-          value={getLevel(index)?.name}
-          placeholder={`Level ${index + 1}`} />
-        <label for={`${id}-description`} class="level-description">
-          Level {index + 1} Description
-          <span class="note">What does it mean for something to be
-            at this level?</span>
-        </label>
-        <textarea
-          name={`${id}-description`}
-          id={`${id}-description`}
-          class="level-description"
-          placeholder={`At level ${index + 1}, characters have access to all of the level ${index + 1} abilities.`}
-        >{getLevel(index)?.description}</textarea>
-      </fieldset>
+  <fieldset name="levels" class="levels repeatable">
+    <legend>Levels</legend>
+    {levels.map((level, index) => (
+      <LevelForm
+        n={index + 1}
+        level={level} />
     ))}
-    <LevelDirector client:only="react" levels={levels} />
   </fieldset>
+  <AddRemoveRepeatableElements
+    template="level-template"
+    root="fieldset.levels"
+    elements="fieldset"
+    remove="- Remove Level"
+    add="+ Add Level"
+  />
   <input type="checkbox" id="public" name="public" checked={scale.public} />
   <label for="public" class="checkbox">
     <strong>Make it public.</strong> Public scales can be seen by everyone.
@@ -92,3 +69,6 @@ for (let i = 1; i <= getNumLevels(); i++) {
   </label>
   <button>{button}</button>
 </form>
+<template id="level-template">
+  <LevelForm isTemplate={true} />
+</template>

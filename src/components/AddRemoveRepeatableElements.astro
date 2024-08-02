@@ -1,0 +1,77 @@
+---
+const { add, remove } = Astro.props
+const json = JSON.stringify(Astro.props)
+---
+<script>
+  const getData = event => {
+    const data = JSON.parse(event.target.dataset.json)
+    const root = document.querySelector(data.root)
+    return { data, root }
+  }
+
+  const getNextNum = (root, elements) => {
+    const elems = Array.from(root.querySelectorAll(elements))
+    const nums = elems.map(elem => {
+      const str = elem.dataset.number ?? '0'
+      const parsed = parseInt(str)
+      return isNaN(parsed) ? 0 : parsed
+    })
+    return Math.max(...nums) + 1
+  }
+
+  const replaceAttr = (elem, attr, oldVal, newVal) => {
+    elem.setAttribute(attr, elem.getAttribute(attr).replace(oldVal, newVal))
+  }
+
+  const customizeNewElement = (elem, num) => {
+    const oldId = elem.id
+    const id = elem.id.replace('X', num)
+    elem.setAttribute('data-number', num)
+    elem.setAttribute('id', id)
+    elem.setAttribute('key', id)
+
+    const labels = elem.querySelectorAll('label')
+    const labelAttrs = ['for']
+    for (const label of labels) {
+      for (const attr of labelAttrs) replaceAttr(label, attr, oldId, id)
+      label.innerHTML = label.innerHTML.replace('\{\{X\}\}', num)
+    }
+
+    const inputs = elem.querySelectorAll('input, textarea')
+    const inputAttrs = ['name', 'id']
+    for (const input of inputs) {
+      for (const attr of inputAttrs) replaceAttr(input, attr, oldId, id)
+      replaceAttr(input, 'placeholder', '\{\{X\}\}', num)
+    }
+  }
+
+  const removeElement = event => {
+    event.preventDefault()
+    const { data, root } = getData(event)
+    if (!data || !root) return
+    const elems = root.querySelectorAll(data.elements)
+    if (elems.length < 0) return
+    elems[elems.length - 1].remove()
+  }
+
+  const addElement = event => {
+    event.preventDefault()
+    const { data, root } = getData(event)
+    if (!data || !root) return
+    const template = document.getElementById(data.template)
+    if (!template) return
+    const newElem = template.content.firstElementChild.cloneNode(true)
+    customizeNewElement(newElem, getNextNum(root, data.elements))
+    root.appendChild(newElem)
+  }
+
+  const removeBtns = document.querySelectorAll('button.remove-repeatable-elements')
+  for (const btn of removeBtns) btn.addEventListener('click', removeElement)
+
+  const addBtns = document.querySelectorAll('button.add-repeatable-elements')
+  for (const btn of addBtns) btn.addEventListener('click', addElement)
+</script>
+<div class="actions">
+  <button data-json={json} class="remove-repeatable-elements">{remove}</button>
+  <button data-json={json} class="add-repeatable-elements">{add}</button>
+</div>

@@ -1,7 +1,9 @@
 ---
+import StageForm from './StageForm.astro'
+import AddRemoveRepeatableElements from './AddRemoveRepeatableElements.astro'
 import AffinityAversion from './client/AffinityAversion'
 import SlugField from './client/SlugField'
-import StageDirector from './client/StageDirector'
+import getRepeatableElements from '../utils/get-repeatable-elements'
 import type { WorldRecord } from '../utils/get-worlds'
 const { action, button, isEdit, worlds } = Astro.props
 const species: any = Astro.props.species ?? {}
@@ -19,39 +21,24 @@ interface Stage {
   procedures: string
 }
 
-const getNumStages = (): number => {
-  const defaultValue = 4
-  const orig = Astro.url.searchParams.get('stages')
-  const parsed = parseInt(orig)
-  const defaultNumber = isNaN(parsed) ? defaultValue : parsed
-  return Math.max(defaultNumber, species.stages?.length ?? 0)
-}
-
-const getStage = (index: number): Stage | null => {
-  if (index > species.stages?.length ?? 0) return null
-  return species.stages ? species.stages[index] : null
-}
-
 const physical = ['Strength', 'Dexterity', 'Constitution']
 const mental = ['Intelligence', 'Wisdom', 'Charisma']
-const stages: string[] = []
+const stages = getRepeatableElements<Stage>(
+  species?.stages ?? [],
+  4,
+  Astro.url.searchParams.get('stages')
+)
 
-for (let i = 1; i <= getNumStages(); i++) {
-  stages.push(`stage-${i}`)
-}
-
-const everyStage = '* **Ability Shift:** You may increase one of your abilities by one at the cost of decreasing a different ability by one.\n* **Socially Favored Shift:** You may repeat the ability shift step a second time if the ability you increase is one of your society’s favored abilities.'
-const stagePlaceholders = {
-  name: ['Childhood', 'Young Adulthood', 'Mature Adulthood', 'Elderhood'],
-  min: [null, 10, 30, 60],
-  max: [10, 30, 60, null],
-  procedures: [
-    `* **Language Acquisition:** You are fluent in all of the languages spoken by your society.\n${everyStage}`,
-    everyStage,
-    everyStage,
-    `* **Aging:** Reduce your strength, dexterity, and constitution abilites each by one.\n${everyStage}`
-  ]
-}
+const free = '* **Ability Shift:** You may increase one of your abilities by one at the cost of decreasing a different ability by one.'
+const favored = '* **Socially Favored Shift:** You may repeat the ability shift step a second time if the ability you increase is one of your society’s favored abilities.'
+const lang = '* **Language Acquisition:** You are fluent in all of the languages spoken by your society.'
+const aging = '* **Aging:** Reduce your strength, dexterity, and constitution abilites each by one.'
+const placeholders: Stage[] = [
+  { name: 'Childhood', min: null, max: 10, procedures: [lang, free, favored].join('\n') },
+  { name: 'Young Adulthood', min: 10, max: 30, procedures: [free, favored].join('\n') },
+  { name: 'Mature Adulthood', min: 30, max: 60, procedures: [free, favored].join('\n') },
+  { name: 'Elderhood', min: 60, max: null, procedures: [aging, free, favored].join('\n') }
+]
 ---
 <form action={action} method="POST">
   <label for="name">
@@ -120,63 +107,25 @@ const stagePlaceholders = {
     species={species}
     physical={physical}
     mental={mental} />
-  <fieldset name="stages" class="stages">
+  <fieldset name="stages" class="species repeatable">
     <legend>Stages of Life</legend>
     <p>The stages of life vary from one species to another
       in terms of number, age, and what matters of physical, mental, or magical
       maturity they involve.</p>
-    {stages.map((id, index) => (
-      <fieldset name={id} key={id} id={id}>
-        <label for={`${id}-name`} class="stage-name">
-          Name
-          <span class="note">What is this stage of life called?</span>
-        </label>
-        <input
-          type="text"
-          name={`${id}-name`}
-          id={`${id}-name`}
-          class="stage-name"
-          value={getStage(index)?.name}
-          placeholder={index < stagePlaceholders.name.length ? stagePlaceholders.name[index] : ''} />
-        <label for={`${id}-min`} class="stage-min">
-          Minimum Age
-          <span class="note">The age at which this stage of life generally
-          begins for members of this species.</span>
-        </label>
-        <input
-          type="number"
-          name={`${id}-min`}
-          id={`${id}-min`}
-          class="stage-min"
-          value={getStage(index)?.min}
-          placeholder={index < stagePlaceholders.min.length ? stagePlaceholders.min[index] : ''} />
-        <label for={`${id}-max`} class="stage-max">
-          Maximum Age
-          <span class="note">The age at which this stage of life generally
-          ends for members of this species.</span>
-        </label>
-        <input
-          type="number"
-          name={`${id}-max`}
-          id={`${id}-max`}
-          class="stage-max"
-          value={getStage(index)?.max}
-          placeholder={index < stagePlaceholders.max.length ? stagePlaceholders.max[index] : ''} />
-        <label for={`${id}-procedures`} class="stage-procedures">
-          Procedures
-          <span class="note">Instructions for a player creating a character
-          in this stage of life.</span>
-        </label>
-        <textarea
-          name={`${id}-procedures`}
-          id={`${id}-procedures`}
-          class="stage-procedures"
-          placeholder={index < stagePlaceholders.procedures.length ? stagePlaceholders.procedures[index] : ''}
-        >{getStage(index)?.procedures}</textarea>
-      </fieldset>
+    {stages.map((stage, index) => (
+      <StageForm
+        n={index + 1}
+        stage={stage}
+        placeholder={index < placeholders.length ? placeholders[index] : null} />
     ))}
-    <StageDirector client:only="react" stages={stages} />
   </fieldset>
+  <AddRemoveRepeatableElements
+    template="stage-template"
+    root="fieldset.stages"
+    elements="fieldset"
+    remove="- Remove Stage"
+    add="+ Add Stage"
+    />
   <input type="checkbox" id="public" name="public" checked={species.public} />
   <label for="public" class="checkbox">
     <strong>Make it public.</strong> Public species can be seen by everyone.
@@ -186,3 +135,6 @@ const stagePlaceholders = {
   </label>
   <button>{button}</button>
 </form>
+<template id="stage-template">
+  <StageForm isTemplate={true} />
+</template>

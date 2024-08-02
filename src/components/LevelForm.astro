@@ -1,0 +1,30 @@
+---
+const { n, level, placeholder, isTemplate } = Astro.props
+const num = isTemplate ? '{{X}}' : n
+const id = isTemplate ? 'level-X' : `level-${n}`
+const defaultDescPlaceholder = `At level ${num}, characters have access to all of the level ${num} abilities.`
+---
+<fieldset key={id} id={id} data-number={num}>
+  <label for={`${id}-name`} class="level-name">
+    Level {num} Name
+    <span class="note">What is this level called?</span>
+  </label>
+  <input
+    type="text"
+    name={`${id}-name`}
+    id={`${id}-name`}
+    class="level-name"
+    value={level?.name ?? ''}
+    placeholder={placeholder?.name ?? `Level ${num} Name`} />
+  <label for={`${id}-description`} class="level-description">
+    Level {num} Description
+    <span class="note">What does it mean for something to be
+      at this level?</span>
+  </label>
+  <textarea
+    name={`${id}-description`}
+    id={`${id}-description`}
+    class="level-description"
+    placeholder={placeholder?.description ?? defaultDescPlaceholder}
+  >{level?.description}</textarea>
+</fieldset>

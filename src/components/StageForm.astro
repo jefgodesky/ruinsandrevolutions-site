@@ -1,0 +1,59 @@
+---
+const { n, stage, placeholder, isTemplate } = Astro.props
+const num = isTemplate ? '{{X}}' : n
+const id = isTemplate ? 'stage-X' : `stage-${n}`
+---
+<fieldset key={id} id={id} data-number={num}>
+  <label for={`${id}-name`} class="stage-name">
+    Stage {num} Name
+    <span class="note">What is this stage of life called?</span>
+  </label>
+  <input
+    type="text"
+    name={`${id}-name`}
+    id={`${id}-name`}
+    class="stage-name"
+    value={stage?.name ?? ''}
+    placeholder={placeholder?.name ?? `Stage ${num} Name`} />
+  <div class="cols">
+    <div>
+      <label for={`${id}-min`} class="stage-min">
+        Minimum Age
+        <span class="note">The age at which this stage of life generally
+          begins for members of this species.</span>
+      </label>
+      <input
+        type="number"
+        name={`${id}-min`}
+        id={`${id}-min`}
+        class="stage-min"
+        value={stage?.min}
+        placeholder={placeholder?.min ?? ''} />
+    </div>
+    <div>
+      <label for={`${id}-max`} class="stage-max">
+        Maximum Age
+        <span class="note">The age at which this stage of life generally
+          ends for members of this species.</span>
+      </label>
+      <input
+        type="number"
+        name={`${id}-max`}
+        id={`${id}-max`}
+        class="stage-max"
+        value={stage?.max ?? ''}
+        placeholder={placeholder?.max ?? ''} />
+    </div>
+  </div>
+  <label for={`${id}-procedures`} class="stage-procedures">
+    Procedures
+    <span class="note">Instructions for a player creating a character
+          in this stage of life.</span>
+  </label>
+  <textarea
+    name={`${id}-procedures`}
+    id={`${id}-procedures`}
+    class="stage-procedures"
+    placeholder={placeholder?.procedures ?? `Procedures for stage ${num}.`}
+  >{stage?.procedures}</textarea>
+</fieldset>
