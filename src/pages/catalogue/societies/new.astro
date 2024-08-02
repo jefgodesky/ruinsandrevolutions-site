@@ -73,7 +73,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New Society">
-  <h1>Create a New Society</h1>
+  <h1><span class="sub">Create a New</span> Society</h1>
   {message && <aside class="message error">{message}</aside>}
   <SocietyForm
     action="/catalogue/societies/new"

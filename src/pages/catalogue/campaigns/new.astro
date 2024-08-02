@@ -70,7 +70,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New Campaign">
-  <h1>Create a New Campaign</h1>
+  <h1><span class="sub">Create a New</span> Campaign</h1>
   {message && <aside class="message error">{message}</aside>}
   <CampaignForm
     action="/catalogue/campaigns/new"

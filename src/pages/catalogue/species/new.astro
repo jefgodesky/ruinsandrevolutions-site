@@ -100,7 +100,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New Species">
-  <h1>Create a New Species</h1>
+  <h1><span class="sub">Create a New</span> Species</h1>
   {message && <aside class="message error">{message}</aside>}
   <SpeciesForm
     action="/catalogue/species/new"

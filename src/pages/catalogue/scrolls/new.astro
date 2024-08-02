@@ -68,7 +68,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New Scroll">
-  <h1>Create a New Scroll</h1>
+  <h1><span class="sub">Create a New</span> Scroll</h1>
   {message && <aside class="message error">{message}</aside>}
   <ScrollForm
     action="/catalogue/scrolls/new"

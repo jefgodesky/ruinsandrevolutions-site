@@ -83,7 +83,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New Scale">
-  <h1>Create a New Scale</h1>
+  <h1><span class="sub">Create a New</span> Scale</h1>
   {message && <aside class="message error">{message}</aside>}
   <ScaleForm
     action="/catalogue/scales/new"

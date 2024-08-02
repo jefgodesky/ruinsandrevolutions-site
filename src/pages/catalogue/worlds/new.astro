@@ -54,7 +54,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New World">
-  <h1>Create a New World</h1>
+  <h1><span class="sub">Create a New</span> World</h1>
   {message && <aside class="message error">{message}</aside>}
   <WorldForm
     action="/catalogue/worlds/new"

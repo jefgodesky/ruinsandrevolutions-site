@@ -73,7 +73,7 @@ if (Astro.request.method === 'POST') {
 }
 ---
 <BaseLayout title="Create a New Character">
-  <h1>Create a New Character</h1>
+  <h1><span class="sub">Create a New</span> Character</h1>
   {message && <aside class="message error">{message}</aside>}
   <CharacterForm
     action="/catalogue/characters/new"
