@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../data'
+import UserLink from '../../../components/UserLink.astro'
+import MarkdownContent from '../../../components/MarkdownContent.astro'
+import getAuth from '../../../utils/get-auth'
+
+const { apiKey, username } = getAuth(Astro)
+const { id } = Astro.params
+let roll: { [key: string]: any } | null = null
+const dateFormatOptions = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+}
+
+try {
+  const res = await fetch(`${apiRoot}/rolls/${id}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  if (res.status === 200) {
+    roll = await res.json()
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title="Roll Details">
+  {!roll && (
+    <h1>Roll Not Found</h1>
+    <p class="byline">404 Not Found</p>
+    <p>Sorry, but we have no record of any such roll. You can check out
+    <a href="/catalogue/rolls">a list of what we do have</a> or
+    <a href="/catalogue/rolls/new">make a new roll</a>.</p>
+  )}
+  {roll && (
+    <>
+      <h1>Roll Details</h1>
+      <dl class="details">
+        <dt>Table</dt>
+        <dd>
+          <a href={`/catalogue/tables/${roll.table.slug}`}>{roll.table.name}</a>
+        </dd>
+        <dt>Roller</dt>
+        <dd>
+          <UserLink user={roll.roller} />
+        </dd>
+        <dt>Time</dt>
+        <dd>
+          {new Date(roll.time).toLocaleDateString('en-US', dateFormatOptions)}
+        </dd>
+        <dt>Modifier</dt>
+        <dd>{roll.modifier < 0 ? roll.modifier : `+${roll.modifier}`}</dd>
+        {roll.campaign && <>
+          <dt>Campaign</dt>
+          <dd>
+            <a href={`/catalogue/campaigns/${roll.campaign.world.slug}/${roll.campaign.slug}`}>{roll.campaign.name}</a>
+          </dd>
+        </>}
+        {roll.character && <>
+          <dt>Character</dt>
+          <dd>
+            <a href={`/catalogue/characters/${roll.character.id}`}>{roll.character.name}</a>
+            ({roll.ability})
+          </dd>
+        </>}
+      </dl>
+      <h2>Results</h2>
+      <ul>
+        {roll.results.map(result => <MarkdownContent tag="li" content={result} noParagraph={true} />)}
+      </ul>
+      <h2>Log</h2>
+      <ul>
+        {roll.log.map(entry => <MarkdownContent tag="li" content={entry} noParagraph={true} />)}
+      </ul>
+    </>
+  )}
+</BaseLayout>

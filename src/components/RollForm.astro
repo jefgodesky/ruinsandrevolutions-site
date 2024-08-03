@@ -1,0 +1,78 @@
+---
+const { action, button, characters, campaigns } = Astro.props
+const table: { [key: string]: any } = Astro.props.table ?? {}
+---
+<form action={action} method="POST">
+  <label for="table">
+    Table
+    <span class="note">Provide the unique slug of the table you want to roll on.</span>
+  </label>
+  <input type="text" name="table" id="table" required placeholder="actions" value={table.slug} />
+  <label for="note">
+    Note
+    <span class="note">You can add a note here on what this roll is for, if you like.</span>
+  </label>
+  <textarea name="note" id="note" placeholder="Checking for traps"></textarea>
+  <fieldset class="modifier">
+    <legend>Modifiier</legend>
+    <p>The following options are for adding a modifier to your roll. If this
+    table doesn&rsquo;t take a modifier, you can skip this and his the
+    <strong>Roll</strong> button now.</p>
+
+    <label for="modifier">
+      Modifier
+      <span class="note">To specify a modifier to add or subtract from the
+      roll, provide it here.</span>
+    </label>
+    <input class="modifier" type="number" name="modifier" id="modifier" />
+
+    {characters.length > 0 && <>
+      <label for="character">
+        Character
+        <span class="note">If you&rsquo;re making this roll for one of your
+        player characters, choose that character here.</span>
+      </label>
+      <select name="character" id="character">
+        <option>None</option>
+        {characters.map(character => (<option value={character.id}>{character.name}</option>))}
+      </select>
+      <label for="ability">
+        Ability
+        <span class="note">If you&rsquo;re making this roll for one of your
+        player characters, then you&rsquo;re probably making it for a specific
+        ability or resistance. Which one?</span>
+      </label>
+      <select name="ability" id="ability">
+        <option>None</option>
+        <optgroup label="Abilities">
+          <option>Strength</option>
+          <option>Dexterity</option>
+          <option>Constitution</option>
+          <option>Intelligence</option>
+          <option>Wisdom</option>
+          <option>Charisma</option>
+        </optgroup>
+        <optgroup label="Resistances">
+          <option>Fortitude</option>
+          <option>Reflex</option>
+          <option>Will</option>
+        </optgroup>
+      </select>
+    </>}
+
+    {campaigns.length > 0 && <>
+      <label for="campaign">
+        Campaign
+        <span class="note">If you&rsquo;d like to make this roll available to
+        the game masters running one of the campaigns you&rsquo;re in, select
+        which campaign this roll belongs to here.</span>
+      </label>
+      <select name="campaign" id="campaign">
+        <option>None</option>
+        {campaigns.map(campaign => (<option value={`${campaign.world.slug}/${campaign.slug}`}>{campaign.name}</option>))}
+      </select>
+    </>}
+
+  </fieldset>
+  <button>{button}</button>
+</form>

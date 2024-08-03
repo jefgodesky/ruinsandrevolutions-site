@@ -1,0 +1,28 @@
+@use "../modules/mixins";
+
+fieldset.modifier {
+  @include mixins.set-style("background", "bg-more-subdued");
+  border: 0;
+  display: block;
+  margin: 1rem -2rem;
+  padding: 2rem;
+
+  legend {
+    @include mixins.set-style("background", "bg-more-subdued");
+    display: block;
+    font-family: 'Alegreya SC', serif;
+    font-weight: 600;
+    font-size: 2rem;
+    line-height: 1.1;
+    margin: 0;
+    padding: 1rem 2rem 0;
+
+    & + p {
+      margin-top: -1rem;
+    }
+  }
+
+  input.modifier {
+    max-width: 4rem;
+  }
+}

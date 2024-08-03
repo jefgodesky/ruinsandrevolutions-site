@@ -22,6 +22,13 @@ const headers = {
   Authorization: `Bearer ${apiKey}`
 }
 
+interface Row {
+  min: number | null
+  max: number | null
+  text: string
+  formula?: string
+}
+
 if (Astro.request.method === 'POST') {
   try {
     const formData = await Astro.request.formData()
@@ -34,7 +41,7 @@ if (Astro.request.method === 'POST') {
     const isCumulative = formData.get('cumulative') === 'on'
     const isPublic = formData.get('public') === 'on'
     const rowIndex: { [key: string]: number } = {}
-    const rows: { min: number | null, max: number | null, text: string, formula: string | null }[] = []
+    const rows: Row[] = []
 
     for (const key of formData.keys()) {
       if (key.startsWith('row-')) {
@@ -54,12 +61,14 @@ if (Astro.request.method === 'POST') {
       ]
         .map(str => parseInt(str))
         .map(el => isNaN(el) ? null : el)
-      rows.push({
+      const formula = formData.get(`row-${num}-formula`) as string
+      const row: Row = {
         min: range[0],
         max: range[1],
-        text: formData.get(`row-${num}-text`) as string,
-        formula: formData.get(`row-${num}-formula`) as string,
-      })
+        text: formData.get(`row-${num}-text`) as string
+      }
+      if (formula && formula.length > 0) row.formula = formula
+      rows.push(row)
     }
 
     const payload = {

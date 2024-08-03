@@ -1,0 +1,37 @@
+---
+import UserLink from './UserLink.astro'
+import MarkdownContent from './MarkdownContent.astro'
+const { roll } = Astro.props
+---
+<article class="card roll catalogue-listing">
+  <dl class="details">
+    <dt>Table</dt>
+    <dd>
+      <a href={`/catalogue/tables/${roll.table.slug}`}>{roll.table.name}</a>
+    </dd>
+    <dt>Roller</dt>
+    <dd>
+      <UserLink user={roll.roller} />
+    </dd>
+    {roll.campaign && <>
+      <dt>Campaign</dt>
+      <dd>
+        <a href={`/catalogue/campaigns/${roll.campaign.world.slug}/${roll.campaign.slug}`}>{roll.campaign.name}</a>
+      </dd>
+    </>}
+    {roll.character && <>
+      <dt>Character</dt>
+      <dd>
+        <a href={`/catalogue/characters/${roll.character.id}`}>{roll.character.name}</a>
+        ({roll.ability})
+      </dd>
+    </>}
+    <dt>Results</dt>
+    <dd>
+      <ul>
+        {roll.results.map(result => <MarkdownContent tag="li" content={result} noParagraph={true} />)}
+      </ul>
+    </dd>
+  </dl>
+  <strong><a href={`/catalogue/rolls/${roll.id}`}>More Details</a></strong>
+</article>

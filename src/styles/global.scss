@@ -36,6 +36,8 @@
 @use "./partials/character-abilities";
 @use "./partials/actions";
 @use "./partials/seals";
+@use "./partials/roll-form";
+@use "./partials/rolls";
 
 html {
   @media (min-width: 60rem) {

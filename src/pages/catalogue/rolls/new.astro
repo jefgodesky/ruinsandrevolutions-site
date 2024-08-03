@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import Breadcrumbs from '../../../components/Breadcrumbs.astro'
+import NoJS from '../../../components/NoJS.astro'
+import RollForm from '../../../components/RollForm.astro'
+import { apiRoot } from '../../../data'
+import getAuth from '../../../utils/get-auth'
+import getHeaders from '../../../utils/get-headers'
+
+let message = ''
+let table: { [key: string]: any } = {}
+let user: { [key: string]: any } = {}
+const tableParam = Astro.url.searchParams.get('table')
+const auth = getAuth(Astro)
+const headers = getHeaders(Astro)
+
+if (tableParam) {
+  try {
+    const res = await fetch(`${apiRoot}/tables/${tableParam}`, {
+      method: 'GET',
+      headers
+    })
+    table = await res.json()
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+if (auth?.username) {
+  try {
+    const res = await fetch(`${apiRoot}/users/${auth.username}`, {
+      method: 'GET',
+      headers
+    })
+    user = await res.json()
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+if (Astro.request.method === 'POST') {
+  try {
+    const formData = await Astro.request.formData()
+    const table = formData.get('table') as string
+    const notes = formData.get('notes') as string
+    const character = formData.get('character') as string
+    const ability = formData.get('ability') as string
+    const campaign = formData.get('campaign') as string
+    const modifierStr = formData.get('modifier') as string
+
+    const payload: { [key: string]: string | number } = { table }
+    if (notes) payload.notes = notes
+    if (character) payload.character = character
+    if (ability) payload.ability = ability
+    if (campaign) payload.campaign = campaign
+    if (modifierStr) {
+      const modifier = parseInt(modifierStr)
+      if (!isNaN(modifier)) payload.modifier = modifier
+    }
+
+    const res = await fetch(`${apiRoot}/rolls`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `/catalogue/rolls/${data.id}`,
+      },
+    })
+  } catch (err) {
+    message = 'Sorry, something went wrong. Please try again.'
+    console.error(err)
+  }
+}
+---
+<BaseLayout title="Roll on a Random Table">
+  {table.name && <Breadcrumbs ancestors={[
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/tables', name: 'Random Tables' },
+    { path: `/catalogue/tables/${table.slug}`, name: table.name }
+  ]} current='Roll' />}
+  {!table.name && <h1><span class="sub">Roll on a</span> Random Table</h1>}
+  {table.name && <h1><span class="sub">Roll on</span> {table.name}</h1>}
+  {message && <aside class="message error">{message}</aside>}
+  <RollForm
+    action="/catalogue/rolls/new"
+    table={table}
+    characters={user.pcs ?? []}
+    campaigns={user.campaigns ?? []}
+    button="Roll" />
+  <NoJS />
+</BaseLayout>

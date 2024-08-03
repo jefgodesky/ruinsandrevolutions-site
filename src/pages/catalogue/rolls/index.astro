@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { apiRoot, defaultPageSize } from '../../../data'
+import Pagination from '../../../components/Pagination.astro'
+import RollListing from '../../../components/RollListing.astro'
+import getHeaders from '../../../utils/get-headers'
+
+const headers = getHeaders(Astro)
+let data: { [key: string]: any } = {}
+
+const pageParam = 'page'
+const pageSizeParam = 'page_size'
+const page = Astro.url.searchParams.get(pageParam) ?? 1
+const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
+const url = `${apiRoot}/rolls?page=${page}&page_size=${pageSize}`
+
+try {
+  const res = await fetch(url, {
+    method: 'GET',
+    headers
+  })
+
+  data = await res.json()
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title="Rolls">
+  <h1>Rolls</h1>
+  {(!data.rolls || data.rolls.length < 1) && (<div class="null">
+    <p>No scales found.</p>
+    <a href="/catalogue/scales/new">+ Create a new scale</a>
+  </div>)}
+  {data.rolls && data.rolls.length > 0 && data.rolls.map(roll => (
+    <RollListing roll={roll} />
+  ))}
+  {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/scales" pageParam="page" pageSizeParam="page_size" />)}
+</BaseLayout>
