@@ -65,7 +65,11 @@ try {
         <caption>{table.name}</caption>
         <thead>
           <tr>
-            <th class="dice">{table['dice-label']}</th>
+            <th class="dice">
+              <a href={`/catalogue/rolls/new?table=${table.slug}`}>
+                {table['dice-label']}
+              </a>
+            </th>
             <th>Result</th>
           </tr>
         </thead>
@@ -76,6 +80,10 @@ try {
           </tr>))}
         </tbody>
       </table>
+
+      <p>
+        <a href={`/catalogue/rolls/new?table=${table.slug}`}>Roll on this table</a>
+      </p>
 
       {isAuthor && (<nav class="actions">
         <ul>
