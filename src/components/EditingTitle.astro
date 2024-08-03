@@ -1,0 +1,5 @@
+---
+const { name, fallback } = Astro.props
+---
+{!name && <h1>Editing {fallback}</h1>}
+{name && <h1><span class="sub">Editing</span> {name}</h1>}

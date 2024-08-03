@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../components/EditingTitle.astro'
 import NoJS from '../../../../components/NoJS.astro'
 import ScrollForm from '../../../../components/ScrollForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
@@ -23,7 +24,6 @@ if (!auth?.apiKey) {
 const { apiKey, username } = auth
 let scroll: { [key: string]: any } | null = null
 let isWriter = false
-let title = 'Edit'
 let ancestors = []
 let message = ''
 
@@ -43,7 +43,6 @@ try {
 
   if (res.status === 200) {
     scroll = await res.json()
-    title = `Edit ${scroll.name}`
     isWriter = scroll.writers.map(writer => writer.username).includes(username)
   }
 } catch (err) {
@@ -98,8 +97,8 @@ if (Astro.request.method === 'POST') {
   }
 }
 ---
-<BaseLayout title={title}>
-  <h1>{scroll.name}</h1>
+<BaseLayout title={scroll?.name ? `Editing ${scroll.name}` : 'Editing Scroll'}>
+  <EditingTitle name={scroll?.name} fallback="Scroll" />
   {message && <aside class="message error">{message}</aside>}
   <ScrollForm
     scroll={scroll}

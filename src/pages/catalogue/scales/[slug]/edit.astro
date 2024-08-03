@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../components/EditingTitle.astro'
 import NoJS from '../../../../components/NoJS.astro'
 import ScaleForm from '../../../../components/ScaleForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
@@ -18,7 +19,6 @@ if (!auth?.apiKey) {
 
 const { apiKey, username } = auth
 let scale: { [key: string]: any } | null = null
-let title = 'Edit Scale'
 let message = ''
 const headers = {
   ...apiHeaders,
@@ -49,7 +49,6 @@ try {
 
   if (res.status === 200) {
     scale = await res.json()
-    title = scale.name
     if (scale.author.username !== username) {
       return redirectToRetrieve()
     }
@@ -109,8 +108,8 @@ try {
   console.error(err)
 }
 ---
-<BaseLayout title={title}>
-  <h1>{title}</h1>
+<BaseLayout title={scale?.name ? `Editing ${scale.name}` : 'Editing Scale'}>
+  <EditingTitle name={scale?.name} fallback="Scale" />
   {message && <aside class="message error">{message}</aside>}
   <ScaleForm
     action={`/catalogue/scales/${slug}/edit`}

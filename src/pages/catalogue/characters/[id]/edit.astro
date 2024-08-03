@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../components/EditingTitle.astro'
 import NoJS from '../../../../components/NoJS.astro'
 import CharacterForm from '../../../../components/CharacterForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
@@ -23,7 +24,6 @@ if (!auth?.apiKey) {
 const { apiKey, username } = auth
 let character: { [key: string]: any } | null = null
 let isPlayer = false
-let title = 'Edit'
 let ancestors = []
 let message = ''
 
@@ -43,7 +43,6 @@ try {
 
   if (res.status === 200) {
     character = await res.json()
-    title = `Edit ${character.name}`
     isPlayer = username === character.player.username
   }
 } catch (err) {
@@ -101,8 +100,8 @@ if (Astro.request.method === 'POST') {
   }
 }
 ---
-<BaseLayout title={title}>
-  <h1>{character.name}</h1>
+<BaseLayout title={character?.name ? `Editing ${character.name}` : 'Editing Campaign'}>
+  <EditingTitle name={character?.name} fallback="Character" />
   {message && <aside class="message error">{message}</aside>}
   <CharacterForm
     character={character}

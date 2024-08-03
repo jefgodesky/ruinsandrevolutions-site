@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../../components/EditingTitle.astro'
 import NoJS from '../../../../../components/NoJS.astro'
 import CampaignForm from '../../../../../components/CampaignForm.astro'
 import { apiRoot, apiHeaders } from '../../../../../data'
@@ -19,7 +20,6 @@ if (!auth?.apiKey) {
 
 const { apiKey, username } = auth
 let campaign: { [key: string]: any } | null = null
-let title = 'Edit Campaign'
 let message = ''
 const headers = {
   ...apiHeaders,
@@ -52,7 +52,6 @@ try {
 
   if (res.status === 200) {
     campaign = await res.json()
-    title = campaign.name
     if (!campaign.gms.map(gm => gm.username).includes(username)) {
       return redirectToRetrieve()
     }
@@ -95,8 +94,8 @@ try {
   console.error(err)
 }
 ---
-<BaseLayout title={title}>
-  <h1>{title}</h1>
+<BaseLayout title={campaign?.name ? `Editing ${campaign.name}` : 'Editing Campaign'}>
+  <EditingTitle name={campaign?.name} fallback="Campaign" />
   {message && <aside class="message error">{message}</aside>}
   <CampaignForm
     action={`/catalogue/campaigns/${world}/${slug}/edit`}

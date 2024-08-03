@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../components/EditingTitle.astro'
 import NoJS from '../../../../components/NoJS.astro'
 import WorldForm from '../../../../components/WorldForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
@@ -20,7 +21,6 @@ const { apiKey, username } = auth
 let world: { [key: string]: any } | null = null
 let isCreator = false
 let ancestors = []
-let title = 'Edit'
 let message = ''
 
 if (apiKey === undefined) {
@@ -48,7 +48,6 @@ try {
 
   if (res.status === 200) {
     world = await res.json()
-    title = `Edit ${world.name}`
     isCreator = world.creators.map(creator => creator.username).includes(username)
   }
 } catch (err) {
@@ -99,8 +98,8 @@ if (Astro.request.method === 'POST') {
   }
 }
 ---
-<BaseLayout title={title}>
-  <h1>{world.name}</h1>
+<BaseLayout title={world?.name ? `Editing ${world.name}` : 'Editing World'}>
+  <EditingTitle name={world?.name} fallback="World" />
   {message && <aside class="message error">{message}</aside>}
   <WorldForm
     world={world}

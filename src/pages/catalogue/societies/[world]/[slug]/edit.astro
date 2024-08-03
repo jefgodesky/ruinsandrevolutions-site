@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../../components/EditingTitle.astro'
 import NoJS from '../../../../../components/NoJS.astro'
 import SocietyForm from '../../../../../components/SocietyForm.astro'
 import { apiRoot, apiHeaders } from '../../../../../data'
@@ -19,7 +20,6 @@ if (!auth?.apiKey) {
 
 const { apiKey, username } = auth
 let society: { [key: string]: any } | null = null
-let title = 'Edit Society'
 let message = ''
 const headers = {
   ...apiHeaders,
@@ -52,7 +52,6 @@ try {
 
   if (res.status === 200) {
     society = await res.json()
-    title = society.name
     if (!society.world.creators.map(creator => creator.username).includes(username)) {
       return redirectToRetrieve()
     }
@@ -96,8 +95,8 @@ try {
   console.error(err)
 }
 ---
-<BaseLayout title={title}>
-  <h1>{title}</h1>
+<BaseLayout title={society?.name ? `Editing ${society.name}` : 'Editing Society'}>
+  <EditingTitle name={society?.name} fallback="Society" />
   {message && <aside class="message error">{message}</aside>}
   <SocietyForm
     action={`/catalogue/societies/${world}/${slug}/edit`}

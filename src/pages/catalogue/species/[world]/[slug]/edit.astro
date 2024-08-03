@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../../../layouts/BaseLayout.astro'
+import EditingTitle from '../../../../../components/EditingTitle.astro'
 import NoJS from '../../../../../components/NoJS.astro'
 import SpeciesForm from '../../../../../components/SpeciesForm.astro'
 import { apiRoot, apiHeaders } from '../../../../../data'
@@ -19,7 +20,6 @@ if (!auth?.apiKey) {
 
 const { apiKey, username } = auth
 let species: { [key: string]: any } | null = null
-let title = 'Edit Species'
 let message = ''
 const headers = {
   ...apiHeaders,
@@ -52,7 +52,6 @@ try {
 
   if (res.status === 200) {
     species = await res.json()
-    title = species.name
     if (!species.world.creators.map(creator => creator.username).includes(username)) {
       return redirectToRetrieve()
     }
@@ -126,8 +125,8 @@ try {
   console.error(err)
 }
 ---
-<BaseLayout title={title}>
-  <h1>{title}</h1>
+<BaseLayout title={species?.name ? `Editing ${species.name}` : 'Editing Species'}>
+  <EditingTitle name={species?.name} fallback="Species" />
   {message && <aside class="message error">{message}</aside>}
   <SpeciesForm
     action={`/catalogue/species/${world}/${slug}/edit`}
