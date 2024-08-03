@@ -1,6 +1,7 @@
 ---
-import { parseMarkdown} from '../utils/parse-markdown'
+import parseMarkdown from '../utils/parse-markdown'
 const { content, tag: Tag = 'div' } = Astro.props
-const html = await parseMarkdown(content)
+const noParagraph = Astro.props.noParagraph === true
+let html = await parseMarkdown(content, noParagraph)
 ---
 <Tag set:html={html}></Tag>

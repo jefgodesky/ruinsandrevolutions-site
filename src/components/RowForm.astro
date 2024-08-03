@@ -1,0 +1,61 @@
+---
+const { n, row, placeholder, isTemplate } = Astro.props
+const num = isTemplate ? '{{X}}' : n
+const id = isTemplate ? 'row-X' : `row-${n}`
+---
+<fieldset key={id} id={id} data-number={num}>
+  <div class="cols">
+    <div>
+      <label for={`${id}-min`} class="row-min">
+        Minimum
+        <span class="note">What is the lowest that a person can roll to get this
+      result? Leave blank to make this the result for any row equal to the
+      maximum or lower.</span>
+      </label>
+      <input
+        type="number"
+        name={`${id}-min`}
+        id={`${id}-min`}
+        class="row-min"
+        value={row?.min}
+        placeholder={placeholder?.min ?? ''} />
+    </div>
+    <div>
+      <label for={`${id}-max`} class="row-max">
+        Maximum
+        <span class="note">What is the highest that a person can roll to get this
+      result? Leave blank to make this the result for any row equal to the
+      minimum or higher.</span>
+      </label>
+      <input
+        type="number"
+        name={`${id}-max`}
+        id={`${id}-max`}
+        class="row-max"
+        value={row?.max ?? ''}
+        placeholder={placeholder?.max ?? ''} />
+    </div>
+  </div>
+  <label for={`${id}-text`} class="row-text">
+    Row {num} Text
+    <span class="note">What is the text for this row?</span>
+  </label>
+  <textarea
+    name={`${id}-text`}
+    id={`${id}-text`}
+    class="row-text"
+    placeholder={placeholder?.text ?? `2d4 wolves`}
+  >{row?.text}</textarea>
+  <label for={`${id}-formula`} class="row-formula">
+    Row {num} Formula
+    <span class="note"><a href="/catalogue/tables/formulas">Formulas</a> allow
+      you to return results on a table with calculated, randomized results,
+      like rolling dice or rolling on other tables.</span>
+  </label>
+  <textarea
+    name={`${id}-formula`}
+    id={`${id}-formula`}
+    class="row-formula"
+    placeholder={placeholder?.formula ?? `{2d4} wolves`}
+  >{row?.formula}</textarea>
+</fieldset>

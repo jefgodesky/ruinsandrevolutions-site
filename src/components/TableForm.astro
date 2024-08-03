@@ -1,0 +1,108 @@
+---
+import SlugField from './client/SlugField'
+import AddRemoveRepeatableElements from '../components/AddRemoveRepeatableElements.astro'
+import RowForm from '../components/RowForm.astro'
+import getRepeatableElements from '../utils/get-repeatable-elements'
+const { action, button, isEdit } = Astro.props
+const table: any = Astro.props.table ?? {}
+
+interface Row {
+  min: number | null
+  max: number | null
+  text: string
+  formula: string
+}
+
+const rows = getRepeatableElements<Row>(
+  table?.rows ?? [],
+  3,
+  Astro.url.searchParams.get('rows')
+)
+
+const abilities = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']
+---
+<form action={action} method="POST">
+  <label for="name">
+    Name
+    <span class="note">What is this random table called?</span>
+  </label>
+  <input type="text" name="name" id="name" required placeholder="Actions" value={table.name} />
+  <label for="slug" class="no-js">
+    Slug
+    <span class="note">A string which uniquely identifies this random table.</span>
+  </label>
+  <input type="text" name="slug" id="slug" required placeholder="actions" value={table.slug} />
+  <SlugField
+    client:only="react"
+    isEdit={isEdit}
+    collection="tables"
+    name={table.name}
+    slug={table.slug}
+    nameField="name"
+    slugField="slug"
+    slugNote="A string which uniquely identifies this random table."
+    placeholder="Actions" />
+  <label for="description">
+    Description
+    <span class="note">Provide a short summary of this random table and how to
+      use it.</span>
+  </label>
+  <textarea name="description" id="description" required placeholder="This is the standard random table for taking action in _Ruins & Revolutions_. Roll 2d6 and add your chosen ability to the result.">{table.description}</textarea>
+  <label for="dice-label">
+    Dice Label
+    <span class="note">How should the dice rolled for this table be labeled
+      (e.g., 2d6 or 1d100)?</span>
+  </label>
+  <input type="text" name="dice-label" id="dice-label" required placeholder="2d6" value={table['dice-label']} />
+  <label for="formula">
+    Dice Formula
+    <span class="note">What formula should be used for rolling dice on this
+      table? This is <em>usually</em> identical to the dice label, but not
+      <em>always</em>.</span>
+  </label>
+  <input type="text" name="formula" id="formula" required placeholder="2d6" value={table.formula} />
+  <label for="ability">
+    Ability
+    <span class="note">Do rolls on this table add a character&rsquo;s
+      ability?</span>
+  </label>
+  <select name="ability" id="ability">
+    <option>No ability</option>
+    {abilities.map(ability => (<option selected={table?.ability === ability}>{ability}</option>))}
+  </select>
+  <div>
+    <input type="checkbox" id="cumulative" name="cumulative" checked={table.cumulative} />
+    <label for="cumulative" class="checkbox">
+      <strong>Make it cumulative.</strong> Cumulative tables return the row that
+        you rolled, plus all other rows above it.
+    </label>
+  </div>
+  <fieldset name="rows" class="rows repeatable">
+    <legend>Rows</legend>
+    {rows.map((row, index) => (
+      <RowForm
+        n={index + 1}
+        row={row} />
+    ))}
+  </fieldset>
+  <AddRemoveRepeatableElements
+    template="row-template"
+    root="fieldset.rows"
+    elements="fieldset"
+    remove="- Remove Row"
+    add="+ Add Row"
+  />
+  <div>
+    <input type="checkbox" id="public" name="public" checked={table.public} />
+    <label for="public" class="checkbox">
+      <strong>Make it public.</strong> Public random tables can be seen by
+      everyone. Leave this unchecked if you&rsquo;re not ready to share your
+      random table with everyone, or if you just want to keep it private. Private
+      random tables can only be seen by their authors (in this case, you).
+    </label>
+  </div>
+  <button>{button}</button>
+</form>
+<template id="row-template">
+  <RowForm isTemplate={true} />
+</template>

@@ -1,0 +1,15 @@
+---
+import MarkdownContent from './MarkdownContent.astro'
+import UserLink from './UserLink.astro'
+const { table } = Astro.props
+console.log(table)
+---
+<article class="card table catalogue-listing">
+  <header>
+    <h3>
+      <a href={`/catalogue/tables/${table.slug}`}>{table.name}</a>
+    </h3>
+    <p class="secondary">By <UserLink user={table.author}></UserLink></p>
+  </header>
+  <MarkdownContent tag="div" content={table.description} />
+</article>

@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import { apiRoot, apiHeaders } from '../../../../data'
+import MarkdownContent from '../../../../components/MarkdownContent.astro'
+import UserLink from '../../../../components/UserLink.astro'
+import getAuth from '../../../../utils/get-auth'
+import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
+
+const { apiKey, username } = getAuth(Astro)
+const { slug } = Astro.params
+let table: { [key: string]: any } | null = null
+let ancestors = []
+let title = 'Unknown Random Table'
+let isAuthor = false
+let rows: Array<{ dice: string, result: string }> = []
+
+try {
+  const res = await fetch(`${apiRoot}/tables/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  ancestors = [
+    { path: '/catalogue', name: 'Catalogue' },
+    { path: '/catalogue/tables', name: 'Random Tables' },
+  ]
+
+  if (res.status === 200) {
+    table = await res.json()
+    title = table.name
+    isAuthor = table.author.username === username
+    rows = table.rows.map(row => {
+      const orLower = !row.min
+      const orHigher = !row.max
+      const dice = orLower
+        ? `${row.max} or less`
+        : orHigher
+          ? `${row.min} or more`
+          : `${row.min}-${row.max}`
+      return { dice, result: row.text }
+    })
+  }
+} catch (err) {
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  {!table && (
+    <h1>Unknown Random Table</h1>
+    <p class="byline">404 Not Found</p>
+    <p>That one fell off the table; roll again. You can
+      <a href="/catalogue/tables">check our listings</a> or
+      <a href="/catalogue/tables/new">create your own random table</a>.</p>
+  )}
+  {table && (
+    <>
+      <Breadcrumbs ancestors={ancestors} current={table.name}></Breadcrumbs>
+      <h1>{table.name}</h1>
+      <p class="byline">By <UserLink user={table.author}></UserLink></p>
+      <MarkdownContent tag="div" content={table.description}></MarkdownContent>
+      <table class="random">
+        <caption>{table.name}</caption>
+        <thead>
+          <tr>
+            <th class="dice">{table['dice-label']}</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(row => (<tr>
+            <td class="dice">{row.dice}</td>
+            <MarkdownContent tag="td" content={row.result} noParagraph={true} />
+          </tr>))}
+        </tbody>
+      </table>
+
+      {isAuthor && (<nav class="actions">
+        <ul>
+          <li><a href={`/catalogue/tables/${slug}/edit`}>Edit</a></li>
+        </ul>
+      </nav>)}
+    </>
+  )}
+</BaseLayout>

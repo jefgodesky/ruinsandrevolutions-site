@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import { apiRoot, defaultPageSize } from '../../../data'
 import Pagination from '../../../components/Pagination.astro'
-import ScaleListing from '../../../components/ScaleListing.astro'
+import TableListing from '../../../components/TableListing.astro'
 import getHeaders from '../../../utils/get-headers'
 
 const headers = getHeaders(Astro)
@@ -12,7 +12,7 @@ const pageParam = 'page'
 const pageSizeParam = 'page_size'
 const page = Astro.url.searchParams.get(pageParam) ?? 1
 const pageSize = Astro.url.searchParams.get(pageSizeParam) ?? defaultPageSize
-const url = `${apiRoot}/scales?page=${page}&page_size=${pageSize}`
+const url = `${apiRoot}/tables?page=${page}&page_size=${pageSize}`
 
 try {
   const res = await fetch(url, {
@@ -25,14 +25,14 @@ try {
   console.error(err)
 }
 ---
-<BaseLayout title="Scales">
-  <h1>Scales</h1>
-  {(!data.scales || data.scales.length < 1) && (<div class="null">
-    <p>No scales found.</p>
-    <a href="/catalogue/scales/new">+ Create a new scale</a>
+<BaseLayout title="Random Tables">
+  <h1>Random Tables</h1>
+  {(!data.tables || data.tables.length < 1) && (<div class="null">
+    <p>No tables found.</p>
+    <a href="/catalogue/tables/new">+ Create a new table</a>
   </div>)}
-  {data.scales && data.scales.length > 0 && data.scales.map(scale => (
-    <ScaleListing scale={scale} />
+  {data.tables && data.tables.length > 0 && data.tables.map(table => (
+    <TableListing table={table} />
   ))}
-  {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/scales" pageParam="page" pageSizeParam="page_size" />)}
+  {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/tables" pageParam="page" pageSizeParam="page_size" />)}
 </BaseLayout>

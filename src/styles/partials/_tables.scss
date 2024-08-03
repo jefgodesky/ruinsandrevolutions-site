@@ -3,12 +3,12 @@
 table {
   border-collapse: collapse;
   font-family: 'Alegreya Sans', sans-serif;
-  margin: 1rem -0.5rem;
+  margin: 1rem -1rem;
   width: calc(100% + 1rem);
 }
 
 td, th {
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem 1rem;
   text-align: left;
 }
 
@@ -23,8 +23,14 @@ th {
 }
 
 .short,
-.num {
+.num,
+.dice {
   text-align: center;
+}
+
+.dice {
+  vertical-align: top;
+  white-space: nowrap;
 }
 
 .actions {

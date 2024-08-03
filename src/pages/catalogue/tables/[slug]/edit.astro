@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro'
+import NoJS from '../../../../components/NoJS.astro'
+import TableForm from '../../../../components/TableForm.astro'
+import { apiRoot, apiHeaders } from '../../../../data'
+import getAuth from '../../../../utils/get-auth'
+
+const { slug } = Astro.params
+const auth = getAuth(Astro)
+if (!auth?.apiKey) {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/tables/${slug}`
+    },
+  })
+}
+
+const { apiKey, username } = auth
+let table: { [key: string]: any } | null = null
+let title = 'Edit Table'
+let message = ''
+const headers = {
+  ...apiHeaders,
+  Authorization: `Bearer ${apiKey}`
+}
+
+const redirectToRetrieve = () => {
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: `/catalogue/tables/${slug}`,
+    },
+  })
+}
+
+if (apiKey === undefined) {
+  return redirectToRetrieve()
+}
+
+try {
+  const res = await fetch(`${apiRoot}/tables/${slug}`, {
+    method: 'GET',
+    headers: {
+      ...apiHeaders,
+      Authorization: `Bearer ${apiKey}`
+    }
+  })
+
+  if (res.status === 200) {
+    table = await res.json()
+    title = table.name
+    console.log(table)
+    if (table.author.username !== username) {
+      return redirectToRetrieve()
+    }
+  }
+
+  if (Astro.request.method === 'POST') {
+    const formData = await Astro.request.formData()
+    const name = formData.get('name')
+    const slug = formData.get('slug') as string
+    const description = formData.get('description')
+    const diceLabel = formData.get('dice-label')
+    const formula = formData.get('formula')
+    const ability = formData.get('ability')
+    const isCumulative = formData.get('cumulative') === 'on'
+    const isPublic = formData.get('public') === 'on'
+    const rowIndex: { [key: string]: number } = {}
+    const rows: { min: number | null, max: number | null, text: string, formula: string | null }[] = []
+
+    for (const key of formData.keys()) {
+      if (key.startsWith('row-')) {
+        const elems = key.split('-')
+        if (elems.length < 2) continue
+        const parsed = parseInt(elems[1])
+        if (isNaN(parsed)) continue
+        if (!rowIndex[elems[1]]) rowIndex[elems[1]] = parsed
+      }
+    }
+
+    const rowNumbers = Object.values(rowIndex).sort()
+    for (const num of rowNumbers) {
+      const range: (number | null)[] = [
+        formData.get(`row-${num}-min`) as string,
+        formData.get(`row-${num}-max`) as string
+      ]
+        .map(str => parseInt(str))
+        .map(el => isNaN(el) ? null : el)
+      rows.push({
+        min: range[0],
+        max: range[1],
+        text: formData.get(`row-${num}-text`) as string,
+        formula: formData.get(`row-${num}-formula`) as string,
+      })
+    }
+
+    const payload = {
+      name,
+      slug,
+      description,
+      'dice-label': diceLabel,
+      formula,
+      ability,
+      cumulative: isCumulative,
+      rows,
+      public: isPublic
+    }
+
+    const res = await fetch(`${apiRoot}/tables/${slug}`, {
+      method: 'PUT',
+      headers,
+      body: JSON.stringify(payload)
+    })
+
+    const data = await res.json()
+    if (res.status !== 200) {
+      throw new Error(data.error)
+    }
+
+    return redirectToRetrieve()
+  }
+} catch (err) {
+  message = 'Sorry, something went wrong. Please try again.'
+  console.error(err)
+}
+---
+<BaseLayout title={title}>
+  <h1>{title}</h1>
+  {message && <aside class="message error">{message}</aside>}
+  <TableForm
+    action={`/catalogue/tables/${slug}/edit`}
+    button="Save"
+    table={table}
+    isEdit={true} />
+  <NoJS />
+</BaseLayout>
