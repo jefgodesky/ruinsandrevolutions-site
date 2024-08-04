@@ -1,4 +1,5 @@
 import { unified } from 'unified'
+import remarkGfm from 'remark-gfm'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
 import rehypeStringify from 'rehype-stringify'
@@ -20,6 +21,7 @@ const removeParagraphs = () => {
 const parseMarkdown = async (markdown: string, noParagraph: boolean = false): Promise<string> => {
   const processor = unified()
     .use(remarkParse)
+    .use(remarkGfm)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeStringify)
