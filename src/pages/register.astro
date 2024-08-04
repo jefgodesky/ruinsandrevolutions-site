@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 import ProfileForm from '../components/ProfileForm.astro'
 import { apiRoot, apiHeaders } from '../data'
+import redirect from '../utils/redirect'
 
 let message = ''
 
@@ -56,12 +57,7 @@ if (Astro.request.method === 'POST') {
       Astro.cookies.set('api_key', keyData.value, cookieParams)
       Astro.cookies.set('username', userData.username, cookieParams)
 
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: `/dashboard`,
-        },
-      })
+      return redirect(`/dashboard`)
     } catch (err) {
       message = 'Sorry, something went wrong. Please try again.'
       console.log(err)
