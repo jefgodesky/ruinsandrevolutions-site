@@ -14,7 +14,7 @@ interface Level {
 const levels = getRepeatableElements<Level>(
   scale?.levels ?? [],
   3,
-  Astro.url.searchParams.get('levels')
+  Astro.url.searchParams.get('levels') ?? undefined
 )
 ---
 <form action={action} method="POST">

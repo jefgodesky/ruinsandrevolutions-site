@@ -31,7 +31,7 @@ try {
     <p>No species found.</p>
     <a href="/catalogue/species/new">+ Create a new species</a>
   </div>)}
-  {data.species && data.species.length > 0 && data.species.map(species => (
+  {data.species && data.species.length > 0 && data.species.map((species: { [key: string]: any }) => (
     <SpeciesListing species={species} context="index" />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/species" pageParam="page" pageSizeParam="page_size" />)}

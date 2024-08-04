@@ -3,7 +3,7 @@ const { n, row, placeholder, isTemplate } = Astro.props
 const num = isTemplate ? '{{X}}' : n
 const id = isTemplate ? 'row-X' : `row-${n}`
 ---
-<fieldset key={id} id={id} data-number={num}>
+<fieldset id={id} data-number={num}>
   <div class="cols">
     <div>
       <label for={`${id}-min`} class="row-min">

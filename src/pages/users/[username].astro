@@ -7,8 +7,8 @@ import { apiRoot, apiHeaders } from '../../data'
 const { username } = Astro.params
 let name = 'Who’s that?'
 let bio = 'Sorry, stranger, but we don’t know anyone who goes by that name around here.'
-let characters = []
-let campaigns = []
+let characters: Array<{ [key: string]: any }> = []
+let campaigns: Array<{ [key: string]: any }> = []
 
 try {
   const url = `${apiRoot}/users/${username}`
@@ -38,11 +38,11 @@ const title = `${name} - Ruins & Revolutions`
 
   {campaigns.length > 0 && (<section>
     <h2>Campaigns</h2>
-    {campaigns.map(campaign => (<CampaignListing key={`${campaign.world.path}/${campaign.slug}`} campaign={campaign}></CampaignListing>))}
+    {campaigns.map((campaign: { [key: string]: any }) => (<CampaignListing key={`${campaign.world.path}/${campaign.slug}`} campaign={campaign}></CampaignListing>))}
   </section>)}
 
   {characters.length > 0 && (<section>
     <h2>Player Characters</h2>
-    {characters.map(character => (<CharacterListing key={character.id} character={character} context="player-profile"></CharacterListing>))}
+    {characters.map((character: { [key: string]: any }) => (<CharacterListing key={character.id} character={character} context="player-profile"></CharacterListing>))}
   </section>)}
 </BaseLayout>

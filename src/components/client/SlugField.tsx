@@ -6,14 +6,14 @@ import type { WorldRecord } from '../../utils/get-worlds'
 interface SlugFieldProps {
   name: string
   slug: string
-  world: WorldRecord | null
-  worlds: WorldRecord[] | null
+  world?: WorldRecord | null
+  worlds?: WorldRecord[] | null
   collection: string
   nameField: string
   slugField: string
   slugNote: string
-  worldField: string
-  worldNote: string
+  worldField?: string
+  worldNote?: string
   placeholder: string
   isEdit: boolean
 }

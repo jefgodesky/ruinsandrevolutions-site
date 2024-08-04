@@ -10,7 +10,7 @@ if (Astro.request.method === 'POST') {
   if (op === "DELETE") {
     try {
       const { apiKey } = getAuth(Astro)
-      const res = await fetch(`${apiRoot}/keys/${id}`, {
+      await fetch(`${apiRoot}/keys/${id}`, {
         method: 'DELETE',
         headers: {
           ...apiHeaders,

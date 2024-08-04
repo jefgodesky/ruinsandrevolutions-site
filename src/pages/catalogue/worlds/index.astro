@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
+import { apiRoot, defaultPageSize } from '../../../data'
 import Pagination from '../../../components/Pagination.astro'
 import WorldListing from '../../../components/WorldListing.astro'
 import getHeaders from '../../../utils/get-headers'
@@ -31,7 +31,7 @@ try {
     <p>No worlds found.</p>
     <a href="/catalogue/worlds/new">+ Create a new world</a>
   </div>)}
-  {data.worlds && data.worlds.length > 0 && data.worlds.map(world => (
+  {data.worlds && data.worlds.length > 0 && data.worlds.map((world: { [key: string]: any }) => (
     <WorldListing world={world} />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/worlds" pageParam="page" pageSizeParam="page_size" />)}

@@ -5,22 +5,18 @@ import NoJS from '../../../../components/NoJS.astro'
 import WorldForm from '../../../../components/WorldForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
+import redirect from '../../../../utils/redirect'
 
 const { slug } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/worlds/${slug}`,
-    },
-  })
+  return redirect(`/catalogue/worlds/${slug}`)
 }
 
 const { apiKey, username } = auth
 let world: { [key: string]: any } | null = null
 let isCreator = false
-let ancestors = []
+let ancestors: Array<{ path: string, name: string }> = []
 let message = ''
 
 if (apiKey === undefined) {
@@ -48,7 +44,7 @@ try {
 
   if (res.status === 200) {
     world = await res.json()
-    isCreator = world.creators.map(creator => creator.username).includes(username)
+    isCreator = world?.creators.map((creator: { [key: string]: any }) => creator.username).includes(username) ?? false
   }
 } catch (err) {
   console.error(err)
@@ -103,7 +99,7 @@ if (Astro.request.method === 'POST') {
   {message && <aside class="message error">{message}</aside>}
   <WorldForm
     world={world}
-    action={`/catalogue/worlds/${world.slug}/edit`}
+    action={`/catalogue/worlds/${world?.slug}/edit`}
     button="Save"
     isEdit={true} />
   <NoJS />

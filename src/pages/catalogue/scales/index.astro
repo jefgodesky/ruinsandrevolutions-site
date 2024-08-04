@@ -31,7 +31,7 @@ try {
     <p>No scales found.</p>
     <a href="/catalogue/scales/new">+ Create a new scale</a>
   </div>)}
-  {data.scales && data.scales.length > 0 && data.scales.map(scale => (
+  {data.scales && data.scales.length > 0 && data.scales.map((scale: { [key: string]: any }) => (
     <ScaleListing scale={scale} />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/scales" pageParam="page" pageSizeParam="page_size" />)}

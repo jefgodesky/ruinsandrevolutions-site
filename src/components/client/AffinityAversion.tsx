@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type ChangeEvent, type MouseEvent } from 'react'
+import React, { useState } from 'react'
 
 interface AffinityAversionProps {
   species: {

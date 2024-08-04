@@ -1,27 +1,18 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders } from '../../../data'
+import { apiRoot } from '../../../data'
 import UserLink from '../../../components/UserLink.astro'
 import MarkdownContent from '../../../components/MarkdownContent.astro'
-import getAuth from '../../../utils/get-auth'
+import getHeaders from '../../../utils/get-headers'
 
-const { apiKey, username } = getAuth(Astro)
+const headers = getHeaders(Astro)
 const { id } = Astro.params
 let roll: { [key: string]: any } | null = null
-const dateFormatOptions = {
-  weekday: 'long',
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-}
 
 try {
   const res = await fetch(`${apiRoot}/rolls/${id}`, {
     method: 'GET',
-    headers: {
-      ...apiHeaders,
-      Authorization: `Bearer ${apiKey}`
-    }
+    headers
   })
 
   if (res.status === 200) {
@@ -53,7 +44,7 @@ try {
         </dd>
         <dt>Time</dt>
         <dd>
-          {new Date(roll.time).toLocaleDateString('en-US', dateFormatOptions)}
+          {new Date(roll.time).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </dd>
         <dt>Modifier</dt>
         <dd>{roll.modifier < 0 ? roll.modifier : `+${roll.modifier}`}</dd>
@@ -73,11 +64,11 @@ try {
       </dl>
       <h2>Results</h2>
       <ul>
-        {roll.results.map(result => <MarkdownContent tag="li" content={result} noParagraph={true} />)}
+        {roll.results.map((result: string) => <MarkdownContent tag="li" content={result} noParagraph={true} />)}
       </ul>
       <h2>Log</h2>
       <ul>
-        {roll.log.map(entry => <MarkdownContent tag="li" content={entry} noParagraph={true} />)}
+        {roll.log.map((entry: string) => <MarkdownContent tag="li" content={entry} noParagraph={true} />)}
       </ul>
     </>
   )}

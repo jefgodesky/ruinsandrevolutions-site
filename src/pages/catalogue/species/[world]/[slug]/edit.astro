@@ -6,16 +6,12 @@ import SpeciesForm from '../../../../../components/SpeciesForm.astro'
 import { apiRoot, apiHeaders } from '../../../../../data'
 import getAuth from '../../../../../utils/get-auth'
 import getWorlds from '../../../../../utils/get-worlds'
+import redirect from '../../../../../utils/redirect'
 
 const { world, slug } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/species/${world}/${slug}`
-    },
-  })
+  return redirect(`/catalogue/species/${world}/${slug}`)
 }
 
 const { apiKey, username } = auth
@@ -26,17 +22,8 @@ const headers = {
   Authorization: `Bearer ${apiKey}`
 }
 
-const redirectToRetrieve = () => {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/species/${world}/${slug}`,
-    },
-  })
-}
-
 if (apiKey === undefined) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/species/${world}/${slug}`)
 }
 
 const worlds = await getWorlds(apiRoot, headers)
@@ -52,8 +39,8 @@ try {
 
   if (res.status === 200) {
     species = await res.json()
-    if (!species.world.creators.map(creator => creator.username).includes(username)) {
-      return redirectToRetrieve()
+    if (!species?.world.creators.map((creator: { [key: string]: any }) => creator.username).includes(username) ?? false) {
+      return redirect(`/catalogue/species/${world}/${slug}`)
     }
   }
 
@@ -67,7 +54,7 @@ try {
     const aversion = (formData.get('aversion') as string).toLowerCase()
     const world = formData.get('world') as string
     const isPublic = formData.get('public') === 'on'
-    const stageIndex = {}
+    const stageIndex: { [key: string]: number } = {}
     const stages: { name: string, min: number | null, max: number | null, procedures: string }[] = []
 
     for (const key of formData.keys()) {
@@ -118,7 +105,7 @@ try {
       throw new Error(data.error)
     }
 
-    return redirectToRetrieve()
+    return redirect(`/catalogue/species/${world}/${slug}`)
   }
 } catch (err) {
   message = 'Sorry, something went wrong. Please try again.'

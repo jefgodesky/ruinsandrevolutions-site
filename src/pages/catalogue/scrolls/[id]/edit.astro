@@ -5,26 +5,18 @@ import NoJS from '../../../../components/NoJS.astro'
 import ScrollForm from '../../../../components/ScrollForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
-
-const redirectToRetrieve = () => {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/scrolls/${id}`
-    },
-  })
-}
+import redirect from '../../../../utils/redirect'
 
 const { id } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/scrolls/${id}`)
 }
 
 const { apiKey, username } = auth
 let scroll: { [key: string]: any } | null = null
 let isWriter = false
-let ancestors = []
+let ancestors: Array<{ path: string, name: string }> = []
 let message = ''
 
 try {
@@ -43,14 +35,14 @@ try {
 
   if (res.status === 200) {
     scroll = await res.json()
-    isWriter = scroll.writers.map(writer => writer.username).includes(username)
+    isWriter = scroll?.writers.map((writer: { [key: string]: any }) => writer.username).includes(username) ?? false
   }
 } catch (err) {
   console.error(err)
 }
 
 if (!isWriter) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/scrolls/${id}`)
 }
 
 if (Astro.request.method === 'POST') {
@@ -90,7 +82,7 @@ if (Astro.request.method === 'POST') {
       throw new Error(data.error)
     }
 
-    return redirectToRetrieve()
+    return redirect(`/catalogue/scrolls/${id}`)
   } catch (err) {
     message = 'Sorry, something went wrong. Please try again.'
     console.error(err)
@@ -102,7 +94,7 @@ if (Astro.request.method === 'POST') {
   {message && <aside class="message error">{message}</aside>}
   <ScrollForm
     scroll={scroll}
-    action={`/catalogue/scrolls/${scroll.id}/edit`}
+    action={`/catalogue/scrolls/${scroll?.id}/edit`}
     button="Save"
     isEdit={true} />
   <NoJS />

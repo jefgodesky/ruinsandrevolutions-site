@@ -11,7 +11,7 @@ import getAuth from '../utils/get-auth'
 const { scroll } = Astro.props
 const auth = getAuth(Astro)
 const isWriter = auth
-  ? scroll.writers.map(writer => writer.username).includes(auth.username)
+  ? scroll.writers.map((writer: { [key: string]: any }) => writer.username).includes(auth.username)
   : false
 const variations = [sealM10, sealM05, sealP00, sealP05, sealP10]
 const num = scroll.seals

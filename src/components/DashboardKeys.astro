@@ -23,7 +23,7 @@ const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
       <a href="/keys">+ Add a new API keys</a>
     </td>
   </tr>}
-  {page.keys.map(key => (<tr key={key.id}>
+  {page.keys.map((key: { [key: string]: any }) => (<tr>
     <td>{key.label}</td>
     <td class="short">{key.ephemeral && '✓'}</td>
     <td class="actions">

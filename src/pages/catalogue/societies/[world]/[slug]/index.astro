@@ -9,7 +9,7 @@ import Breadcrumbs from '../../../../../components/Breadcrumbs.astro'
 const { apiKey, username } = getAuth(Astro)
 const { world, slug } = Astro.params
 let society: { [key: string]: any } | null = null
-let ancestors = []
+let ancestors: Array<{ path: string, name: string }> = []
 let title = 'Lost Civilization'
 let isCreator = false
 
@@ -30,9 +30,9 @@ try {
 
   if (res.status === 200) {
     society = await res.json()
-    ancestors[2].name = society.world.name
-    title = society.name
-    isCreator = society.world.creators.map(creator => creator.username).includes(username)
+    ancestors[2].name = society?.world.name ?? 'World'
+    title = society?.name ?? 'Society'
+    isCreator = society?.world.creators.map((creator: { [key: string]: any }) => creator.username).includes(username) ?? false
   }
 } catch (err) {
   console.error(err)
@@ -57,7 +57,7 @@ try {
       <MarkdownContent tag="div" content={society.description}></MarkdownContent>
       <dl class="details">
         <dt>Favored Abilities</dt>
-        <dd>{society.favored.map(ability => capitalize(ability)).join(', ')}</dd>
+        <dd>{society.favored.map((ability: string) => capitalize(ability)).join(', ')}</dd>
         <dt>Languages</dt>
         <dd>{society.languages}</dd>
       </dl>

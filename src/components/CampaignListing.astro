@@ -10,7 +10,7 @@ const campaignPath = `/catalogue/campaigns/${worldSlug}/${campaign.slug}`
     <h3>
       <a href={campaignPath}>{campaign.name}</a>
     </h3>
-    <p class="secondary">Run by {campaign.gms.map(creator => (<UserLink user={creator}></UserLink>))}</p>
+    <p class="secondary">Run by {campaign.gms.map((creator: { [key: string]: any }) => (<UserLink user={creator}></UserLink>))}</p>
   </header>
   <MarkdownContent tag="div" content={campaign.description} />
 </article>

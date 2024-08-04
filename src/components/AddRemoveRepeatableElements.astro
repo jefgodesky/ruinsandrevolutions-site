@@ -3,30 +3,30 @@ const { add, remove } = Astro.props
 const json = JSON.stringify(Astro.props)
 ---
 <script>
-  const getData = event => {
-    const data = JSON.parse(event.target.dataset.json)
+  const getData = (event: Event): { data: { [key: string]: any }, root: HTMLElement } => {
+    const data = JSON.parse((event.target as HTMLElement).dataset.json ?? '{}')
     const root = document.querySelector(data.root)
     return { data, root }
   }
 
-  const getNextNum = (root, elements) => {
+  const getNextNum = (root: HTMLElement, elements: string) => {
     const elems = Array.from(root.querySelectorAll(elements))
-    const nums = elems.map(elem => {
-      const str = elem.dataset.number ?? '0'
+    const nums = elems.map((elem: Element) => {
+      const str = (elem as HTMLElement).dataset.number ?? '0'
       const parsed = parseInt(str)
       return isNaN(parsed) ? 0 : parsed
     })
     return Math.max(...nums) + 1
   }
 
-  const replaceAttr = (elem, attr, oldVal, newVal) => {
-    elem.setAttribute(attr, elem.getAttribute(attr).replace(oldVal, newVal))
+  const replaceAttr = (elem: HTMLElement, attr: string, oldVal: string, newVal: string) => {
+    elem.setAttribute(attr, (elem.getAttribute(attr) ?? '').replace(oldVal, newVal))
   }
 
-  const customizeNewElement = (elem, num) => {
+  const customizeNewElement = (elem: HTMLElement, num: number) => {
     const oldId = elem.id
-    const id = elem.id.replace('X', num)
-    elem.setAttribute('data-number', num)
+    const id = elem.id.replace('X', num.toString())
+    elem.setAttribute('data-number', num.toString())
     elem.setAttribute('id', id)
     elem.setAttribute('key', id)
 
@@ -34,18 +34,18 @@ const json = JSON.stringify(Astro.props)
     const labelAttrs = ['for']
     for (const label of labels) {
       for (const attr of labelAttrs) replaceAttr(label, attr, oldId, id)
-      label.innerHTML = label.innerHTML.replace('\{\{X\}\}', num)
+      label.innerHTML = label.innerHTML.replace('\{\{X\}\}', num.toString())
     }
 
     const inputs = elem.querySelectorAll('input, textarea')
     const inputAttrs = ['name', 'id']
     for (const input of inputs) {
-      for (const attr of inputAttrs) replaceAttr(input, attr, oldId, id)
-      replaceAttr(input, 'placeholder', '\{\{X\}\}', num)
+      for (const attr of inputAttrs) replaceAttr(input as HTMLElement, attr, oldId, id)
+      replaceAttr(input as HTMLElement, 'placeholder', '\{\{X\}\}', num.toString())
     }
   }
 
-  const removeElement = event => {
+  const removeElement = (event: Event) => {
     event.preventDefault()
     const { data, root } = getData(event)
     if (!data || !root) return
@@ -54,13 +54,13 @@ const json = JSON.stringify(Astro.props)
     elems[elems.length - 1].remove()
   }
 
-  const addElement = event => {
+  const addElement = (event: Event) => {
     event.preventDefault()
     const { data, root } = getData(event)
     if (!data || !root) return
-    const template = document.getElementById(data.template)
+    const template = document.getElementById(data.template) as HTMLTemplateElement
     if (!template) return
-    const newElem = template.content.firstElementChild.cloneNode(true)
+    const newElem = template.content.firstElementChild!.cloneNode(true) as HTMLElement
     customizeNewElement(newElem, getNextNum(root, data.elements))
     root.appendChild(newElem)
   }

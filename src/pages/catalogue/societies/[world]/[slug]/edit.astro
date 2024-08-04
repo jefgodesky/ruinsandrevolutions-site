@@ -6,16 +6,12 @@ import SocietyForm from '../../../../../components/SocietyForm.astro'
 import { apiRoot, apiHeaders } from '../../../../../data'
 import getAuth from '../../../../../utils/get-auth'
 import getWorlds from '../../../../../utils/get-worlds'
+import redirect from '../../../../../utils/redirect'
 
 const { world, slug } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/societies/${world}/${slug}`
-    },
-  })
+  return redirect(`/catalogue/societies/${world}/${slug}`)
 }
 
 const { apiKey, username } = auth
@@ -26,17 +22,8 @@ const headers = {
   Authorization: `Bearer ${apiKey}`
 }
 
-const redirectToRetrieve = () => {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/societies/${world}/${slug}`,
-    },
-  })
-}
-
 if (apiKey === undefined) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/societies/${world}/${slug}`)
 }
 
 const worlds = await getWorlds(apiRoot, headers)
@@ -52,8 +39,8 @@ try {
 
   if (res.status === 200) {
     society = await res.json()
-    if (!society.world.creators.map(creator => creator.username).includes(username)) {
-      return redirectToRetrieve()
+    if (!society?.world.creators.map((creator: { [key: string]: any }) => creator.username).includes(username) ?? false) {
+      return redirect(`/catalogue/societies/${world}/${slug}`)
     }
   }
 
@@ -88,7 +75,7 @@ try {
     if (res.status !== 200) {
       throw new Error(data.error)
     }
-    return redirectToRetrieve()
+    return redirect(`/catalogue/societies/${world}/${slug}`)
   }
 } catch (err) {
   message = 'Sorry, something went wrong. Please try again.'

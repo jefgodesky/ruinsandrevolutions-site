@@ -3,7 +3,7 @@ const { n, stage, placeholder, isTemplate } = Astro.props
 const num = isTemplate ? '{{X}}' : n
 const id = isTemplate ? 'stage-X' : `stage-${n}`
 ---
-<fieldset key={id} id={id} data-number={num}>
+<fieldset id={id} data-number={num}>
   <label for={`${id}-name`} class="stage-name">
     Stage {num} Name
     <span class="note">What is this stage of life called?</span>

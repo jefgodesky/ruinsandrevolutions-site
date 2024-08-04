@@ -6,16 +6,12 @@ import CampaignForm from '../../../../../components/CampaignForm.astro'
 import { apiRoot, apiHeaders } from '../../../../../data'
 import getAuth from '../../../../../utils/get-auth'
 import getWorlds from '../../../../../utils/get-worlds'
+import redirect from '../../../../../utils/redirect'
 
 const { world, slug } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/campaigns/${world}/${slug}`
-    },
-  })
+  return redirect(`/catalogue/campaigns/${world}/${slug}`)
 }
 
 const { apiKey, username } = auth
@@ -26,17 +22,8 @@ const headers = {
   Authorization: `Bearer ${apiKey}`
 }
 
-const redirectToRetrieve = () => {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/campaigns/${world}/${slug}`,
-    },
-  })
-}
-
 if (apiKey === undefined) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/campaigns/${world}/${slug}`)
 }
 
 const worlds = await getWorlds(apiRoot, headers)
@@ -52,8 +39,8 @@ try {
 
   if (res.status === 200) {
     campaign = await res.json()
-    if (!campaign.gms.map(gm => gm.username).includes(username)) {
-      return redirectToRetrieve()
+    if (!campaign?.gms.map((gm: { [key: string]: any }) => gm.username).includes(username)) {
+      return redirect(`/catalogue/campaigns/${world}/${slug}`)
     }
   }
 
@@ -87,7 +74,7 @@ try {
     if (res.status !== 200) {
       throw new Error(data.error)
     }
-    return redirectToRetrieve()
+    return redirect(`/catalogue/campaigns/${world}/${slug}`)
   }
 } catch (err) {
   message = 'Sorry, something went wrong. Please try again.'

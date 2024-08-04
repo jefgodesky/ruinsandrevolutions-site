@@ -9,7 +9,7 @@ import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
 const { apiKey, username } = getAuth(Astro)
 const { slug } = Astro.params
 let table: { [key: string]: any } | null = null
-let ancestors = []
+let ancestors: Array<{ path: string, name: string}> = []
 let title = 'Unknown Random Table'
 let isAuthor = false
 let rows: Array<{ dice: string, result: string }> = []
@@ -30,9 +30,9 @@ try {
 
   if (res.status === 200) {
     table = await res.json()
-    title = table.name
-    isAuthor = table.author.username === username
-    rows = table.rows.map(row => {
+    title = table?.name ?? 'Random Table'
+    isAuthor = (table?.author.username ?? false) === username
+    rows = table?.rows.map((row: { [key: string]: any }) => {
       const orLower = !row.min
       const orHigher = !row.max
       const dice = orLower
@@ -41,7 +41,7 @@ try {
           ? `${row.min} or more`
           : `${row.min}-${row.max}`
       return { dice, result: row.text }
-    })
+    }) ?? []
   }
 } catch (err) {
   console.error(err)

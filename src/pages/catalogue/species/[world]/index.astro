@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
+import { apiRoot, defaultPageSize } from '../../../../data'
 import Pagination from '../../../../components/Pagination.astro'
 import SpeciesListing from '../../../../components/SpeciesListing.astro'
 import getHeaders from '../../../../utils/get-headers'
@@ -40,7 +40,7 @@ try {
     <p>No species found.</p>
     <a href="/catalogue/species/new">+ Create a new species</a>
   </div>)}
-  {data.species && data.species.length > 0 && data.species.map(species => (
+  {data.species && data.species.length > 0 && data.species.map((species: { [key: string]: any }) => (
     <SpeciesListing species={species} context="world-index" />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl={`/catalogue/species?world=${world}`} pageParam="page" pageSizeParam="page_size" />)}

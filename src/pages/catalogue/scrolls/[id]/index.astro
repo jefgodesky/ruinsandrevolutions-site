@@ -2,8 +2,6 @@
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import ScrollListing from '../../../../components/ScrollListing.astro'
-import UserLink from '../../../../components/UserLink.astro'
-import MarkdownContent from '../../../../components/MarkdownContent.astro'
 import getAuth from '../../../../utils/get-auth'
 import Breadcrumbs from '../../../../components/Breadcrumbs.astro'
 
@@ -12,7 +10,7 @@ const { id } = Astro.params
 let scroll: { [key: string]: any } | null = null
 let isWriter = false
 let isReader = false
-let ancestors = []
+let ancestors: Array<{ path: string, name: string }> = []
 let title = 'Scroll'
 
 try {
@@ -31,12 +29,12 @@ try {
 
   if (res.status === 200) {
     scroll = await res.json()
-    title = scroll.name
-    isWriter = scroll.writers.map(writer => writer.username).includes(username)
-    isReader = scroll.readers.map(reader => reader.username).includes(username)
+    title = scroll?.name ?? 'Scroll'
+    isWriter = scroll?.writers.map((writer: { [key: string]: any }) => writer.username).includes(username) ?? false
+    isReader = scroll?.readers.map((reader: { [key: string]: any }) => reader.username).includes(username) ?? false
   }
 
-  if (!scroll.public && !isReader) {
+  if (!scroll || (!scroll.public && !isReader)) {
     return new Response(null, {
       status: 302,
       headers: {

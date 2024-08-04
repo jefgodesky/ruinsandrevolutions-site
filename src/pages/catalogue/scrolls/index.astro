@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders, defaultPageSize } from '../../../data'
+import { apiRoot, defaultPageSize } from '../../../data'
 import Pagination from '../../../components/Pagination.astro'
 import ScrollListing from '../../../components/ScrollListing.astro'
 import getHeaders from '../../../utils/get-headers'
@@ -31,7 +31,7 @@ try {
     <p>No scrolls found.</p>
     <a href="/catalogue/scrolls/new">+ Create a new scroll</a>
   </div>)}
-  {data.scrolls && data.scrolls.length > 0 && data.scrolls.map(scroll => (
+  {data.scrolls && data.scrolls.length > 0 && data.scrolls.map((scroll: { [key: string]: any }) => (
     <ScrollListing scroll={scroll} />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/scrolls" pageParam="page" pageSizeParam="page_size" />)}

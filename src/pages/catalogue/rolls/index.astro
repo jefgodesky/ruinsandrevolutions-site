@@ -31,7 +31,7 @@ try {
     <p>No scales found.</p>
     <a href="/catalogue/scales/new">+ Create a new scale</a>
   </div>)}
-  {data.rolls && data.rolls.length > 0 && data.rolls.map(roll => (
+  {data.rolls && data.rolls.length > 0 && data.rolls.map((roll: { [key: string]: any }) => (
     <RollListing roll={roll} />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/scales" pageParam="page" pageSizeParam="page_size" />)}

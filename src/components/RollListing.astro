@@ -29,7 +29,7 @@ const { roll } = Astro.props
     <dt>Results</dt>
     <dd>
       <ul>
-        {roll.results.map(result => <MarkdownContent tag="li" content={result} noParagraph={true} />)}
+        {roll.results.map((result: string) => <MarkdownContent tag="li" content={result} noParagraph={true} />)}
       </ul>
     </dd>
   </dl>

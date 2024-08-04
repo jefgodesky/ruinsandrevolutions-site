@@ -10,7 +10,7 @@ const { apiKey, username } = getAuth(Astro)
 const { id } = Astro.params
 let character: { [key: string]: any } | null = null
 let isPlayer = false
-let ancestors = []
+let ancestors: Array<{ path: string, name: string }> = []
 let title = 'Character'
 
 try {
@@ -29,20 +29,20 @@ try {
 
   if (res.status === 200) {
     character = await res.json()
-    title = character.name
-    isPlayer = username === character.player.username
+    title = character?.name ?? 'Character'
+    isPlayer = username === (character?.player.username ?? false)
   }
 } catch (err) {
   console.error(err)
 }
 
-const stats = {
+const stats: { [key: string]: string[] } = {
   physical: ['Strength', 'Dexterity', 'Constitution'],
   mental: ['Intelligence', 'Wisdom', 'Charisma'],
   resistances: ['Fortitude', 'Reflex', 'Will']
 }
 
-const src = {
+const src: { [key: string]: any } = {
   physical: character?.abilities ?? {},
   mental: character?.abilities ?? {},
   resistances: character?.resistances ?? {}

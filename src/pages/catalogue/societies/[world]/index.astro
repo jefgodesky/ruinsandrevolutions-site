@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro'
-import { apiRoot, apiHeaders, defaultPageSize } from '../../../../data'
+import { apiRoot, defaultPageSize } from '../../../../data'
 import Pagination from '../../../../components/Pagination.astro'
 import SocietyListing from '../../../../components/SocietyListing.astro'
 import getHeaders from '../../../../utils/get-headers'
@@ -40,7 +40,7 @@ try {
     <p>No societies found.</p>
     <a href="/catalogue/societies/new">+ Create a new society</a>
   </div>)}
-  {data.societies && data.societies.length > 0 && data.societies.map(society => (
+  {data.societies && data.societies.length > 0 && data.societies.map((society: { [key: string]: any }) => (
     <SocietyListing society={society} context="world-index" />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl={`/catalogue/societies?world=${world}`} pageParam="page" pageSizeParam="page_size" />)}

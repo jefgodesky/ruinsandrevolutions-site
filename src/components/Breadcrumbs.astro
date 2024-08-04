@@ -3,8 +3,8 @@ const { ancestors, current } = Astro.props
 ---
 <nav class="breadcrumbs">
   <ul>
-    {ancestors.map((page, index) => (
-      <li key={index}>
+    {ancestors.map((page: { path: string, name: string }) => (
+      <li>
         <a href={page.path}>{page.name}</a>
       </li>
     ))}

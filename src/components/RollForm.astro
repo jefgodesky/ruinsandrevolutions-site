@@ -34,7 +34,7 @@ const table: { [key: string]: any } = Astro.props.table ?? {}
       </label>
       <select name="character" id="character">
         <option>None</option>
-        {characters.map(character => (<option value={character.id}>{character.name}</option>))}
+        {characters.map((character: { [key: string]: any }) => (<option value={character.id}>{character.name}</option>))}
       </select>
       <label for="ability">
         Ability
@@ -69,7 +69,7 @@ const table: { [key: string]: any } = Astro.props.table ?? {}
       </label>
       <select name="campaign" id="campaign">
         <option>None</option>
-        {campaigns.map(campaign => (<option value={`${campaign.world.slug}/${campaign.slug}`}>{campaign.name}</option>))}
+        {campaigns.map((campaign: { [key: string]: any }) => (<option value={`${campaign.world.slug}/${campaign.slug}`}>{campaign.name}</option>))}
       </select>
     </>}
 

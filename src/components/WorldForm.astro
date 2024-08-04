@@ -2,9 +2,9 @@
 import SlugField from './client/SlugField'
 import UserPicker from './client/UserPicker'
 const { action, button, isEdit } = Astro.props
-const world = Astro.props.world ?? {}
+const world: { [key: string]: any } = Astro.props.world ?? {}
 const creators = world.creators ?? []
-const creatorUsernames = creators.map(creator => creator.username).join(', ')
+const creatorUsernames = creators.map((creator: { [key: string]: any }) => creator.username).join(', ')
 ---
 <form action={action} method="POST">
   <label for="name">

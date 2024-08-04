@@ -5,26 +5,18 @@ import NoJS from '../../../../components/NoJS.astro'
 import CharacterForm from '../../../../components/CharacterForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
-
-const redirectToRetrieve = () => {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/characters/${id}`
-    },
-  })
-}
+import redirect from '../../../../utils/redirect'
 
 const { id } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/characters/${id}`)
 }
 
 const { apiKey, username } = auth
 let character: { [key: string]: any } | null = null
+let ancestors: Array<{ path: string, name: string }> = []
 let isPlayer = false
-let ancestors = []
 let message = ''
 
 try {
@@ -43,14 +35,14 @@ try {
 
   if (res.status === 200) {
     character = await res.json()
-    isPlayer = username === character.player.username
+    isPlayer = username === (character?.player.username ?? false)
   }
 } catch (err) {
   console.error(err)
 }
 
 if (!isPlayer) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/characters/${id}`)
 }
 
 if (Astro.request.method === 'POST') {
@@ -93,7 +85,7 @@ if (Astro.request.method === 'POST') {
       throw new Error(data.error)
     }
 
-    return redirectToRetrieve()
+    return redirect(`/catalogue/characters/${id}`)
   } catch (err) {
     message = 'Sorry, something went wrong. Please try again.'
     console.error(err)
@@ -105,7 +97,7 @@ if (Astro.request.method === 'POST') {
   {message && <aside class="message error">{message}</aside>}
   <CharacterForm
     character={character}
-    action={`/catalogue/characters/${character.id}/edit`}
+    action={`/catalogue/characters/${character?.id}/edit`}
     button="Save"
     isEdit={true} />
   <NoJS />

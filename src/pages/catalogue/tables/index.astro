@@ -31,7 +31,7 @@ try {
     <p>No tables found.</p>
     <a href="/catalogue/tables/new">+ Create a new table</a>
   </div>)}
-  {data.tables && data.tables.length > 0 && data.tables.map(table => (
+  {data.tables && data.tables.length > 0 && data.tables.map((table: { [key: string]: any }) => (
     <TableListing table={table} />
   ))}
   {data.total > data.page_size && (<Pagination page={data} baseUrl="/catalogue/tables" pageParam="page" pageSizeParam="page_size" />)}

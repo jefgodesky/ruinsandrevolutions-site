@@ -4,7 +4,7 @@ const num = isTemplate ? '{{X}}' : n
 const id = isTemplate ? 'level-X' : `level-${n}`
 const defaultDescPlaceholder = `At level ${num}, characters have access to all of the level ${num} abilities.`
 ---
-<fieldset key={id} id={id} data-number={num}>
+<fieldset id={id} data-number={num}>
   <label for={`${id}-name`} class="level-name">
     Level {num} Name
     <span class="note">What is this level called?</span>

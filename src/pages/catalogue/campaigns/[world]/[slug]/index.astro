@@ -9,7 +9,7 @@ import Breadcrumbs from '../../../../../components/Breadcrumbs.astro'
 const { apiKey, username } = getAuth(Astro)
 const { world, slug } = Astro.params
 let campaign: { [key: string]: any } | null = null
-let ancestors = []
+let ancestors:  Array<{ path: string, name: string }> = []
 let title = 'Forgotten Campaign'
 let isGM = false
 
@@ -30,9 +30,9 @@ try {
 
   if (res.status === 200) {
     campaign = await res.json()
-    ancestors[2].name = campaign.world.name
-    title = campaign.name
-    isGM = campaign.gms.map(gm => gm.username).includes(username)
+    ancestors[2].name = campaign?.world.name ?? 'World'
+    title = campaign?.name ?? 'Campaign'
+    isGM = campaign?.gms.map((gm: { [key: string]: any }) => gm.username).includes(username) ?? false
   }
 } catch (err) {
   console.error(err)
@@ -61,9 +61,9 @@ try {
         <dt>Setting</dt>
         <dd><a href={`/catalogue/worlds/${campaign.world.path.substring(8)}`}>{campaign.world.name}</a></dd>
         <dt>Game Masters</dt>
-        <dd>{campaign.gms && campaign.gms.map(gm => (<UserLink user={gm} />))}</dd>
+        <dd>{campaign.gms && campaign.gms.map((gm: { [key: string]: any }) => (<UserLink user={gm} />))}</dd>
         <dt>Player Characters</dt>
-        <dd>{campaign.pcs && campaign.pcs.map(pc => (<a href={`/catalogue/characters/${pc.id}`}>{pc.name}</a>))}</dd>
+        <dd>{campaign.pcs && campaign.pcs.map((pc: { [key: string]: any }) => (<a href={`/catalogue/characters/${pc.id}`}>{pc.name}</a>))}</dd>
       </dl>
 
       {isGM && (<nav class="actions">

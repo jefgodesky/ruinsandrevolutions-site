@@ -1,8 +1,8 @@
 ---
-const { action, button, isEdit } = Astro.props
+const { action, button } = Astro.props
 const character = Astro.props.character ?? {}
 const abilities = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']
-const abbreviations = {
+const abbreviations: { [key: string]: string } = {
   Strength: 'Str',
   Dexterity: 'Dex',
   Constitution: 'Con',
@@ -34,7 +34,7 @@ const getAbility = (ability: string): number => {
   >{character.description}</textarea>
   <ul class="character-abilities">
     {abilities.map(ability => (
-      <li key={ability.toLowerCase()}>
+      <li>
         <label for={ability.toLowerCase()}>
           <span class="full">{ability}</span>
           <abbr>{abbreviations[ability]}</abbr>

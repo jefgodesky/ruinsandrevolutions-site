@@ -10,7 +10,7 @@ import Breadcrumbs from '../../../../../components/Breadcrumbs.astro'
 const { apiKey, username } = getAuth(Astro)
 const { world, slug } = Astro.params
 let species: { [key: string]: any } | null = null
-let ancestors = []
+let ancestors: Array<{ path: string, name: string }> = []
 let title = 'Mythical Beast'
 let isCreator = false
 
@@ -31,9 +31,9 @@ try {
 
   if (res.status === 200) {
     species = await res.json()
-    ancestors[2].name = species.world.name
-    title = species.name
-    isCreator = species.world.creators.map(creator => creator.username).includes(username)
+    ancestors[2].name = species?.world.name ?? 'World'
+    title = species?.name ?? 'Species'
+    isCreator = species?.world.creators.map((creator: { [key: string]: any }) => creator.username).includes(username) ?? false
   }
 } catch (err) {
   console.error(err)
@@ -59,13 +59,13 @@ try {
       <MarkdownContent tag="div" content={species.description}></MarkdownContent>
       <dl class="details">
         <dt>Affinities</dt>
-        <dd>{species.affinities.map(affinity => capitalize(affinity)).join(', ')}</dd>
+        <dd>{species.affinities.map((affinity: string) => capitalize(affinity)).join(', ')}</dd>
         <dt>Aversion</dt>
         <dd>{capitalize(species.aversion)}</dd>
       </dl>
       <section id="stages">
         <h2>Stages of Life</h2>
-        {species.stages.map(stage => (<Stage data={stage} />))}
+        {species.stages.map((stage: { [key: string]: any }) => (<Stage data={stage} />))}
       </section>
 
       {isCreator && (<nav class="actions">

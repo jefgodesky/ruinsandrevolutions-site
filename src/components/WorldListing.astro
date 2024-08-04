@@ -10,7 +10,7 @@ const slug = world.path.substring(8)
     <h3>
       <a href={`/catalogue/worlds/${slug}`}>{world.name}</a>
     </h3>
-    <p class="secondary">Created by {world.creators.map(creator => (<UserLink user={creator}></UserLink>))}</p>
+    <p class="secondary">Created by {world.creators.map((creator: { [key: string]: any }) => (<UserLink user={creator}></UserLink>))}</p>
   </header>
   <MarkdownContent tag="div" content={world.description}></MarkdownContent>
 </article>

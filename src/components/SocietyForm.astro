@@ -7,7 +7,7 @@ const qWorld = Astro.url.searchParams.get('world')
 const world: WorldRecord | null = society.world
   ? { name: society.world.name, slug: society.world.path.substring(8) }
   : qWorld
-    ? worlds.filter(world => world.slug === qWorld)[0]
+    ? worlds.filter((world: { [key: string]: any }) => world.slug === qWorld)[0]
     : null
 
 const physical = ['Strength', 'Dexterity', 'Constitution']
@@ -48,7 +48,7 @@ const isInSet = (set: string[], ability: string): boolean => {
     <span class="note">What world does this society come from?</span>
   </label>
   <select name="world" id="world" class="no-js">
-    {worlds.map(w => {
+    {worlds.map((w: { [key: string]: any }) => {
       const isSelected = w.slug === world?.slug
       return (<option selected={isSelected} value={w.slug}>{w.name}</option>)
     })}
@@ -68,7 +68,6 @@ const isInSet = (set: string[], ability: string): boolean => {
   <select name="favored1" id="favored1">
     {physical.map((ability) => (
       <option
-        key={ability.toLowerCase()}
         value={ability.toLowerCase()}
         selected={isInSet(society?.favored ?? [], ability)}
       >{ability}</option>
@@ -77,7 +76,6 @@ const isInSet = (set: string[], ability: string): boolean => {
   <select name="favored2" id="favored2">
     {mental.map((ability) => (
       <option
-        key={ability.toLowerCase()}
         value={ability.toLowerCase()}
         selected={isInSet(society?.favored ?? [], ability)}
       >{ability}</option>

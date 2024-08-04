@@ -11,7 +11,7 @@ const qWorld = Astro.url.searchParams.get('world')
 const world: WorldRecord | null = species.world
   ? { name: species.world.name, slug: species.world.path.substring(8) }
   : qWorld
-    ? worlds.filter(world => world.slug === qWorld)[0]
+    ? worlds.filter((world: { [key: string]: any }) => world.slug === qWorld)[0]
     : null
 
 interface Stage {
@@ -26,7 +26,7 @@ const mental = ['Intelligence', 'Wisdom', 'Charisma']
 const stages = getRepeatableElements<Stage>(
   species?.stages ?? [],
   4,
-  Astro.url.searchParams.get('stages')
+  Astro.url.searchParams.get('stages') ?? undefined
 )
 
 const free = '* **Ability Shift:** You may increase one of your abilities by one at the cost of decreasing a different ability by one.'
@@ -70,7 +70,7 @@ const placeholders: Stage[] = [
     <span class="note">What world does this species come from?</span>
   </label>
   <select name="world" id="world" class="no-js">
-    {worlds.map(w => {
+    {worlds.map((w: { [key: string]: any }) => {
       const isSelected = w.slug === world?.slug
       return (<option selected={isSelected} value={w.slug}>{w.name}</option>)
     })}
@@ -88,10 +88,10 @@ const placeholders: Stage[] = [
     or magical nature.</span>
   </label>
   <select name="affinity1" id="affinity1" class="no-js">
-    {physical.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+    {physical.map((ability) => (<option value={ability.toLowerCase()}>{ability}</option>))}
   </select>
   <select name="affinity2" id="affinity2" class="no-js">
-    {mental.map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+    {mental.map((ability) => (<option value={ability.toLowerCase()}>{ability}</option>))}
   </select>
   <label for="aversion" class="no-js">
     Aversion
@@ -100,14 +100,14 @@ const placeholders: Stage[] = [
     magical nature.</span>
   </label>
   <select name="aversion" id="aversion" class="no-js">
-    {[...physical, ...mental].map((ability) => (<option key={ability.toLowerCase()} value={ability.toLowerCase()}>{ability}</option>))}
+    {[...physical, ...mental].map((ability) => (<option value={ability.toLowerCase()}>{ability}</option>))}
   </select>
   <AffinityAversion
     client:only="react"
     species={species}
     physical={physical}
     mental={mental} />
-  <fieldset name="stages" class="species repeatable">
+  <fieldset class="species stages repeatable">
     <legend>Stages of Life</legend>
     <p>The stages of life vary from one species to another
       in terms of number, age, and what matters of physical, mental, or magical

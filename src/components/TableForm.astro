@@ -16,7 +16,7 @@ interface Row {
 const rows = getRepeatableElements<Row>(
   table?.rows ?? [],
   3,
-  Astro.url.searchParams.get('rows')
+  Astro.url.searchParams.get('rows') ?? undefined
 )
 
 const abilities = ['Strength', 'Dexterity', 'Constitution', 'Intelligence', 'Wisdom', 'Charisma']

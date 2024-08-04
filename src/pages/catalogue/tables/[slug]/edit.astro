@@ -5,16 +5,12 @@ import NoJS from '../../../../components/NoJS.astro'
 import TableForm from '../../../../components/TableForm.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
+import redirect from '../../../../utils/redirect'
 
 const { slug } = Astro.params
 const auth = getAuth(Astro)
 if (!auth?.apiKey) {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/tables/${slug}`
-    },
-  })
+  return redirect(`/catalogue/tables/${slug}`)
 }
 
 const { apiKey, username } = auth
@@ -25,17 +21,8 @@ const headers = {
   Authorization: `Bearer ${apiKey}`
 }
 
-const redirectToRetrieve = () => {
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/catalogue/tables/${slug}`,
-    },
-  })
-}
-
 if (apiKey === undefined) {
-  return redirectToRetrieve()
+  return redirect(`/catalogue/tables/${slug}`)
 }
 
 try {
@@ -50,8 +37,8 @@ try {
   if (res.status === 200) {
     table = await res.json()
     console.log(table)
-    if (table.author.username !== username) {
-      return redirectToRetrieve()
+    if ((table?.author.username ?? false) !== username) {
+      return redirect(`/catalogue/tables/${slug}`)
     }
   }
 
@@ -117,7 +104,7 @@ try {
       throw new Error(data.error)
     }
 
-    return redirectToRetrieve()
+    return redirect(`/catalogue/tables/${slug}`)
   }
 } catch (err) {
   message = 'Sorry, something went wrong. Please try again.'

@@ -23,7 +23,7 @@ const { page, baseUrl, pageParam, pageSizeParam } = Astro.props
       <a href="/emails">+ Add a new email address</a>
     </td>
   </tr>}
-  {page.emails.map(email => (<tr key={email.id}>
+  {page.emails.map((email: { [key: string]: any }) => (<tr>
     <td>{email.address}</td>
     <td class="short">{email.verified && '✓'}</td>
     <td class="actions">

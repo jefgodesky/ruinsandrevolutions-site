@@ -8,12 +8,12 @@ const qWorld = Astro.url.searchParams.get('world')
 const world: WorldRecord | null = campaign.world
   ? { name: campaign.world.name, slug: campaign.world.path.substring(8) }
   : qWorld
-    ? worlds.filter(world => world.slug === qWorld)[0]
+    ? worlds.filter((world: { [key: string]: any }) => world.slug === qWorld)[0]
     : null
 const gms = campaign.gms ?? []
-const gmUsernames = gms.map(gm => gm.username).join(', ')
+const gmUsernames = gms.map((gm: { [key: string]: any }) => gm.username).join(', ')
 const pcs = campaign.pcs ?? []
-const pcIds = pcs.map(pc => pc.id).join(', ')
+const pcIds = pcs.map((pc: { [key: string]: any }) => pc.id).join(', ')
 ---
 <form action={action} method="POST">
   <label for="name">
@@ -45,7 +45,7 @@ const pcIds = pcs.map(pc => pc.id).join(', ')
     <span class="note">What world is this campaign set in?</span>
   </label>
   <select name="world" id="world" class="no-js">
-    {worlds.map(w => {
+    {worlds.map((w: { [key: string]: any }) => {
       const isSelected = w.slug === world?.slug
       return (<option selected={isSelected} value={w.slug}>{w.name}</option>)
     })}
