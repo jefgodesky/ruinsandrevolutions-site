@@ -5,7 +5,7 @@ import CampaignListing from '../../../../components/CampaignListing.astro'
 import MarkdownContent from '../../../../components/MarkdownContent.astro'
 import SocietyListing from '../../../../components/SocietyListing.astro'
 import SpeciesListing from '../../../../components/SpeciesListing.astro'
-import UserLink from '../../../../components/UserLink.astro'
+import UserLinks from '../../../../components/UserLinks.astro'
 import { apiRoot, apiHeaders } from '../../../../data'
 import getAuth from '../../../../utils/get-auth'
 
@@ -62,7 +62,7 @@ try {
     <>
       <Breadcrumbs ancestors={ancestors} current={world.name}></Breadcrumbs>
       <h1>{world.name}</h1>
-      <p class="byline">Created by {world.creators.map((creator: { [key: string]: any }) => (<UserLink user={creator} />))}</p>
+      <p class="byline">Created by <UserLinks users={world.creators} /></p>
       <MarkdownContent tag="div" content={world.description}></MarkdownContent>
 
       <section class="world-species">

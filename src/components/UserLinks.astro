@@ -1,0 +1,11 @@
+---
+import UserLink from './UserLink.astro'
+const { users } = Astro.props
+---
+{
+  users.map((user: { [key: string]: any }, index: number) => (<>
+    <UserLink user={user} />
+    {index < users.length - 2 && ', '}
+    {index === users.length - 2 && ' and '}
+  </>))
+}
