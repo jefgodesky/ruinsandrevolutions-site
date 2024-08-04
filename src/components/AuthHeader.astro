@@ -1,7 +1,8 @@
 ---
 import ThemeToggle from './ThemeToggle.astro'
 import getAuth from '../utils/get-auth'
-const authenticated = getAuth(Astro) !== null
+const auth = getAuth(Astro)
+const authenticated = auth?.username !== undefined
 ---
 <nav class="auth">
   <ul>
