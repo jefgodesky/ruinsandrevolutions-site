@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import BlogPostListing from '../../components/BlogPostListing.astro'
 import getTags from '../../utils/get-tags'
+export const prerender = true;
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts')
