@@ -1,22 +1,39 @@
 ---
-import { Image } from 'astro:assets'
-const { light, dark, alt, height, width, classes } = Astro.props
-let theme = 'light'
+import type { ImageMetadata } from 'astro'
+import { getImage } from 'astro:assets'
 
-if (localStorage?.getItem('theme')) {
-  theme = localStorage.getItem('theme')
-} else if (window?.matchMedia) {
-  const dict = {
-    '(prefers-color-scheme: dark)': 'dark',
-    '(prefers-color-scheme: light)': 'light'
-  }
-
-  for (const key in dict) {
-    if (window.matchMedia(key).matches) theme = dict[key]
-  }
+interface Props {
+  light: string | ImageMetadata
+  dark: string | ImageMetadata
+  alt: string
+  height: number
+  width: number
+  classes: string[]
 }
 
-const imageSrc = theme === 'dark' ? dark : light
-const imageClass = ['themed-image', theme, classes].join(' ').trim()
+const { light, dark, alt, height, width, classes } = Astro.props
+
+const lightImg = await getImage({
+  src: light,
+  format: "webp",
+  height,
+  width
+})
+
+const darkImg = await getImage({
+  src: dark,
+  format: "webp",
+  height,
+  width
+})
+
+const imgClasses = ['themed-image', ...classes]
+  .map(cls => cls.trim())
+  .join(' ')
 ---
-<Image src={imageSrc} alt={alt} height={height} width={width} class={imageClass} />
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset={darkImg.src} />
+  <source media="(prefers-color-scheme: light)" srcset={lightImg.src} />
+  <img src={lightImg.src} alt={alt} height={height} width={width} class={imgClasses} />
+</picture>

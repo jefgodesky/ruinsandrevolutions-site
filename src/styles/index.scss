@@ -1,6 +1,8 @@
 @use "modules/typography";
 @use "modules/layout";
 
+@use "components/dragon-bg";
+
 html {
   box-sizing: border-box;
 }

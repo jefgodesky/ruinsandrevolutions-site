@@ -1,8 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import darkDragon from '../assets/dragon.dark.png'
+import lightDragon from '../assets/dragon.light.png'
+import ThemedImage from '../components/ThemedImage.astro'
 ---
 
 <Layout>
+	<ThemedImage
+		light={lightDragon}
+		dark={darkDragon}
+		alt=""
+		height={3000}
+		width={3000}
+		classes={["dragon-bg"]}
+	/>
 	<h1>Ruins & Revolutions</h1>
 	<h2>Secondary heading</h2>
 	<h3>Tertiary heading</h3>
