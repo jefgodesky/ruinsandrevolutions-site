@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "colors";
+@use "weights";
 
 $themes: (
   "light": (
@@ -9,6 +10,11 @@ $themes: (
     "fg": colors.$black,
     "fg1": color.adjust(colors.$white, $blackness: colors.$light1),
     "fg2": color.adjust(colors.$white, $blackness: colors.$light2),
+    "weights": (
+      "black": weights.$light-black,
+      "bold": weights.$light-bold,
+      "normal": weights.$light-normal
+    ),
     "links": (
       "base": colors.$hue204-light,
       "hover": color.adjust(colors.$hue204-light, $whiteness: 10%),
@@ -67,6 +73,11 @@ $themes: (
     "fg": colors.$white,
     "fg1": color.adjust(colors.$black, $whiteness: colors.$dark1),
     "fg2": color.adjust(colors.$black, $whiteness: colors.$dark2),
+    "weights": (
+      "black": weights.$dark-black,
+      "bold": weights.$dark-bold,
+      "normal": weights.$dark-normal
+    ),
     "links": (
       "base": colors.$hue204-dark,
       "hover": color.adjust(colors.$hue204-dark, $whiteness: 10%),

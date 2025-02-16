@@ -1,4 +1,7 @@
+@use "./mixins";
+
 body {
+  @include mixins.set-style("font-weight", "weights.normal");
   font-family: "Alegreya", serif;
   font-size: 1.1em;
   line-height: 1.5;
@@ -10,20 +13,20 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
+  @include mixins.set-style("font-weight", "weights.black");
   font-family: "Alegreya SC", serif;
   font-size: 3em;
-  font-weight: 900;
 }
 
 h2 {
+  @include mixins.set-style("font-weight", "weights.bold");
   font-family: "Alegreya", serif;
   font-size: 2em;
-  font-weight: 800;
   font-style: italic;
 }
 
 h3 {
+  @include mixins.set-style("font-weight", "weights.normal");
   font-family: "Alegreya SC", serif;
   font-size: 1.5em;
-  font-weight: normal;
 }
