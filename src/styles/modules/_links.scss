@@ -1,0 +1,17 @@
+@use "./mixins";
+
+a {
+  @include mixins.set-style("color", "links.base");
+
+  &:visited {
+    @include mixins.set-style("color", "links.visited");
+  }
+
+  &:hover {
+    @include mixins.set-style("color", "links.hover");
+  }
+
+  &:active {
+    @include mixins.set-style("color", "links.active");
+  }
+}
