@@ -1,0 +1,22 @@
+.features {
+  text-align: center;
+
+  h3 {
+    padding-bottom: 0;
+  }
+
+  @media (min-width: 60rem) {
+    display: grid;
+    grid-column-gap: 2em;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+  }
+
+  @media (min-width: 80rem) {
+    margin: 1em -5em;
+  }
+
+  @media (min-width: 100rem) {
+    margin: 1em -10em;
+  }
+}
