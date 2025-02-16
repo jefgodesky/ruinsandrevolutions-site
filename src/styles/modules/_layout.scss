@@ -1,0 +1,6 @@
+@use "./mixins";
+
+body {
+  @include mixins.set-style("background-color", "bg");
+  @include mixins.set-style("color", "fg");
+}
