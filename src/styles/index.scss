@@ -1,5 +1,5 @@
-@import "modules/typography";
-@import "modules/layout";
+@use "modules/typography";
+@use "modules/layout";
 
 html {
   box-sizing: border-box;

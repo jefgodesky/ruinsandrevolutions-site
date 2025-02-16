@@ -1,6 +1,11 @@
 @use "sass:color";
+@use "sass:math";
 @use "colors";
 @use "weights";
+
+@function to-alpha($percentage) {
+  @return math.div(100% - $percentage, 100%)
+}
 
 $themes: (
   "light": (
@@ -31,38 +36,38 @@ $themes: (
     "content": (
       "species": (
         "banner": colors.$hue000-light,
-        "accent1": color.adjust(colors.$hue000-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue000-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue000-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue000-light, $alpha: to-alpha(colors.$light2)) 
       ),
       "brand": (
         "banner": colors.$hue051-light,
-        "accent1": color.adjust(colors.$hue051-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue051-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue051-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue051-light, $alpha: to-alpha(colors.$light2)) 
       ),
       "characters": (
         "banner": colors.$hue102-light,
-        "accent1": color.adjust(colors.$hue102-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue102-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue102-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue102-light, $alpha: to-alpha(colors.$light2)) 
       ),
       "tables": (
         "banner": colors.$hue153-light,
-        "accent1": color.adjust(colors.$hue153-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue153-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue153-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue153-light, $alpha: to-alpha(colors.$light2)) 
       ),
       "societies": (
         "banner": colors.$hue204-light,
-        "accent1": color.adjust(colors.$hue204-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue204-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue204-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue204-light, $alpha: to-alpha(colors.$light2)) 
       ),
       "scales": (
         "banner": colors.$hue255-light,
-        "accent1": color.adjust(colors.$hue255-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue255-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue255-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue255-light, $alpha: to-alpha(colors.$light2)) 
       ),
       "scrolls": (
         "banner": colors.$hue306-light,
-        "accent1": color.adjust(colors.$hue306-light, $alpha: 100% - colors.$light1),
-        "accent2": color.adjust(colors.$hue306-light, $alpha: 100% - colors.$light2)
+        "accent1": color.adjust(colors.$hue306-light, $alpha: to-alpha(colors.$light1)) ,
+        "accent2": color.adjust(colors.$hue306-light, $alpha: to-alpha(colors.$light2)) 
       )
     )
   ),
@@ -94,38 +99,38 @@ $themes: (
     "content": (
       "species": (
         "banner": colors.$hue000-dark,
-        "accent1": color.adjust(colors.$hue000-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue000-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue000-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue000-dark, $alpha: to-alpha(colors.$dark2)) 
       ),
       "brand": (
         "banner": colors.$hue051-dark,
-        "accent1": color.adjust(colors.$hue051-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue051-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue051-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue051-dark, $alpha: to-alpha(colors.$dark2)) 
       ),
       "characters": (
         "banner": colors.$hue102-dark,
-        "accent1": color.adjust(colors.$hue102-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue102-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue102-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue102-dark, $alpha: to-alpha(colors.$dark2)) 
       ),
       "tables": (
         "banner": colors.$hue153-dark,
-        "accent1": color.adjust(colors.$hue153-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue153-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue153-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue153-dark, $alpha: to-alpha(colors.$dark2)) 
       ),
       "societies": (
         "banner": colors.$hue204-dark,
-        "accent1": color.adjust(colors.$hue204-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue204-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue204-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue204-dark, $alpha: to-alpha(colors.$dark2)) 
       ),
       "scales": (
         "banner": colors.$hue255-dark,
-        "accent1": color.adjust(colors.$hue255-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue255-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue255-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue255-dark, $alpha: to-alpha(colors.$dark2)) 
       ),
       "scrolls": (
         "banner": colors.$hue306-dark,
-        "accent1": color.adjust(colors.$hue306-dark, $alpha: 100% - colors.$dark1),
-        "accent2": color.adjust(colors.$hue306-dark, $alpha: 100% - colors.$dark2)
+        "accent1": color.adjust(colors.$hue306-dark, $alpha: to-alpha(colors.$dark1)) ,
+        "accent2": color.adjust(colors.$hue306-dark, $alpha: to-alpha(colors.$dark2)) 
       )
     )
   )
