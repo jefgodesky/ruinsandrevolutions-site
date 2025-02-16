@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets'
+const { light, dark, alt, height, width, classes } = Astro.props
+let theme = 'light'
+
+if (localStorage?.getItem('theme')) {
+  theme = localStorage.getItem('theme')
+} else if (window?.matchMedia) {
+  const dict = {
+    '(prefers-color-scheme: dark)': 'dark',
+    '(prefers-color-scheme: light)': 'light'
+  }
+
+  for (const key in dict) {
+    if (window.matchMedia(key).matches) theme = dict[key]
+  }
+}
+
+const imageSrc = theme === 'dark' ? dark : light
+const imageClass = ['themed-image', theme, classes].join(' ').trim()
+---
+<Image src={imageSrc} alt={alt} height={height} width={width} class={imageClass} />
