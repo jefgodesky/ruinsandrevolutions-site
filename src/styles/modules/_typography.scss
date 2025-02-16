@@ -3,13 +3,29 @@
 body {
   font-family: "Alegreya", serif;
   font-size: 1.1em;
-  line-height: 1.5;
 
   @include mixins.set-style("font-weight", "weights.normal");
+
+  @media (min-width: 60rem) {
+    font-size: 1.2em;
+  }
+
+  @media (min-width: 80rem) {
+    font-size: 1.3em;
+  }
+
+  @media (min-width: 100rem) {
+    font-size: 1.4em;
+  }
+
+  @media (min-width: 120rem) {
+    font-size: 1.5em;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
   margin: 0;
+  line-height: 1;
   padding: 1em 0 0.5em;
 }
 
@@ -33,4 +49,8 @@ h3 {
   font-size: 1.5em;
 
   @include mixins.set-style("font-weight", "weights.normal");
+}
+
+p {
+  line-height: 1.75;
 }

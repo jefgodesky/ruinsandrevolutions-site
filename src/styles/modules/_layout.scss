@@ -1,6 +1,12 @@
 @use "./mixins";
 
 body {
+  padding: 0 2em;
+
   @include mixins.set-style("background-color", "bg");
   @include mixins.set-style("color", "fg");
+
+  @media (min-width: 50em) {
+    padding: 0 calc((100% / 2) - 20em);
+  }
 }
