@@ -1,7 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import darkDragon from '../assets/dragon.dark.png'
+import darkLogo from '../assets/logo.white.png'
 import lightDragon from '../assets/dragon.light.png'
+import lightLogo from '../assets/logo.black.png'
 import ThemedImage from '../components/ThemedImage.astro'
 ---
 
@@ -14,8 +16,17 @@ import ThemedImage from '../components/ThemedImage.astro'
 		width={3000}
 		classes={["dragon-bg"]}
 	/>
-	<h1>Ruins & Revolutions</h1>
-	<h2>Secondary heading</h2>
-	<h3>Tertiary heading</h3>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam cursus enim quis eros rhoncus, id vestibulum metus convallis. Sed porttitor eget mi ut fermentum. Nullam laoreet metus nec tellus maximus rutrum. Fusce erat nibh, accumsan id euismod id, tincidunt at diam. Praesent id nisi consequat, tempus quam interdum, laoreet arcu. Aliquam erat volutpat. Donec hendrerit ipsum ut convallis congue. Mauris feugiat tortor vitae quam mattis fringilla. Vivamus ut semper velit, ut hendrerit ante.</p>
+
+	<ThemedImage
+		light={lightLogo}
+		dark={darkLogo}
+		alt="Ruins & Revolutions"
+		height={1571}
+		width={5770}
+		classes={["logo-hero"]}
+	/>
+
+	<p><em>Ruins &amp; Revolutions</em> is a simple framework for
+	  tabletop roleplaying games (TTRPGs) that puts the emphasis on
+		your world, your characters, and your story.</p>
 </Layout>

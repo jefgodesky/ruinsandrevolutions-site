@@ -1,0 +1,13 @@
+.logo-hero {
+  height: auto;
+  margin: 2em 0;
+  width: 100%;
+
+  @media (min-width: 60rem) {
+    margin: 3em 0;
+  }
+
+  @media (min-width: 80rem) {
+    margin: 4em 0;
+  }
+}
