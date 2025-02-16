@@ -1,0 +1,121 @@
+@use "sass:color";
+@use "colors";
+
+$themes: (
+  "light": (
+    "bg": colors.$white,
+    "bg1": color.adjust(colors.$black, $whiteness: colors.$light1),
+    "bg2": color.adjust(colors.$black, $whiteness: colors.$light2),
+    "fg": colors.$black,
+    "fg1": color.adjust(colors.$white, $blackness: colors.$light1),
+    "fg2": color.adjust(colors.$white, $blackness: colors.$light2),
+    "links": (
+      "base": colors.$hue204-light,
+      "hover": color.adjust(colors.$hue204-light, $whiteness: 10%),
+      "active": colors.$hue000-light,
+      "visited": colors.$hue306-light
+    ),
+    "messages": (
+      "info": color.adjust(colors.$hue204-light, $whiteness: colors.$light1),
+      "tip": color.adjust(colors.$black, $whiteness: colors.$light1),
+      "warning": color.adjust(colors.$hue051-light, $whiteness: colors.$light1),
+      "error": color.adjust(colors.$hue000-light, $whiteness: colors.$light1),
+      "success": color.adjust(colors.$hue102-light, $whiteness: colors.$light1),
+    ),
+    "content": (
+      "species": (
+        "banner": colors.$hue000-light,
+        "accent1": color.adjust(colors.$hue000-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue000-light, $alpha: 100% - colors.$light2)
+      ),
+      "brand": (
+        "banner": colors.$hue051-light,
+        "accent1": color.adjust(colors.$hue051-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue051-light, $alpha: 100% - colors.$light2)
+      ),
+      "characters": (
+        "banner": colors.$hue102-light,
+        "accent1": color.adjust(colors.$hue102-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue102-light, $alpha: 100% - colors.$light2)
+      ),
+      "tables": (
+        "banner": colors.$hue153-light,
+        "accent1": color.adjust(colors.$hue153-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue153-light, $alpha: 100% - colors.$light2)
+      ),
+      "societies": (
+        "banner": colors.$hue204-light,
+        "accent1": color.adjust(colors.$hue204-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue204-light, $alpha: 100% - colors.$light2)
+      ),
+      "scales": (
+        "banner": colors.$hue255-light,
+        "accent1": color.adjust(colors.$hue255-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue255-light, $alpha: 100% - colors.$light2)
+      ),
+      "scrolls": (
+        "banner": colors.$hue306-light,
+        "accent1": color.adjust(colors.$hue306-light, $alpha: 100% - colors.$light1),
+        "accent2": color.adjust(colors.$hue306-light, $alpha: 100% - colors.$light2)
+      )
+    )
+  ),
+  "dark": (
+    "bg": colors.$black,
+    "bg1": color.adjust(colors.$white, $blackness: colors.$dark1),
+    "bg2": color.adjust(colors.$white, $blackness: colors.$dark2),
+    "fg": colors.$white,
+    "fg1": color.adjust(colors.$black, $whiteness: colors.$dark1),
+    "fg2": color.adjust(colors.$black, $whiteness: colors.$dark2),
+    "links": (
+      "base": colors.$hue204-dark,
+      "hover": color.adjust(colors.$hue204-dark, $whiteness: 10%),
+      "active": colors.$hue000-dark,
+      "visited": colors.$hue306-dark
+    ),
+    "messages": (
+      "info": color.adjust(colors.$hue204-dark, $blackness: colors.$dark1),
+      "tip": color.adjust(colors.$white, $blackness: colors.$dark1),
+      "warning": color.adjust(colors.$hue051-dark, $blackness: colors.$dark1),
+      "error": color.adjust(colors.$hue000-dark, $blackness: colors.$dark1),
+      "success": color.adjust(colors.$hue102-dark, $blackness: colors.$dark1),
+    ),
+    "content": (
+      "species": (
+        "banner": colors.$hue000-dark,
+        "accent1": color.adjust(colors.$hue000-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue000-dark, $alpha: 100% - colors.$dark2)
+      ),
+      "brand": (
+        "banner": colors.$hue051-dark,
+        "accent1": color.adjust(colors.$hue051-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue051-dark, $alpha: 100% - colors.$dark2)
+      ),
+      "characters": (
+        "banner": colors.$hue102-dark,
+        "accent1": color.adjust(colors.$hue102-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue102-dark, $alpha: 100% - colors.$dark2)
+      ),
+      "tables": (
+        "banner": colors.$hue153-dark,
+        "accent1": color.adjust(colors.$hue153-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue153-dark, $alpha: 100% - colors.$dark2)
+      ),
+      "societies": (
+        "banner": colors.$hue204-dark,
+        "accent1": color.adjust(colors.$hue204-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue204-dark, $alpha: 100% - colors.$dark2)
+      ),
+      "scales": (
+        "banner": colors.$hue255-dark,
+        "accent1": color.adjust(colors.$hue255-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue255-dark, $alpha: 100% - colors.$dark2)
+      ),
+      "scrolls": (
+        "banner": colors.$hue306-dark,
+        "accent1": color.adjust(colors.$hue306-dark, $alpha: 100% - colors.$dark1),
+        "accent2": color.adjust(colors.$hue306-dark, $alpha: 100% - colors.$dark2)
+      )
+    )
+  )
+)
