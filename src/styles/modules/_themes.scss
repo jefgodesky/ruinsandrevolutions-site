@@ -22,7 +22,7 @@ $themes: (
     ),
     "links": (
       "base": colors.$hue204-light,
-      "hover": color.adjust(colors.$hue204-light, $whiteness: 10%),
+      "hover": color.adjust(colors.$hue204-light, $whiteness: 30%),
       "active": colors.$hue000-light,
       "visited": colors.$hue306-light
     ),
@@ -85,7 +85,7 @@ $themes: (
     ),
     "links": (
       "base": colors.$hue204-dark,
-      "hover": color.adjust(colors.$hue204-dark, $whiteness: 10%),
+      "hover": color.adjust(colors.$hue204-dark, $whiteness: 20%),
       "active": colors.$hue000-dark,
       "visited": colors.$hue306-dark
     ),

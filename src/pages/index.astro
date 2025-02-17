@@ -8,48 +8,76 @@ import ThemedImage from '../components/ThemedImage.astro'
 ---
 
 <Layout>
-	<ThemedImage
-		light={lightDragon}
-		dark={darkDragon}
-		alt=""
-		height={3000}
-		width={3000}
-		classes={["dragon-bg"]}
-	/>
+	<main class="home">
+		<ThemedImage
+			light={lightDragon}
+			dark={darkDragon}
+			alt=""
+			height={3000}
+			width={3000}
+			classes={["dragon-bg"]}
+		/>
 
-	<ThemedImage
-		light={lightLogo}
-		dark={darkLogo}
-		alt="Ruins & Revolutions"
-		height={1571}
-		width={5770}
-		classes={["logo-hero"]}
-	/>
+		<ThemedImage
+			light={lightLogo}
+			dark={darkLogo}
+			alt="Ruins & Revolutions"
+			height={1571}
+			width={5770}
+			classes={["logo-hero"]}
+		/>
 
-	<p><em>Ruins &amp; Revolutions</em> is a simple framework for
-	  tabletop roleplaying games (TTRPGs) that puts the emphasis on
-		your world, your characters, and your&nbsp;story.</p>
+		<p><em>Ruins &amp; Revolutions</em> is a simple framework for
+			tabletop roleplaying games (TTRPGs) that puts the emphasis on
+			your world, your characters, and your&nbsp;story.</p>
 
-	<div class="features">
-		<section>
-			<h3>Adaptable Rules</h3>
-			<p>The basic rules fit on the front and back of a single sheet
-			  of paper, but it creates space to add as much (or as little)
-			  complexity as your game calls&nbsp;for.</p>
-		</section>
-		<section>
-			<h3>Focus on Your&nbsp;World</h3>
-			<p><em>Ruins &amp; Revolutions</em> can be a no-prep alternative
-			  for your existing game ready to play tonight. If you enjoy prep,
-			  spend it on your world instead of the&nbsp;rules.</p>
-		</section>
-		<section>
-			<h3>Open Source</h3>
-			<p><em>Ruins &amp; Revolutions</em> is released under a
-			  <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1">Creative
-				Commons License</a> &mdash; just like everything our
-			  community has created and shared in
-			  <a href="/catalogue">the&nbsp;Catalogue</a>.</p>
-		</section>
-	</div>
+		<div class="features">
+			<section>
+				<h3>Adaptable Rules</h3>
+				<p>The basic rules fit on the front and back of a single sheet
+					of paper, but it creates space to add as much (or as little)
+					complexity as your game calls&nbsp;for.</p>
+			</section>
+			<section>
+				<h3>Focus on Your&nbsp;World</h3>
+				<p><em>Ruins &amp; Revolutions</em> can be a no-prep alternative
+					for your existing game ready to play tonight. If you enjoy prep,
+					spend it on your world instead of the&nbsp;rules.</p>
+			</section>
+			<section>
+				<h3>Open Source</h3>
+				<p><em>Ruins &amp; Revolutions</em> is released under a
+					<a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1">Creative
+					Commons License</a> &mdash; just like everything our
+					community has created and shared in
+					<a href="/catalogue">the&nbsp;Catalogue</a>.</p>
+			</section>
+		</div>
+		<p><a href="#" class="cta">Buy on Itch.io</a></p>
+		<p><em>Ruins &amp; Revolutions</em> works on the interaction between
+			three basic but powerful concepts:</p>
+		<div class="features">
+			<section>
+				<h3>Scales</h3>
+				<p>Scales allow you to pace development, whether it&rsquo;s
+					one character&rsquo;s attitude towards another, the
+					journey to master a tool or technique, or the effort to
+					fundamentally change a whole society.</p>
+			</section>
+			<section>
+				<h3>Scrolls</h3>
+				<p>Scrolls give the game master a way to pace developing
+					threats, issues, and concerns &mdash; and a way for players
+					to understand how their actions can either stop those
+					things from happening, or help them along.</p>
+			</section>
+			<section>
+				<h3>Random Tables</h3>
+				<p>Every roll is on a random table. The basic table builds
+					in tension from degrees of success and failure, but more
+					specific random tables can make the important moments in
+					your game shine.</p>
+			</section>
+		</div>
+	</main>
 </Layout>

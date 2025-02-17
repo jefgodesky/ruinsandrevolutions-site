@@ -1,0 +1,13 @@
+@use "../modules/mixins";
+
+.cta {
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
+  font-family: "Alegreya SC", serif;
+  font-size: 2.5em;
+  padding: 0.25em 3em;
+  text-decoration: none;
+
+  @include mixins.set-style("font-weight", "weights.black");
+  @include mixins.set-style("border-color", "bg2");
+}
