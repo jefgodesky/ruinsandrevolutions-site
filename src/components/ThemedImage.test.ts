@@ -15,6 +15,8 @@ describe('ThemedImage', () => {
         classes: ['test']
       }
     })
-    expect(result).toBe('<picture data-astro-source-file="/Users/jefgodesky/Sites/ruinsandrevolutions/site/src/components/ThemedImage.astro" data-astro-source-loc="35:10"> <source media="(prefers-color-scheme: dark)" srcset="/dark.png" data-astro-source-file="/Users/jefgodesky/Sites/ruinsandrevolutions/site/src/components/ThemedImage.astro" data-astro-source-loc="36:4"> <source media="(prefers-color-scheme: light)" srcset="/light.png" data-astro-source-file="/Users/jefgodesky/Sites/ruinsandrevolutions/site/src/components/ThemedImage.astro" data-astro-source-loc="37:4"> <img src="/light.png" alt="Alt text" height="3000" width="3000" class="themed-image test" data-astro-source-file="/Users/jefgodesky/Sites/ruinsandrevolutions/site/src/components/ThemedImage.astro" data-astro-source-loc="38:4"> </picture>')
+    expect(result).toContain('<source media="(prefers-color-scheme: dark)" srcset="/dark.png"')
+    expect(result).toContain('<source media="(prefers-color-scheme: light)" srcset="/light.png"')
+    expect(result).toContain('<img src="/light.png" alt="Alt text" height="3000" width="3000" class="themed-image test"')
   })
 })
