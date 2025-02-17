@@ -5,9 +5,13 @@
   border-bottom: 1px solid #000;
   font-family: "Alegreya SC", serif;
   font-size: 2.5em;
-  padding: 0.25em 3em;
+  padding: 0.25em 0;
   text-decoration: none;
 
   @include mixins.set-style("font-weight", "weights.black");
   @include mixins.set-style("border-color", "bg2");
+
+  @media (min-width: 50rem) {
+    padding: 0.25em 3em;
+  }
 }
