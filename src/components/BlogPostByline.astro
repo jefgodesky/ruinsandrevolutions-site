@@ -1,0 +1,14 @@
+---
+const { author, pubDate } = Astro.props
+const readableDate = pubDate.toLocaleDateString('en-us', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC'
+})
+---
+<p class="byline">
+  <span>{author}</span> /
+  <time datetime={pubDate.toISOString()}>{readableDate}</time>
+</p>
