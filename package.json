@@ -15,6 +15,7 @@
     "sass": "^1.85.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^16.2.0",
     "@types/node": "^22.13.4",
     "happy-dom": "^17.1.0",
     "jsdom": "^26.0.0",
