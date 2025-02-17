@@ -1,0 +1,33 @@
+---
+import ThemedImage from './ThemedImage.astro'
+import darkLogo from '../assets/logo.white.png'
+import lightLogo from '../assets/logo.black.png'
+
+const { section } = Astro.props
+const sections = {
+  home: 'home',
+  blog: 'blog',
+  catalogue: 'catalogue'
+}
+if (sections[section]) sections[section] += ' current'
+---
+
+<div class="nav-spacer"></div>
+<nav class="main">
+  <a href="/" class="logo">
+    <ThemedImage
+      light={lightLogo}
+      dark={darkLogo}
+      alt="Ruins & Revolutions"
+      height={1571}
+      width={5770}
+      classes={[]}
+    />
+  </a>
+
+  <ul>
+    <li><a href="/" class={sections.home}>Home</a></li>
+    <li><a href="/blog" class={sections.blog}>Blog</a></li>
+    <li><a href="/catalogue" class={sections.catalogue}>Catalogue</a></li>
+  </ul>
+</nav>

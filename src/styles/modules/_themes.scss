@@ -10,11 +10,11 @@
 $themes: (
   "light": (
     "bg": colors.$white,
-    "bg1": color.adjust(colors.$black, $whiteness: colors.$light1),
-    "bg2": color.adjust(colors.$black, $whiteness: colors.$light2),
+    "bg1": color.adjust(colors.$white, $blackness: 10%),
+    "bg2": color.adjust(colors.$white, $blackness: 5%),
     "fg": colors.$black,
-    "fg1": color.adjust(colors.$white, $blackness: colors.$light1),
-    "fg2": color.adjust(colors.$white, $blackness: colors.$light2),
+    "fg1": color.adjust(colors.$black, $whiteness: 10%),
+    "fg2": color.adjust(colors.$black, $whiteness: 5%),
     "weights": (
       "black": weights.$light-black,
       "bold": weights.$light-bold,
@@ -73,11 +73,11 @@ $themes: (
   ),
   "dark": (
     "bg": colors.$black,
-    "bg1": color.adjust(colors.$white, $blackness: colors.$dark1),
-    "bg2": color.adjust(colors.$white, $blackness: colors.$dark2),
+    "bg1": color.adjust(colors.$black, $whiteness: 10%),
+    "bg2": color.adjust(colors.$black, $whiteness: 5%),
     "fg": colors.$white,
-    "fg1": color.adjust(colors.$black, $whiteness: colors.$dark1),
-    "fg2": color.adjust(colors.$black, $whiteness: colors.$dark2),
+    "fg1": color.adjust(colors.$white, $blackness: 10%),
+    "fg2": color.adjust(colors.$white, $blackness: 5%),
     "weights": (
       "black": weights.$dark-black,
       "bold": weights.$dark-bold,

@@ -1,0 +1,109 @@
+@use "../modules/placeholders";
+@use "../modules/mixins";
+
+.nav-spacer {
+  @media (min-width: 50em) {
+    height: 5em;
+  }
+}
+
+nav.main {
+  bottom: 0;
+  left: 1em;
+  position: absolute;
+  right: 1em;
+
+  .logo {
+    display: none;
+    visibility: hidden;
+  }
+
+  ul {
+    @extend %unstyled-list;
+
+    display: grid;
+    grid-column-gap: 1em;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+  }
+
+  li {
+    @include mixins.set-style("background", "bg2");
+  }
+
+  a {
+    display: block;
+    font-family: "Alegreya SC", serif;
+    text-align: center;
+    padding: 1em 0 1.5em 0;
+    position: relative;
+    text-decoration: none;
+    width: 100%;
+
+    @include mixins.set-style("color", "fg");
+
+    &.current {
+      clip-path: polygon(0 15%, 50% 0, 100% 15%, 100% 100%, 0 100%);
+      margin-top: -0.5em;
+
+      @include mixins.set-style("background", "bg2");
+    }
+
+    &:hover {
+      @include mixins.set-style("background", "bg1");
+    }
+  }
+
+  @media (min-width: 50em) {
+    bottom: auto;
+    left: calc(50% - 20em);
+    overflow: hidden;
+    position: fixed;
+    right: calc(50% - 20em);
+    top: 0.5em;
+
+    @include mixins.set-style("background", "bg2");
+
+    .logo {
+      display: block;
+      padding: 0;
+      visibility: visible;
+
+      img {
+        display: block;
+        float: left;
+        height: 3em;
+        padding: 0 1em;
+        width: auto;
+      }
+    }
+
+    ul {
+      display: block;
+      float: right;
+    }
+
+    li {
+      background: transparent;
+      display: inline-block;
+    }
+
+    a {
+      background: transparent;
+      padding: 1em;
+    }
+
+    .home {
+      display: none;
+      visibility: hidden;
+    }
+
+    a.current {
+      border-bottom: 0.25em solid #000;
+      clip-path: none;
+      margin-top: 0;
+
+      @include mixins.set-style("border-bottom-color", "fg2");
+    }
+  }
+}
