@@ -1,0 +1,12 @@
+---
+import BlogPostByline from './BlogPostByline.astro'
+
+const { frontmatter, url } = Astro.props
+const { title, pubDate, description, author } = frontmatter
+---
+<article class="card blog">
+  <h3>{title}</h3>
+  <BlogPostByline author={author} pubDate={pubDate} />
+  <p>{description}</p>
+  <a href={url}>Read more&hellip;</a>
+</article>
