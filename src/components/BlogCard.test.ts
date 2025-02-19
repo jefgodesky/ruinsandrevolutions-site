@@ -1,3 +1,4 @@
+import reactRenderer from '@astrojs/react/server.js'
 import { experimental_AstroContainer as AstroContainer } from 'astro/container'
 import { expect, describe, it } from 'vitest'
 import BlogCard from './BlogCard.astro'
@@ -14,6 +15,7 @@ describe('BlogCard', () => {
 
   it('renders the card for a blog post', async () => {
     const container = await AstroContainer.create()
+    container.addServerRenderer({ renderer: reactRenderer, name: 'React' })
     const result = await container.renderToString(BlogCard, {
       props: { frontmatter, url }
     })

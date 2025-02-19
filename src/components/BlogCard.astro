@@ -1,12 +1,11 @@
 ---
 import BlogPostByline from './BlogPostByline.astro'
+import Card from './client/Card.tsx'
 
 const { frontmatter, url } = Astro.props
 const { title, pubDate, description, author } = frontmatter
 ---
-<article class="card blog">
-  <h3>{title}</h3>
+<Card title={title} classes={['blog']} prompt="Read more" url={url}>
   <BlogPostByline author={author} pubDate={pubDate} />
   <p>{description}</p>
-  <a href={url}>Read more&hellip;</a>
-</article>
+</Card>
