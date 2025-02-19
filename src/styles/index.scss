@@ -9,6 +9,9 @@
 @use "components/logo-hero";
 @use "components/features";
 
+@use "components/card";
+@use "components/card-blog";
+
 html {
   box-sizing: border-box;
 }
