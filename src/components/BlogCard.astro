@@ -5,7 +5,7 @@ import Card from './client/Card.tsx'
 const { frontmatter, url } = Astro.props
 const { title, pubDate, description, author } = frontmatter
 ---
-<Card title={title} classes={['blog']} prompt="Read more" url={url}>
+<Card client:load title={title} classes={['blog']} prompt="Read more" url={url}>
   <BlogPostByline author={author} pubDate={pubDate} />
   <p>{description}</p>
 </Card>
