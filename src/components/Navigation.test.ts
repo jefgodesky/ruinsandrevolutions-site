@@ -1,47 +1,41 @@
-import { experimental_AstroContainer as AstroContainer } from 'astro/container'
 import { expect, describe, it } from 'vitest'
+import render from '../utils/testing/render.ts'
+import getHref from '../utils/testing/get-href.ts'
 import Navigation from './Navigation.astro'
 
 describe('Navigation', () => {
   it('renders the main navigation component', async () => {
-    const container = await AstroContainer.create()
-    const result = await container.renderToString(Navigation)
+    const actual = await render(Navigation)
 
-    expect(result).toContain('<a href="/" class="home"')
-    expect(result).toContain('<a href="/blog" class="blog"')
-    expect(result).toContain('<a href="/catalogue" class="catalogue"')
+    expect(getHref(actual, 'a.home')).toBe('/')
+    expect(getHref(actual, 'a.blog')).toBe('/blog')
+    expect(getHref(actual, 'a.catalogue')).toBe('/catalogue')
   })
 
   it('can specify it\'s on the homepage', async () => {
-    const container = await AstroContainer.create()
-    const result = await container.renderToString(Navigation, {
-      props: { section: 'home' }
-    })
+    const actual = await render(
+      Navigation,
+      { props: { section: 'home' } }
+    )
 
-    expect(result).toContain('<a href="/" class="home current"')
-    expect(result).toContain('<a href="/blog" class="blog"')
-    expect(result).toContain('<a href="/catalogue" class="catalogue"')
+    expect(actual?.querySelector('a.home.current')).not.toBeNull()
   })
 
-  it('can specify it\'s in the blog', async () => {
-    const container = await AstroContainer.create()
-    const result = await container.renderToString(Navigation, {
-      props: { section: 'blog' }
-    })
+  it('can specify it\'s on the homepage', async () => {
+    const actual = await render(
+      Navigation,
+      { props: { section: 'blog' } }
+    )
 
-    expect(result).toContain('<a href="/" class="home"')
-    expect(result).toContain('<a href="/blog" class="blog current"')
-    expect(result).toContain('<a href="/catalogue" class="catalogue"')
+    expect(actual?.querySelector('a.blog.current')).not.toBeNull()
   })
 
-  it('can specify it\'s in the catalogue', async () => {
-    const container = await AstroContainer.create()
-    const result = await container.renderToString(Navigation, {
-      props: { section: 'catalogue' }
-    })
+  it('can specify it\'s on the homepage', async () => {
+    const actual = await render(
+      Navigation,
+      { props: { section: 'catalogue' } }
+    )
 
-    expect(result).toContain('<a href="/" class="home"')
-    expect(result).toContain('<a href="/blog" class="blog"')
-    expect(result).toContain('<a href="/catalogue" class="catalogue current"')
+    expect(actual?.querySelector('a.catalogue.current')).not.toBeNull()
   })
 })

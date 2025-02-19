@@ -1,6 +1,5 @@
-import reactRenderer from '@astrojs/react/server.js'
-import { experimental_AstroContainer as AstroContainer } from 'astro/container'
 import { expect, describe, it } from 'vitest'
+import render from '../utils/testing/render.ts'
 import BlogCard from './BlogCard.astro'
 
 describe('BlogCard', () => {
@@ -14,15 +13,19 @@ describe('BlogCard', () => {
   }
 
   it('renders the card for a blog post', async () => {
-    const container = await AstroContainer.create()
-    container.addServerRenderer({ renderer: reactRenderer, name: 'React' })
-    const result = await container.renderToString(BlogCard, {
-      props: { frontmatter, url }
-    })
+    const actual = await render(
+      BlogCard,
+      { props: { frontmatter, url }},
+      true
+    )
 
-    expect(result).toContain('<article class="card blog"')
-    expect(result).toContain(`>${frontmatter.title}</h3>`)
-    expect(result).toContain(`>${frontmatter.description}</p>`)
-    expect(result).toContain(`<a href="${url}"`)
+    const cardSelector = 'article.card.blog'
+    const heading = actual.querySelector(cardSelector + ' h3')
+    const description = actual.querySelector(cardSelector + ' p + p')
+    const link = actual.querySelector(cardSelector + ' a.dest')
+
+    expect(heading?.innerHTML).toBe(frontmatter.title)
+    expect(description?.innerHTML).toBe(frontmatter.description)
+    expect(link?.getAttribute('href')).toBe(url)
   })
 })
