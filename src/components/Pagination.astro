@@ -1,0 +1,56 @@
+---
+import getPageRange from '../utils/get-page-range.ts'
+const { base, total, curr } = Astro.props
+
+interface INumberedNav {
+  link: string
+  text: string
+  isCurrent: boolean
+}
+
+const pages = getPageRange({
+  anchor: curr,
+  min: 1,
+  max: total,
+  size: 5
+})
+
+const minRange = Math.min(...pages)
+const maxRange = Math.max(...pages)
+
+const showNav = total > 1
+const showFirst = minRange > 1
+const showPrev = curr > 1
+const showNext = curr < total
+const showLast = maxRange < total
+
+const links = {
+  first: `${base}/1`,
+  prev: `${base}/${curr - 1}`,
+  next: `${base}/${curr + 1}`,
+  last: `${base}/${total}`
+}
+
+const numbered: INumberedNav[] = pages.map((page: number) => ({
+  link: `${base}/${page}`,
+  text: page.toString(),
+  isCurrent: page === curr
+}))
+---
+{showNav && <nav class="pagination">
+  {showFirst && <a href={links.first} class="first">First</a>}
+  {showPrev && <a href={links.prev} class="prev">Previous</a>}
+
+  {numbered.length > 0 && <ol>
+    {numbered.map(a => {
+      if (a.isCurrent) {
+        return (<li class="curr">{a.text}</li>)
+      } else {
+        return (<li><a href={a.link}>{a.text}</a></li>)
+      }
+    })}
+  </ol>}
+
+  {showNext && <a href={links.next} class="next">Next</a>}
+  {showLast && <a href={links.last} class="last">Last</a>}
+</nav>}
