@@ -9,9 +9,18 @@ interface Props {
   height: number
   width: number
   classes?: string[]
+  pictureClasses?: string[]
 }
 
-const { light, dark, alt, height, width, classes } = Astro.props
+const {
+  light,
+  dark,
+  alt,
+  height,
+  width,
+  classes,
+  pictureClasses
+} = Astro.props
 
 const lightImg = await getImage({
   src: light,
@@ -33,7 +42,7 @@ const imgClasses = ['themed-image', ...givenClasses]
   .join(' ')
 ---
 
-<picture>
+<picture class={(pictureClasses ?? []).join(' ')}>
   <source media="(prefers-color-scheme: dark)" srcset={darkImg.src} />
   <source media="(prefers-color-scheme: light)" srcset={lightImg.src} />
   <img src={lightImg.src} alt={alt} height={height} width={width} class={imgClasses} />
