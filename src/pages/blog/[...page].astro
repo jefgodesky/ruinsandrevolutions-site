@@ -1,0 +1,29 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { getCollection } from 'astro:content'
+import Layout from '../../layouts/Layout.astro'
+import BlogCard from '../../components/BlogCard.astro'
+import Navigation from '../../components/Navigation.astro'
+import Pagination from '../../components/Pagination.astro'
+
+export const getStaticPaths = await (async ({ paginate }) => {
+  const all = await getCollection('posts')
+  const ordered = all
+    .sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate))
+  return paginate(ordered, { pageSize: 10 })
+}) satisfies GetStaticPaths
+
+const { page } = Astro.props
+---
+<Layout title="The Blog">
+  <Navigation section="blog" />
+  <h1>The Blog</h1>
+
+  {
+    page.data.map((post) => (<BlogCard
+      url={`/blog/${post.slug}`}
+      frontmatter={post.data}/>))
+  }
+
+  <Pagination base="/blog" total={page.lastPage} curr={page.currentPage} />
+</Layout>
