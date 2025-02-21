@@ -1,0 +1,17 @@
+@use "../modules/mixins";
+
+figure {
+  text-align: center;
+
+  img {
+    margin: 1em auto;
+  }
+
+  figcaption {
+    font-family: 'Alegreya Sans', sans-serif;
+    font-size: 85%;
+    margin: 0 10% 1em;
+
+    @include mixins.set-style("color", "fg2");
+  }
+}

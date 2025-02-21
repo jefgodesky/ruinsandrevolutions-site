@@ -1,0 +1,11 @@
+@use "../modules/mixins";
+
+blockquote {
+  border-left: 0.25em solid black;
+  font-family: 'Alegreya Sans', sans-serif;
+  margin: 1.5em 0 1.5em;
+  padding: 0 1.25em 0 1em;
+
+  @include mixins.set-style("border-left-color", "bg1");
+  @include mixins.set-style("color", "fg2");
+}

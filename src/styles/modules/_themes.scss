@@ -13,8 +13,8 @@ $themes: (
     "bg1": color.adjust(colors.$white, $blackness: 10%),
     "bg2": color.adjust(colors.$white, $blackness: 5%),
     "fg": colors.$black,
-    "fg1": color.adjust(colors.$black, $whiteness: 10%),
-    "fg2": color.adjust(colors.$black, $whiteness: 5%),
+    "fg1": color.adjust(colors.$black, $whiteness: 20%),
+    "fg2": color.adjust(colors.$black, $whiteness: 10%),
     "weights": (
       "black": weights.$light-black,
       "bold": weights.$light-bold,
@@ -76,8 +76,8 @@ $themes: (
     "bg1": color.adjust(colors.$black, $whiteness: 10%),
     "bg2": color.adjust(colors.$black, $whiteness: 5%),
     "fg": colors.$white,
-    "fg1": color.adjust(colors.$white, $blackness: 10%),
-    "fg2": color.adjust(colors.$white, $blackness: 5%),
+    "fg1": color.adjust(colors.$white, $blackness: 20%),
+    "fg2": color.adjust(colors.$white, $blackness: 10%),
     "weights": (
       "black": weights.$dark-black,
       "bold": weights.$dark-bold,

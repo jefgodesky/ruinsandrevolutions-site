@@ -1,0 +1,14 @@
+@use "../modules/mixins";
+
+article.blog {
+  .byline {
+    font-family: 'Alegreya SC', serif;
+    padding-bottom: 2em;
+
+    @include mixins.set-style("color", "fg2");
+  }
+
+  h1:has(+ .byline) {
+    padding-bottom: 0;
+  }
+}
