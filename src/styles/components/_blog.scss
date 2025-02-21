@@ -1,6 +1,6 @@
 @use "../modules/mixins";
 
-article.blog {
+article.blog:not(.card) {
   .byline {
     font-family: 'Alegreya SC', serif;
     padding-bottom: 2em;
