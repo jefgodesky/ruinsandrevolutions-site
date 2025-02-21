@@ -1,10 +1,19 @@
 ---
+import { getCollection } from 'astro:content'
 import Layout from '../layouts/Layout.astro'
+
+import BlogCard from '../components/BlogCard.astro'
+import ThemedImage from '../components/ThemedImage.astro'
+
 import darkDragon from '../assets/dragon.dark.png'
 import darkLogo from '../assets/logo.white.png'
 import lightDragon from '../assets/dragon.light.png'
 import lightLogo from '../assets/logo.black.png'
-import ThemedImage from '../components/ThemedImage.astro'
+
+const posts = await getCollection('posts')
+const recentPosts = posts
+	.sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate))
+	.slice(0, 3)
 ---
 
 <Layout>
@@ -79,5 +88,16 @@ import ThemedImage from '../components/ThemedImage.astro'
 					your game&nbsp;shine.</p>
 			</section>
 		</div>
+
+		<section class="blog">
+			<h3>Recent Blog Posts</h3>
+			{recentPosts.map(post => (
+				<BlogCard
+					url={`/blog/${post.slug}`}
+					frontmatter={post.data}
+				/>
+			))}
+			<p>Find more on <a href="/blog">the Blog</a></p>
+		</section>
 	</main>
 </Layout>
