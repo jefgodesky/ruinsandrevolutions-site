@@ -1,3 +1,4 @@
+@use "../modules/colors";
 @use "../modules/placeholders";
 @use "../modules/mixins";
 
@@ -10,7 +11,7 @@
 nav.main {
   bottom: 0;
   left: 1em;
-  position: absolute;
+  position: fixed;
   right: 1em;
 
   .logo {
@@ -28,6 +29,7 @@ nav.main {
   }
 
   li {
+    box-shadow: 1em 1em 1em 1em colors.$black;
     @include mixins.set-style("background", "bg2");
   }
 
@@ -88,6 +90,7 @@ nav.main {
 
     li {
       background: transparent;
+      box-shadow: none;
       display: inline-block;
     }
 
