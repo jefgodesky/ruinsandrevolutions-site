@@ -8,7 +8,7 @@ interface Props {
   alt: string
   height: number
   width: number
-  classes: string[]
+  classes?: string[]
 }
 
 const { light, dark, alt, height, width, classes } = Astro.props
@@ -27,7 +27,8 @@ const darkImg = await getImage({
   width
 })
 
-const imgClasses = ['themed-image', ...classes]
+const givenClasses = classes ?? []
+const imgClasses = ['themed-image', ...givenClasses]
   .map(cls => cls.trim())
   .join(' ')
 ---
