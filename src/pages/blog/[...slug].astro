@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content'
+export const prerender = true
+
+import Layout from '../../layouts/Layout.astro'
+import BlogPostByline from '../../components/BlogPostByline.astro'
+import Navigation from '../../components/Navigation.astro'
+
+export async function getStaticPaths() {
+  const all = await getCollection('posts')
+  return all.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }))
+}
+
+const { entry } = Astro.props
+const { author, pubDate, title } = entry.data
+const { Content } = await entry.render()
+---
+<Layout title={title}>
+  <Navigation section="blog" />
+  <h1>{title}</h1>
+  <BlogPostByline author={author} pubDate={pubDate} />
+  <Content />
+</Layout>
