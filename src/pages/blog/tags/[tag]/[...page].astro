@@ -1,0 +1,44 @@
+---
+import type { GetStaticPaths } from 'astro'
+import { getCollection } from 'astro:content'
+import Layout from '../../../../layouts/Layout.astro'
+import BlogCard from '../../../../components/BlogCard.astro'
+import Navigation from '../../../../components/Navigation.astro'
+import Pagination from '../../../../components/Pagination.astro'
+
+import sortPostsReverseChron from '../../../../utils/sort-posts-reverse-chron'
+import filterTaggedPosts from '../../../../utils/filter-tagged-posts'
+import getTags from '../../../../utils/get-tags'
+import settings from '../../../../settings.ts'
+
+export const getStaticPaths = await (async ({ paginate }) => {
+  const all = await getCollection('posts')
+  const ordered = sortPostsReverseChron(all)
+  const tags = Array.from(getTags(ordered))
+  return tags.flatMap(tag => {
+    const posts = filterTaggedPosts(ordered, tag)
+    return paginate(
+      posts, {
+        params: { tag },
+        pageSize: settings.pageSize
+      }
+    )
+  })
+}) satisfies GetStaticPaths
+
+const { page } = Astro.props
+const params = Astro.params;
+const base = `/blog/${params.tag}`
+---
+<Layout title="The Blog">
+  <Navigation section="blog" />
+  <h1><span>Posts tagged with</span> {params.tag}</h1>
+
+  {
+    page.data.map((post) => (<BlogCard
+      url={`/blog/${post.slug}`}
+      frontmatter={post.data}/>))
+  }
+
+  <Pagination base={base} total={page.lastPage} curr={page.currentPage} />
+</Layout>

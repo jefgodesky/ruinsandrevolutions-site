@@ -34,6 +34,14 @@ h1 {
   font-size: 3em;
 
   @include mixins.set-style("font-weight", "weights.black");
+
+  span {
+    display: block;
+    font-size: 50%;
+
+    @include mixins.set-style("color", "fg1");
+    @include mixins.set-style("font-weight", "weights.normal");
+  }
 }
 
 h2 {
