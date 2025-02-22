@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content'
+import Layout from '../../../layouts/Layout.astro'
+import Navigation from '../../../components/Navigation.astro'
+import getTags from '../../../utils/get-tags'
+
+const posts = await getCollection('posts')
+const tags = Array.from(getTags(posts)).sort()
+---
+<Layout title="Tags">
+  <Navigation section="blog" />
+  <h1>Tags</h1>
+
+  <ul>
+    {
+      tags.map(tag => (<li>
+        <a href={`/blog/tags/${encodeURIComponent(tag)}`}>{tag}</a>
+      </li>))
+    }
+  </ul>
+</Layout>
