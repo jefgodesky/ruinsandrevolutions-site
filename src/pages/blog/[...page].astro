@@ -6,12 +6,11 @@ import BlogCard from '../../components/BlogCard.astro'
 import Navigation from '../../components/Navigation.astro'
 import Pagination from '../../components/Pagination.astro'
 import sortPostsReverseChron from '../../utils/sort-posts-reverse-chron'
-import settings from '../../settings.ts'
 
 export const getStaticPaths = await (async ({ paginate }) => {
   const all = await getCollection('posts')
   const ordered = sortPostsReverseChron(all)
-  return paginate(ordered, { pageSize: settings.pageSize })
+  return paginate(ordered, { pageSize: import.meta.env.PAGE_SIZE })
 }) satisfies GetStaticPaths
 
 const { page } = Astro.props

@@ -9,7 +9,6 @@ import Pagination from '../../../../components/Pagination.astro'
 import sortPostsReverseChron from '../../../../utils/sort-posts-reverse-chron'
 import filterTaggedPosts from '../../../../utils/filter-tagged-posts'
 import getTags from '../../../../utils/get-tags'
-import settings from '../../../../settings.ts'
 
 export const getStaticPaths = await (async ({ paginate }) => {
   const all = await getCollection('posts')
@@ -20,7 +19,7 @@ export const getStaticPaths = await (async ({ paginate }) => {
     return paginate(
       posts, {
         params: { tag },
-        pageSize: settings.pageSize
+        pageSize: import.meta.env.PAGE_SIZE
       }
     )
   })
