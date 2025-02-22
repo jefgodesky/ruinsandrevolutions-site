@@ -5,11 +5,11 @@ import Layout from '../../layouts/Layout.astro'
 import BlogCard from '../../components/BlogCard.astro'
 import Navigation from '../../components/Navigation.astro'
 import Pagination from '../../components/Pagination.astro'
+import sortPostsReverseChron from '../../utils/sort-posts-reverse-chron'
 
 export const getStaticPaths = await (async ({ paginate }) => {
   const all = await getCollection('posts')
-  const ordered = all
-    .sort((a, b) => new Date(b.data.pubDate) - new Date(a.data.pubDate))
+  const ordered = sortPostsReverseChron(all)
   return paginate(ordered, { pageSize: 10 })
 }) satisfies GetStaticPaths
 
