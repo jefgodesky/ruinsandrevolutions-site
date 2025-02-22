@@ -1,0 +1,13 @@
+---
+const { tags } = Astro.props
+
+const getLink = (tag: string): string => {
+  return `/blog/tags/${encodeURIComponent(tag)}`
+}
+---
+<nav class="tags">
+  <h3>Tags</h3>
+  <ul>
+    {tags.map(tag => (<li><a href={getLink(tag)}>{tag}</a></li>))}
+  </ul>
+</nav>
