@@ -8,6 +8,14 @@
   }
 }
 
+body {
+  padding-bottom: 5em;
+
+  @media (min-width: 50em) {
+    padding-bottom: 1em;
+  }
+}
+
 nav.main {
   bottom: 0;
   left: 1em;
@@ -29,8 +37,8 @@ nav.main {
   }
 
   li {
-    box-shadow: 1em 1em 1em 1em colors.$black;
     @include mixins.set-style("background", "bg2");
+    @include mixins.set-style("box-shadow", "shadows.nav");
   }
 
   a {

@@ -69,6 +69,9 @@ $themes: (
         "accent1": color.adjust(colors.$hue306-light, $alpha: to-alpha(colors.$light1)) ,
         "accent2": color.adjust(colors.$hue306-light, $alpha: to-alpha(colors.$light2)) 
       )
+    ),
+    "shadows": (
+      "nav": 0 0 1em 0 colors.$black
     )
   ),
   "dark": (
@@ -132,6 +135,9 @@ $themes: (
         "accent1": color.adjust(colors.$hue306-dark, $alpha: to-alpha(colors.$dark1)) ,
         "accent2": color.adjust(colors.$hue306-dark, $alpha: to-alpha(colors.$dark2)) 
       )
+    ),
+    "shadows": (
+      "nav": 1em 1em 1em 1em colors.$black
     )
   )
 )
