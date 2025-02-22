@@ -1,4 +1,5 @@
 @use "../modules/mixins";
+@use "../modules/placeholders";
 
 article.blog:not(.card) {
   .byline {
@@ -10,5 +11,38 @@ article.blog:not(.card) {
 
   h1:has(+ .byline) {
     padding-bottom: 0;
+  }
+
+  .tags {
+    margin: 1em -1em;
+    padding: 1em;
+
+    @include mixins.set-style("background", "bg2");
+
+    h3 {
+      font-size: 1em;
+      padding: 0 0 0.5em;
+      @include mixins.set-style("color", "fg2");
+    }
+
+    ul {
+      @extend %unstyled-list;
+    }
+
+    li {
+      display: inline;
+
+      &:after {
+        content: ' ';
+      }
+    }
+
+    a {
+      @include mixins.set-style("color", "fg1");
+
+      &:hover {
+        @include mixins.set-style("color", "fg");
+      }
+    }
   }
 }
